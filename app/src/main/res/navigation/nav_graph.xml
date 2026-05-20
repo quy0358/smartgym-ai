@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_login">
+
+    <!-- Auth Flow -->
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="ntu.quy65132908.smartgym_ai.ui.auth.LoginFragment"
+        android:label="@string/login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/nav_register" />
+        <action
+            android:id="@+id/action_login_to_dashboard"
+            app:destination="@id/nav_dashboard"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="ntu.quy65132908.smartgym_ai.ui.auth.RegisterFragment"
+        android:label="@string/register"
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_register_to_dashboard"
+            app:destination="@id/nav_dashboard"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Main Flow (Bottom Nav destinations) -->
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="ntu.quy65132908.smartgym_ai.ui.dashboard.DashboardFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_dashboard_to_workout_detail"
+            app:destination="@id/nav_workout_detail" />
+        <action
+            android:id="@+id/action_dashboard_to_ai_analysis"
+            app:destination="@id/nav_ai_analysis" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout"
+        android:name="ntu.quy65132908.smartgym_ai.ui.workout.WorkoutDetailFragment"
+        android:label="@string/workout_plan"
+        tools:layout="@layout/fragment_workout_detail" />
+
+    <fragment
+        android:id="@+id/nav_progress"
+        android:name="ntu.quy65132908.smartgym_ai.ui.progress.ProgressFragment"
+        android:label="@string/progress"
+        tools:layout="@layout/fragment_progress" />
+
+    <fragment
+        android:id="@+id/nav_community"
+        android:name="ntu.quy65132908.smartgym_ai.ui.community.CommunityFragment"
+        android:label="@string/community"
+        tools:layout="@layout/fragment_community" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="ntu.quy65132908.smartgym_ai.ui.profile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <!-- Detail screens (overlay, not in bottom nav) -->
+    <fragment
+        android:id="@+id/nav_workout_detail"
+        android:name="ntu.quy65132908.smartgym_ai.ui.workout.WorkoutDetailFragment"
+        android:label="@string/workout_detail"
+        tools:layout="@layout/fragment_workout_detail">
+        <argument
+            android:name="workoutId"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_ai_analysis"
+        android:name="ntu.quy65132908.smartgym_ai.ui.analysis.AIAnalysisFragment"
+        android:label="@string/ai_analysis"
+        tools:layout="@layout/fragment_ai_analysis" />
+</navigation>

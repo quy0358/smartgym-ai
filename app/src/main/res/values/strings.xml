@@ -1,3 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">smartgym-ai</string>
+    <string name="app_name">SmartGym AI</string>
+    <string name="home">Trang chủ</string>
+    <string name="workout_plan">Kế hoạch</string>
+    <string name="progress">Tiến trình</string>
+    <string name="community">Cộng đồng</string>
+    <string name="profile">Hồ sơ</string>
+    <string name="login">Đăng nhập</string>
+    <string name="register">Đăng ký</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="welcome_back">Chào mừng trở lại!</string>
+    <string name="break_limits">Hãy phá vỡ giới hạn ngày hôm nay</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="or_login_with">HOẶC ĐĂNG NHẬP VỚI</string>
+    <string name="no_account">Chưa có tài khoản?</string>
+    <string name="register_now">Đăng ký ngay</string>
+    <string name="weekly_plan">Kế hoạch tuần</string>
+    <string name="view_all">Xem tất cả</string>
+    <string name="workout_detail">Chi tiết bài tập</string>
+    <string name="ai_analysis">Phân tích AI</string>
+    <string name="sign_out">Đăng xuất</string>
+    <string name="settings">Cài đặt</string>
+    <string name="weight">Cân nặng</string>
+    <string name="height">Chiều cao</string>
+    <string name="bmi">BMI</string>
+    <string name="goal">Mục tiêu</string>
 </resources>

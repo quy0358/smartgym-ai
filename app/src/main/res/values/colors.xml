@@ -1,5 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary (Neon Lime) -->
+    <color name="primary">#FFC3F400</color>
+    <color name="on_primary">#FF1B1C00</color>
+    <color name="primary_container">#FF2A2F00</color>
+    <color name="on_primary_container">#FFDEFF33</color>
+
+    <!-- Secondary (Electric Blue) -->
+    <color name="secondary">#FF0356FF</color>
+    <color name="on_secondary">#FFFFFFFF</color>
+    <color name="secondary_container">#FF0356FF</color>
+    <color name="on_secondary_container">#FFFFFFFF</color>
+
+    <!-- Tertiary (Cyan) -->
+    <color name="tertiary">#FF00E5FF</color>
+    <color name="on_tertiary">#FF003544</color>
+
+    <!-- Error -->
+    <color name="error">#FFFF6B6B</color>
+    <color name="on_error">#FF690005</color>
+    <color name="error_container">#FF93000A</color>
+    <color name="on_error_container">#FFFFB4AB</color>
+
+    <!-- Background/Surface (Pure Dark) -->
+    <color name="background">#FF0E0E0E</color>
+    <color name="on_background">#FFE5E2E1</color>
+    <color name="surface">#FF131313</color>
+    <color name="on_surface">#FFE5E2E1</color>
+    <color name="surface_variant">#FF49454F</color>
+    <color name="on_surface_variant">#FFC4C9AC</color>
+
+    <!-- Surface containers -->
+    <color name="surface_container">#FF201F1F</color>
+    <color name="surface_container_high">#FF2B2A2A</color>
+    <color name="surface_container_highest">#FF363535</color>
+    <color name="surface_container_low">#FF1B1B1B</color>
+    <color name="surface_container_lowest">#FF0E0E0E</color>
+
+    <!-- Outline -->
+    <color name="outline">#FF938F99</color>
+    <color name="outline_variant">#FF49454F</color>
+
+    <!-- Inverse -->
+    <color name="inverse_surface">#FFE5E2E1</color>
+    <color name="inverse_on_surface">#FF313030</color>
+    <color name="inverse_primary">#FF4C5400</color>
+
+    <!-- Standard -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Gradient colors -->
+    <color name="gradient_blue_start">#FF0356FF</color>
+    <color name="gradient_lime_end">#FFC3F400</color>
 </resources>

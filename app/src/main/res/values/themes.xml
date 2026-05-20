@@ -1,9 +1,127 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Smartgymai" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SmartGymAI" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+
+        <!-- Tertiary -->
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorOnTertiary">@color/on_tertiary</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorErrorContainer">@color/error_container</item>
+        <item name="colorOnErrorContainer">@color/on_error_container</item>
+
+        <!-- Background/Surface -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+        <item name="colorSurfaceContainerHigh">@color/surface_container_high</item>
+
+        <!-- Outline -->
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outline_variant</item>
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:navigationBarColor">@color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/background</item>
+
+        <!-- Bottom Navigation -->
+        <item name="bottomNavigationStyle">@style/Widget.SmartGym.BottomNav</item>
     </style>
 
-    <style name="Theme.Smartgymai" parent="Base.Theme.Smartgymai" />
+    <!-- Bottom Navigation Style -->
+    <style name="Widget.SmartGym.BottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/surface</item>
+        <item name="itemIconTint">@color/bottom_nav_colors</item>
+        <item name="itemTextColor">@color/bottom_nav_colors</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.SmartGym.BottomNav.ActiveIndicator</item>
+    </style>
+
+    <style name="Widget.SmartGym.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/primary_container</item>
+    </style>
+
+    <!-- Text Styles -->
+    <style name="TextStyle.HeadlineLg" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/on_surface</item>
+    </style>
+
+    <style name="TextStyle.HeadlineMd" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/on_surface</item>
+    </style>
+
+    <style name="TextStyle.BodyBold" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/on_surface</item>
+    </style>
+
+    <style name="TextStyle.BodyBase" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/on_surface_variant</item>
+    </style>
+
+    <style name="TextStyle.LabelCaps" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textColor">@color/on_surface_variant</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="Widget.SmartGym.Button.Primary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:textColor">@color/on_primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minHeight">56dp</item>
+    </style>
+
+    <style name="Widget.SmartGym.Button.Outline" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/surface_variant</item>
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Card Style -->
+    <style name="Widget.SmartGym.Card" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/surface_container</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <!-- TextField Style -->
+    <style name="Widget.SmartGym.TextField" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/text_field_stroke</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxBackgroundColor">@color/surface_container</item>
+        <item name="hintTextColor">@color/on_surface_variant</item>
+    </style>
 </resources>

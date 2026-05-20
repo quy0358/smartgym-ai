@@ -1,0 +1,49 @@
+package ntu.quy65132908.smartgym_ai.di;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+import dagger.hilt.InstallIn;
+import dagger.hilt.components.SingletonComponent;
+import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
+
+@Module
+@InstallIn(SingletonComponent.class)
+public class AppModule {
+
+    @Provides
+    @Singleton
+    public FirebaseAuth provideFirebaseAuth() {
+        return FirebaseAuth.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public FirebaseFirestore provideFirestore() {
+        return FirebaseFirestore.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public FirebaseStorage provideStorage() {
+        return FirebaseStorage.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public AuthRepository provideAuthRepository(FirebaseAuth auth, FirebaseFirestore firestore) {
+        return new AuthRepository(auth, firestore);
+    }
+
+    @Provides
+    @Singleton
+    public UserRepository provideUserRepository(FirebaseFirestore firestore) {
+        return new UserRepository(firestore);
+    }
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_sm"
+    android:background="@color/surface_container"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/spacing_md">
+
+    <!-- Status Icon -->
+    <FrameLayout
+        android:layout_width="@dimen/avatar_sm"
+        android:layout_height="@dimen/avatar_sm"
+        android:background="@drawable/bg_rounded_12">
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="@dimen/icon_md"
+            android:layout_height="@dimen/icon_md"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_menu_agenda"
+            app:tint="@color/on_surface_variant" />
+    </FrameLayout>
+
+    <!-- Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_workout_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Workout Name"
+            android:textAppearance="@style/TextStyle.BodyBold" />
+
+        <TextView
+            android:id="@+id/tv_workout_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Th 2"
+            android:textAppearance="@style/TextStyle.LabelCaps" />
+    </LinearLayout>
+
+    <!-- Badge -->
+    <TextView
+        android:id="@+id/tv_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_badge_today"
+        android:paddingHorizontal="@dimen/spacing_sm"
+        android:paddingVertical="2dp"
+        android:text="HÔM NAY"
+        android:textAppearance="@style/TextStyle.LabelCaps"
+        android:textColor="@color/primary"
+        android:textSize="10sp"
+        android:visibility="gone" />
+</LinearLayout>

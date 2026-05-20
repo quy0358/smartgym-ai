@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_sm"
+    android:background="@color/surface_container"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/spacing_md">
+
+    <CheckBox
+        android:id="@+id/cb_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/primary" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_sm"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_exercise_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exercise"
+            android:textAppearance="@style/TextStyle.BodyBold" />
+
+        <TextView
+            android:id="@+id/tv_exercise_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sets × Reps"
+            android:textAppearance="@style/TextStyle.LabelCaps" />
+    </LinearLayout>
+</LinearLayout>
