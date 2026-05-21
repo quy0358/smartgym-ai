@@ -26,4 +26,5 @@
     <string name="height">Chiều cao</string>
     <string name="bmi">BMI</string>
     <string name="goal">Mục tiêu</string>
+    <string name="default_web_client_id" translatable="false">644529455872-placeholder.apps.googleusercontent.com</string>
 </resources>

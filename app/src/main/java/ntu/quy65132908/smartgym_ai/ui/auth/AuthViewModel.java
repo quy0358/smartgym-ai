@@ -103,6 +103,24 @@ public class AuthViewModel extends ViewModel {
         });
     }
 
+    public void signInWithGoogle(String idToken) {
+        isLoading.setValue(true);
+        errorMessage.setValue(null);
+        authRepository.signInWithGoogle(idToken, new AuthRepository.AuthCallback() {
+            @Override
+            public void onSuccess(FirebaseUser user) {
+                isLoading.postValue(false);
+                authSuccess.postValue(user);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                isLoading.postValue(false);
+                errorMessage.postValue("Đăng nhập Google thất bại: " + e.getMessage());
+            }
+        });
+    }
+
     private boolean isValidEmail(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

@@ -3,8 +3,10 @@ package ntu.quy65132908.smartgym_ai.data.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import javax.inject.Inject;
@@ -50,6 +52,29 @@ public class AuthRepository {
                                 .set(user.toMap())
                                 .addOnSuccessListener(v -> callback.onSuccess(firebaseUser))
                                 .addOnFailureListener(callback::onError);
+                    }
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+    public void signInWithGoogle(String idToken, AuthCallback callback) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        auth.signInWithCredential(credential)
+                .addOnSuccessListener(result -> {
+                    FirebaseUser user = result.getUser();
+                    if (user != null) {
+                        // Check if new user and create Firestore profile
+                        if (result.getAdditionalUserInfo() != null && result.getAdditionalUserInfo().isNewUser()) {
+                            String name = user.getDisplayName() != null ? user.getDisplayName() : "Người dùng";
+                            String email = user.getEmail() != null ? user.getEmail() : "";
+                            User newUser = new User(user.getUid(), name, email);
+                            firestore.collection("users").document(user.getUid())
+                                    .set(newUser.toMap())
+                                    .addOnSuccessListener(v -> callback.onSuccess(user))
+                                    .addOnFailureListener(e -> callback.onSuccess(user)); // Still succeed even if profile creation fails
+                        } else {
+                            callback.onSuccess(user);
+                        }
                     }
                 })
                 .addOnFailureListener(callback::onError);
