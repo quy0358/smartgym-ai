@@ -38,9 +38,10 @@ public class ProfileFragment extends Fragment {
 
         binding.btnSignOut.setOnClickListener(v -> viewModel.signOut());
 
-        binding.btnEditProfile.setOnClickListener(v -> {
-            // TODO: Open edit profile screen
-        });
+        binding.btnEditProfile.setOnClickListener(v ->
+            Navigation.findNavController(requireView())
+                    .navigate(R.id.action_profile_to_edit_profile)
+        );
     }
 
     private void setupStats() {

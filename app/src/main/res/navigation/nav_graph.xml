@@ -69,7 +69,17 @@
         android:id="@+id/nav_profile"
         android:name="ntu.quy65132908.smartgym_ai.ui.profile.ProfileFragment"
         android:label="@string/profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_to_edit_profile"
+            app:destination="@id/nav_edit_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_edit_profile"
+        android:name="ntu.quy65132908.smartgym_ai.ui.profile.EditProfileFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile" />
 
     <!-- Detail screens (overlay, not in bottom nav) -->
     <fragment
