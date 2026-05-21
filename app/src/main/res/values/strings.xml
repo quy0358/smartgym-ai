@@ -27,4 +27,50 @@
     <string name="bmi">BMI</string>
     <string name="goal">Mục tiêu</string>
     <string name="default_web_client_id" translatable="false">644529455872-placeholder.apps.googleusercontent.com</string>
+
+    <!-- Auth errors -->
+    <string name="error_empty_fields">Vui lòng nhập đầy đủ thông tin</string>
+    <string name="error_invalid_email">Email không hợp lệ</string>
+    <string name="error_weak_password">Mật khẩu phải có ít nhất 6 ký tự</string>
+    <string name="error_account_not_found">Tài khoản không tồn tại</string>
+    <string name="error_wrong_credentials">Email hoặc mật khẩu không đúng</string>
+    <string name="error_email_in_use">Email này đã được sử dụng</string>
+    <string name="error_password_too_weak">Mật khẩu quá yếu</string>
+    <string name="error_no_network">Không có kết nối mạng. Vui lòng kiểm tra lại.</string>
+    <string name="error_generic">Đã xảy ra lỗi: %s</string>
+    <string name="error_google_sign_in">Đăng nhập Google thất bại: %s</string>
+
+    <!-- Dashboard stat labels -->
+    <string name="stat_weight">CÂN NẶNG</string>
+    <string name="stat_bmi">BMI</string>
+    <string name="stat_goal">MỤC TIÊU</string>
+    <string name="stat_normal">Bình thường</string>
+    <string name="unit_kg">kg</string>
+    <string name="greeting_format">Chào %s! 💪</string>
+
+    <!-- Profile stat labels -->
+    <string name="stat_workouts">BÀI TẬP</string>
+    <string name="stat_total">tổng cộng</string>
+    <string name="stat_hours">GIỜ TẬP</string>
+    <string name="unit_hours">giờ</string>
+    <string name="stat_streak">CHUỖI</string>
+    <string name="unit_days">ngày</string>
+
+    <!-- Progress stat labels -->
+    <string name="stat_completed">hoàn thành</string>
+    <string name="stat_calories">CALORIES</string>
+    <string name="stat_burned">đốt cháy</string>
+
+    <!-- AI Analysis -->
+    <string name="ai_loading">Đang tải...</string>
+    <string name="ai_enter_info">Nhập đủ thông tin</string>
+
+    <!-- Community -->
+    <string name="post_empty_content">Nội dung trống</string>
+    <string name="post_user_default">Người dùng</string>
+
+    <!-- Edit Profile -->
+    <string name="profile_saved">Đã lưu!</string>
+    <string name="profile_name_empty">Tên không được để trống</string>
+    <string name="profile_invalid_number">Số không hợp lệ</string>
 </resources>

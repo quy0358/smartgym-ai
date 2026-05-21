@@ -46,6 +46,16 @@ public class CommunityFragment extends Fragment {
             if (posts != null) adapter.submitList(posts);
         });
 
+        // Pull-to-refresh
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            // The real-time listener already provides updates, just show refresh briefly
+            binding.swipeRefresh.setRefreshing(false);
+        });
+
+        viewModel.getIsRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
+            if (refreshing != null) binding.swipeRefresh.setRefreshing(refreshing);
+        });
+
         binding.fabPost.setOnClickListener(v ->
             new CreatePostBottomSheet().show(getChildFragmentManager(), "create_post")
         );

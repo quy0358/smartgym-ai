@@ -18,12 +18,19 @@
             android:text="@string/community"
             android:textAppearance="@style/TextStyle.HeadlineLg" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_posts"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginTop="@dimen/spacing_lg" />
+            android:layout_marginTop="@dimen/spacing_lg">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_posts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
