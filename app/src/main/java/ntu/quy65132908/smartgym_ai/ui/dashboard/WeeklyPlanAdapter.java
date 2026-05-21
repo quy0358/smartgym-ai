@@ -5,20 +5,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Calendar;
+
+import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.databinding.ItemWorkoutDayBinding;
 
-public class WeeklyPlanAdapter extends RecyclerView.Adapter<WeeklyPlanAdapter.ViewHolder> {
+public class WeeklyPlanAdapter extends ListAdapter<Workout, WeeklyPlanAdapter.ViewHolder> {
 
-    private final String[][] weekData = {
-            {"Thứ 2", "Push Day — Ngực, Vai, Tay sau"},
-            {"Thứ 3", "Pull Day — Lưng, Bắp tay"},
-            {"Thứ 4", "Leg Day — Đùi, Mông, Bắp chân"},
-            {"Thứ 5", "Nghỉ ngơi & Cardio nhẹ"},
-            {"Thứ 6", "Upper Body Blast"},
-            {"Thứ 7", "Core & HIIT"},
-            {"Chủ nhật", "Nghỉ ngơi hoàn toàn"}
+    private static final String[] DAY_NAMES = {"Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"};
+
+    public WeeklyPlanAdapter() {
+        super(DIFF_CALLBACK);
+    }
+
+    private static final DiffUtil.ItemCallback<Workout> DIFF_CALLBACK = new DiffUtil.ItemCallback<Workout>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Workout a, @NonNull Workout b) {
+            return a.getId() != null && a.getId().equals(b.getId());
+        }
+        @Override
+        public boolean areContentsTheSame(@NonNull Workout a, @NonNull Workout b) {
+            return a.getTitle().equals(b.getTitle()) && a.isCompleted() == b.isCompleted();
+        }
     };
 
     @NonNull
@@ -31,25 +43,24 @@ public class WeeklyPlanAdapter extends RecyclerView.Adapter<WeeklyPlanAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.binding.tvWorkoutDay.setText(weekData[position][0]);
-        holder.binding.tvWorkoutName.setText(weekData[position][1]);
+        Workout workout = getItem(position);
+        int dayIndex = workout.getDayOfWeek() - 1;
+        String dayName = (dayIndex >= 0 && dayIndex < DAY_NAMES.length) ? DAY_NAMES[dayIndex] : "Ngày " + workout.getDayOfWeek();
 
-        // Show "HÔM NAY" badge for current day (simplified: always show for position 0)
-        if (position == 0) {
-            holder.binding.tvBadge.setVisibility(View.VISIBLE);
-        } else {
-            holder.binding.tvBadge.setVisibility(View.GONE);
-        }
+        holder.binding.tvWorkoutDay.setText(dayName);
+        holder.binding.tvWorkoutName.setText(workout.getTitle());
+
+        int todayDow = getTodayDayOfWeek();
+        holder.binding.tvBadge.setVisibility(workout.getDayOfWeek() == todayDow ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public int getItemCount() {
-        return weekData.length;
+    private int getTodayDayOfWeek() {
+        int calDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        return calDay == Calendar.SUNDAY ? 7 : calDay - 1;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ItemWorkoutDayBinding binding;
-
         ViewHolder(ItemWorkoutDayBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

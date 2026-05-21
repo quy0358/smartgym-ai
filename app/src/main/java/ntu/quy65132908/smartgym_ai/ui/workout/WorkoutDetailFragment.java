@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -17,6 +18,7 @@ import ntu.quy65132908.smartgym_ai.databinding.FragmentWorkoutDetailBinding;
 public class WorkoutDetailFragment extends Fragment {
 
     private FragmentWorkoutDetailBinding binding;
+    private WorkoutViewModel viewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,8 +29,24 @@ public class WorkoutDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
+
+        ExerciseAdapter adapter = new ExerciseAdapter((exercise, checked) -> {
+            // Exercise checked/unchecked - could call viewModel to persist
+        });
+
         binding.rvExercises.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.rvExercises.setAdapter(new ExerciseAdapter());
+        binding.rvExercises.setAdapter(adapter);
+
+        viewModel.getExercises().observe(getViewLifecycleOwner(), exercises -> {
+            if (exercises != null) adapter.submitList(exercises);
+        });
+
+        // Load exercises if workoutId argument is available
+        String workoutId = getArguments() != null ? getArguments().getString("workoutId", "") : "";
+        if (!workoutId.isEmpty()) {
+            viewModel.loadExercises(workoutId);
+        }
     }
 
     @Override
