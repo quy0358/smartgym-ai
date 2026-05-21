@@ -5,19 +5,26 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import ntu.quy65132908.smartgym_ai.databinding.ActivityMainBinding;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
+
+    @Inject
+    FirebaseAuth firebaseAuth;
 
     private ActivityMainBinding binding;
     private NavController navController;
@@ -31,16 +38,19 @@ public class MainActivity extends AppCompatActivity {
         // Setup Navigation
         NavHostFragment navHostFragment = (NavHostFragment)
                 getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (navHostFragment == null) {
+            throw new IllegalStateException("NavHostFragment not found. Check activity_main.xml contains R.id.nav_host_fragment");
+        }
         navController = navHostFragment.getNavController();
 
         // Setup Bottom Navigation
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
 
         // Show/hide bottom nav based on destination
-        Set<Integer> mainDestinations = Set.of(
+        Set<Integer> mainDestinations = new HashSet<>(Arrays.asList(
                 R.id.nav_dashboard, R.id.nav_workout, R.id.nav_progress,
                 R.id.nav_community, R.id.nav_profile
-        );
+        ));
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (mainDestinations.contains(destination.getId())) {
@@ -51,9 +61,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Auto-navigate to dashboard if already logged in
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            navController.navigate(R.id.action_login_to_dashboard);
+        if (firebaseAuth.getCurrentUser() != null) {
+            NavDestination currentDest = navController.getCurrentDestination();
+            if (currentDest != null && currentDest.getId() == R.id.nav_login) {
+                navController.navigate(R.id.action_login_to_dashboard);
+            }
         }
     }
 
