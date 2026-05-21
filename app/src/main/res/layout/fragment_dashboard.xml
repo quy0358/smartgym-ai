@@ -1,114 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_lg">
+        android:layout_height="match_parent">
 
-        <!-- Top Bar -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Loading indicator -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminateTint="@color/primary" />
 
-            <TextView
-                android:id="@+id/tv_avatar"
-                android:layout_width="@dimen/avatar_sm"
-                android:layout_height="@dimen/avatar_sm"
-                android:background="@drawable/bg_avatar_circle"
-                android:gravity="center"
-                android:text="U"
-                android:textColor="@color/primary"
-                android:fontFamily="@font/inter_semibold"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_md"
-                android:layout_weight="1"
-                android:text="FitAI"
-                android:textColor="@color/primary"
-                android:fontFamily="@font/montserrat_bold"
-                android:textSize="22sp" />
-
-            <ImageButton
-                android:id="@+id/btn_notification"
-                android:layout_width="@dimen/avatar_sm"
-                android:layout_height="@dimen/avatar_sm"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Thông báo"
-                android:src="@android:drawable/ic_popup_reminder"
-                app:tint="@color/on_surface_variant" />
-        </LinearLayout>
-
-        <!-- Greeting -->
-        <TextView
-            android:id="@+id/tv_greeting"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:text="Chào Bạn! 💪"
-            android:textAppearance="@style/TextStyle.HeadlineMd" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:text="@string/break_limits"
-            android:textAppearance="@style/TextStyle.BodyBase" />
-
-        <!-- Stats Grid -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <include
-                android:id="@+id/stat_weight"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/spacing_xs" />
-
-            <include
-                android:id="@+id/stat_bmi"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:layout_marginEnd="@dimen/spacing_xs" />
-
-            <include
-                android:id="@+id/stat_goal"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_xs" />
-        </LinearLayout>
-
-        <!-- AI Workout Card -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_ai_workout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            app:cardBackgroundColor="@color/surface_container"
-            app:cardCornerRadius="@dimen/radius_lg"
-            app:cardElevation="0dp">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -116,69 +30,179 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_lg">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚡ AI ĐỀ XUẤT"
-                    android:textAppearance="@style/TextStyle.LabelCaps"
-                    android:textColor="@color/primary" />
-
-                <TextView
-                    android:id="@+id/tv_workout_title"
+                <!-- Top Bar -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_sm"
-                    android:text="Upper Body Blast"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_avatar"
+                        android:layout_width="@dimen/avatar_sm"
+                        android:layout_height="@dimen/avatar_sm"
+                        android:background="@drawable/bg_avatar_circle"
+                        android:gravity="center"
+                        android:text="U"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/inter_semibold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_md"
+                        android:layout_weight="1"
+                        android:text="FitAI"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textSize="22sp" />
+
+                    <ImageButton
+                        android:id="@+id/btn_notification"
+                        android:layout_width="@dimen/avatar_sm"
+                        android:layout_height="@dimen/avatar_sm"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/notification"
+                        android:src="@drawable/ic_notification_bell"
+                        app:tint="@color/on_surface_variant" />
+                </LinearLayout>
+
+                <!-- Greeting -->
+                <TextView
+                    android:id="@+id/tv_greeting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
                     android:textAppearance="@style/TextStyle.HeadlineMd" />
 
                 <TextView
-                    android:id="@+id/tv_workout_subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_xs"
-                    android:text="6 bài • 45 phút • High Intensity"
+                    android:text="@string/break_limits"
                     android:textAppearance="@style/TextStyle.BodyBase" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_start_workout"
-                    style="@style/Widget.SmartGym.Button.Primary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
+                <!-- Stats Grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <include
+                        android:id="@+id/stat_weight"
+                        layout="@layout/item_stat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/spacing_xs" />
+
+                    <include
+                        android:id="@+id/stat_bmi"
+                        layout="@layout/item_stat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/spacing_xs"
+                        android:layout_marginEnd="@dimen/spacing_xs" />
+
+                    <include
+                        android:id="@+id/stat_goal"
+                        layout="@layout/item_stat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/spacing_xs" />
+                </LinearLayout>
+
+                <!-- AI Workout Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_ai_workout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    app:cardBackgroundColor="@color/surface_container"
+                    app:cardCornerRadius="@dimen/radius_lg"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_lg">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ai_suggestion_label"
+                            android:textAppearance="@style/TextStyle.LabelCaps"
+                            android:textColor="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/tv_workout_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:textAppearance="@style/TextStyle.HeadlineMd" />
+
+                        <TextView
+                            android:id="@+id/tv_workout_subtitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:textAppearance="@style/TextStyle.BodyBase" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_start_workout"
+                            style="@style/Widget.SmartGym.Button.Primary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="@dimen/spacing_md"
+                            android:text="@string/btn_start"
+                            app:icon="@drawable/ic_play_circle"
+                            app:iconGravity="textStart" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Weekly Plan Header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/weekly_plan"
+                        android:textAppearance="@style/TextStyle.BodyBold" />
+
+                    <TextView
+                        android:id="@+id/tv_view_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/view_all"
+                        android:textAppearance="@style/TextStyle.LabelCaps"
+                        android:textColor="@color/primary"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="@dimen/spacing_xs" />
+                </LinearLayout>
+
+                <!-- Weekly Plan List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_weekly_plan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_md"
-                    android:text="▶ Bắt đầu" />
+                    android:nestedScrollingEnabled="false" />
+
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </androidx.core.widget.NestedScrollView>
 
-        <!-- Weekly Plan Header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xl"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/weekly_plan"
-                android:textAppearance="@style/TextStyle.BodyBold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/view_all"
-                android:textAppearance="@style/TextStyle.LabelCaps"
-                android:textColor="@color/primary" />
-        </LinearLayout>
-
-        <!-- Weekly Plan List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_weekly_plan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:nestedScrollingEnabled="false" />
-
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

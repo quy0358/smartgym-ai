@@ -47,6 +47,13 @@
     <string name="stat_normal">Bình thường</string>
     <string name="unit_kg">kg</string>
     <string name="greeting_format">Chào %s! 💪</string>
+    <string name="notification">Thông báo</string>
+    <string name="ai_suggestion_label">⚡ AI ĐỀ XUẤT</string>
+    <string name="btn_start">Bắt đầu</string>
+    <string name="workout_subtitle_format">%1$d bài • %2$d phút • %3$s</string>
+    <string name="error_load_dashboard">Không thể tải dữ liệu. Kéo xuống để thử lại.</string>
+    <string name="error_load_weekly_plan">Không thể tải kế hoạch tuần.</string>
+    <string name="no_workout_today">Hôm nay không có bài tập. Hãy nghỉ ngơi! 🧘</string>
 
     <!-- Profile stat labels -->
     <string name="stat_workouts">BÀI TẬP</string>
