@@ -75,7 +75,6 @@ dependencies {
 
     // Hilt DI
     implementation(libs.hilt.android)
-    implementation(libs.firebase.database)
     ksp(libs.hilt.compiler)
 
     // Firebase
@@ -91,6 +90,7 @@ dependencies {
 
     // Gemini AI
     implementation(libs.generative.ai)
+    implementation(libs.guava)
 
     // Image Loading
     implementation(libs.glide)
