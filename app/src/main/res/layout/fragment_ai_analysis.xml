@@ -55,37 +55,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- AI Evaluation Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            style="@style/Widget.SmartGym.Card">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_lg">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚡ AI ĐÁNH GIÁ"
-                    android:textAppearance="@style/TextStyle.LabelCaps"
-                    android:textColor="@color/secondary" />
-
-                <TextView
-                    android:id="@+id/tv_ai_eval"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_sm"
-                    android:text="Bạn đang trên đường đạt mục tiêu! Tập trung vào bài tập compound để tối ưu kết quả. Tăng cường protein 1.6g/kg/ngày."
-                    android:textAppearance="@style/TextStyle.BodyBase"
-                    android:lineSpacingMultiplier="1.4" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
         <!-- Metrics Grid -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,13 +80,113 @@
                 android:layout_marginStart="@dimen/spacing_xs" />
         </LinearLayout>
 
-        <!-- Ask AI button -->
+        <!-- AI Assistant Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="🤖 AI Trợ lý"
+            android:textAppearance="@style/TextStyle.HeadlineLg" />
+
+        <!-- Generate Workout Plan Button -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_ask_ai"
+            android:id="@+id/btn_generate_workout"
             style="@style/Widget.SmartGym.Button.Primary"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:text="💪 Tạo kế hoạch tập" />
+
+        <!-- Form Analysis Section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xl"
-            android:text="🤖 Hỏi AI thêm" />
+            style="@style/Widget.SmartGym.Card">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ PHÂN TÍCH FORM"
+                    android:textAppearance="@style/TextStyle.LabelCaps"
+                    android:textColor="@color/secondary" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:hint="Tên bài tập"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_exercise_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textColor="@color/on_surface" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:hint="Mô tả cách bạn thực hiện..."
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_form_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:gravity="top"
+                        android:textColor="@color/on_surface" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_analyze_form"
+                    style="@style/Widget.SmartGym.Button.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:text="🔍 Phân tích Form" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:visibility="gone"
+            android:indeterminateTint="@color/primary" />
+
+        <!-- AI Response -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg"
+            style="@style/Widget.SmartGym.Card">
+
+            <TextView
+                android:id="@+id/tv_ai_response"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_lg"
+                android:textAppearance="@style/TextStyle.BodyBase"
+                android:textIsSelectable="true"
+                android:lineSpacingMultiplier="1.4"
+                android:visibility="gone" />
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
