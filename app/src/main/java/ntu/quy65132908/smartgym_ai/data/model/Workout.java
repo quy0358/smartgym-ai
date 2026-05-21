@@ -10,6 +10,7 @@ public class Workout {
     private int durationMinutes;
     private List<Exercise> exercises;
     private boolean isCompleted;
+    private int dayOfWeek; // 1=Monday...7=Sunday
 
     public Workout() {}
 
@@ -36,4 +37,7 @@ public class Workout {
     public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
     public void setExercises(List<Exercise> exercises) { this.exercises = exercises; }
     public void setCompleted(boolean completed) { isCompleted = completed; }
+
+    public int getDayOfWeek() { return dayOfWeek; }
+    public void setDayOfWeek(int dayOfWeek) { this.dayOfWeek = dayOfWeek; }
 }

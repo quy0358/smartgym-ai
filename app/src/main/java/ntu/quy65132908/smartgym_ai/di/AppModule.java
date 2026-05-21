@@ -11,7 +11,9 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.ProgressRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.WorkoutRepository;
 import ntu.quy65132908.smartgym_ai.util.GeminiKeyProvider;
 
 @Module
@@ -52,5 +54,17 @@ public class AppModule {
     @Singleton
     public GeminiKeyProvider provideGeminiKeyProvider() {
         return new GeminiKeyProvider();
+    }
+
+    @Provides
+    @Singleton
+    public WorkoutRepository provideWorkoutRepository(FirebaseFirestore firestore) {
+        return new WorkoutRepository(firestore);
+    }
+
+    @Provides
+    @Singleton
+    public ProgressRepository provideProgressRepository(FirebaseFirestore firestore) {
+        return new ProgressRepository(firestore);
     }
 }
