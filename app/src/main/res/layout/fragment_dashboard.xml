@@ -167,6 +167,53 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- Rest Day Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_rest_day"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/surface_container"
+                    app:cardCornerRadius="@dimen/radius_lg"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/spacing_lg">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🧘"
+                            android:textSize="36sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_md"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/rest_day_title"
+                                android:textAppearance="@style/TextStyle.BodyBold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_xs"
+                                android:text="@string/rest_day_subtitle"
+                                android:textAppearance="@style/TextStyle.BodyBase" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
                 <!-- Weekly Plan Header -->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -200,6 +247,47 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_md"
                     android:nestedScrollingEnabled="false" />
+
+                <!-- Empty State for Weekly Plan -->
+                <LinearLayout
+                    android:id="@+id/layout_empty_plan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_xl"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📋"
+                        android:textSize="48sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:text="@string/empty_plan_title"
+                        android:textAppearance="@style/TextStyle.BodyBold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:gravity="center"
+                        android:text="@string/empty_plan_subtitle"
+                        android:textAppearance="@style/TextStyle.BodyBase" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_create_plan"
+                        style="@style/Widget.SmartGym.Button.Outline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="@dimen/spacing_lg"
+                        android:text="@string/btn_create_plan" />
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

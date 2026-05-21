@@ -18,6 +18,8 @@
 
     <!-- Error -->
     <color name="error">#FFFF6B6B</color>
+    <!-- Warning (Orange) -->
+    <color name="warning">#FFFFB74D</color>
     <color name="on_error">#FF690005</color>
     <color name="error_container">#FF93000A</color>
     <color name="on_error_container">#FFFFB4AB</color>

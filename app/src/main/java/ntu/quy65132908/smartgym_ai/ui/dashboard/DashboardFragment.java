@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import ntu.quy65132908.smartgym_ai.R;
@@ -82,6 +85,13 @@ public class DashboardFragment extends Fragment {
                 bottomNav.setSelectedItemId(R.id.nav_workout);
             }
         });
+
+        binding.btnCreatePlan.setOnClickListener(v -> {
+            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_nav);
+            if (bottomNav != null) {
+                bottomNav.setSelectedItemId(R.id.nav_workout);
+            }
+        });
     }
 
     private void observeViewModel() {
@@ -100,12 +110,19 @@ public class DashboardFragment extends Fragment {
         viewModel.getBmiCategory().observe(getViewLifecycleOwner(), category ->
                 binding.statBmi.tvStatUnit.setText(category));
 
-        viewModel.getGoalWeight().observe(getViewLifecycleOwner(), goal ->
-                binding.statGoal.tvStatValue.setText(String.valueOf(goal)));
+        viewModel.getBmiColorRes().observe(getViewLifecycleOwner(), colorRes -> {
+            int color = ContextCompat.getColor(requireContext(), colorRes);
+            binding.statBmi.tvStatValue.setTextColor(color);
+            binding.statBmi.tvStatUnit.setTextColor(color);
+        });
+
+        viewModel.getGoalDisplay().observe(getViewLifecycleOwner(), display ->
+                binding.statGoal.tvStatValue.setText(display));
 
         viewModel.getAiRecommendation().observe(getViewLifecycleOwner(), workout -> {
             if (workout != null) {
                 binding.cardAiWorkout.setVisibility(View.VISIBLE);
+                binding.cardRestDay.setVisibility(View.GONE);
                 binding.tvWorkoutTitle.setText(workout.getTitle());
                 int exerciseCount = workout.getExercises() != null ? workout.getExercises().size() : 0;
                 binding.tvWorkoutSubtitle.setText(getString(
@@ -115,11 +132,18 @@ public class DashboardFragment extends Fragment {
                         workout.getIntensity() != null ? workout.getIntensity() : ""));
             } else {
                 binding.cardAiWorkout.setVisibility(View.GONE);
+                List<Workout> plan = viewModel.getWeeklyPlan().getValue();
+                boolean hasPlan = plan != null && !plan.isEmpty();
+                binding.cardRestDay.setVisibility(hasPlan ? View.VISIBLE : View.GONE);
             }
         });
 
-        viewModel.getWeeklyPlan().observe(getViewLifecycleOwner(), plan ->
-                weeklyPlanAdapter.submitList(plan));
+        viewModel.getWeeklyPlan().observe(getViewLifecycleOwner(), plan -> {
+            boolean isEmpty = plan == null || plan.isEmpty();
+            binding.rvWeeklyPlan.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+            binding.layoutEmptyPlan.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            weeklyPlanAdapter.submitList(plan);
+        });
 
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
             binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);

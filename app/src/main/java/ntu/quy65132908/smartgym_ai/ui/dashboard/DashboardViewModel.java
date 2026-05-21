@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
@@ -35,6 +36,8 @@ public class DashboardViewModel extends ViewModel {
     private final MutableLiveData<Float> bmi = new MutableLiveData<>(0f);
     private final MutableLiveData<String> bmiCategory = new MutableLiveData<>("");
     private final MutableLiveData<Integer> goalWeight = new MutableLiveData<>(0);
+    private final MutableLiveData<Integer> bmiColorRes = new MutableLiveData<>(R.color.on_surface_variant);
+    private final MutableLiveData<String> goalDisplay = new MutableLiveData<>("0");
 
     // AI Recommendation
     private final MutableLiveData<Workout> aiRecommendation = new MutableLiveData<>(null);
@@ -54,6 +57,8 @@ public class DashboardViewModel extends ViewModel {
     public LiveData<Float> getBmi() { return bmi; }
     public LiveData<String> getBmiCategory() { return bmiCategory; }
     public LiveData<Integer> getGoalWeight() { return goalWeight; }
+    public LiveData<Integer> getBmiColorRes() { return bmiColorRes; }
+    public LiveData<String> getGoalDisplay() { return goalDisplay; }
     public LiveData<Workout> getAiRecommendation() { return aiRecommendation; }
     public LiveData<List<Workout>> getWeeklyPlan() { return weeklyPlan; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
@@ -95,6 +100,8 @@ public class DashboardViewModel extends ViewModel {
                 bmi.postValue(user.getBmi() != null ? user.getBmi() : 0f);
                 bmiCategory.postValue(user.getBmiCategory() != null ? user.getBmiCategory() : "");
                 goalWeight.postValue(parseGoalWeight(user.getGoal()));
+                goalDisplay.postValue(formatGoalDisplay(parseGoalWeight(user.getGoal())));
+                bmiColorRes.postValue(computeBmiColor(user.getBmi() != null ? user.getBmi() : 0f));
 
                 loadWeeklyPlan(uid);
             }
@@ -134,6 +141,18 @@ public class DashboardViewModel extends ViewModel {
             return "U";
         }
         return String.valueOf(displayName.trim().charAt(0)).toUpperCase();
+    }
+
+    int computeBmiColor(float bmiValue) {
+        if (bmiValue < 18.5f) return R.color.tertiary;
+        if (bmiValue < 25.0f) return R.color.primary;
+        if (bmiValue < 30.0f) return R.color.warning;
+        return R.color.error;
+    }
+
+    String formatGoalDisplay(int goal) {
+        if (goal == 0) return "0";
+        return "\u2212" + Math.abs(goal);
     }
 
     int parseGoalWeight(String goal) {

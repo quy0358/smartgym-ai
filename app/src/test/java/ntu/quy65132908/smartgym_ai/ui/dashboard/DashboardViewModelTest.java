@@ -206,4 +206,74 @@ public class DashboardViewModelTest {
         assertEquals(75, viewModel.parseGoalWeight("Tăng cân lên 75"));
         assertEquals(0, viewModel.parseGoalWeight("no numbers here"));
     }
+
+    @Test
+    public void computeBmiColor_underweight_returnsTertiary() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals(ntu.quy65132908.smartgym_ai.R.color.tertiary, viewModel.computeBmiColor(17.5f));
+    }
+
+    @Test
+    public void computeBmiColor_normal_returnsPrimary() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals(ntu.quy65132908.smartgym_ai.R.color.primary, viewModel.computeBmiColor(22.0f));
+    }
+
+    @Test
+    public void computeBmiColor_boundaryNormal_returnsPrimary() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals(ntu.quy65132908.smartgym_ai.R.color.primary, viewModel.computeBmiColor(18.5f));
+    }
+
+    @Test
+    public void computeBmiColor_overweight_returnsWarning() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals(ntu.quy65132908.smartgym_ai.R.color.warning, viewModel.computeBmiColor(27.0f));
+    }
+
+    @Test
+    public void computeBmiColor_boundaryOverweight_returnsWarning() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals(ntu.quy65132908.smartgym_ai.R.color.warning, viewModel.computeBmiColor(25.0f));
+    }
+
+    @Test
+    public void computeBmiColor_obese_returnsError() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals(ntu.quy65132908.smartgym_ai.R.color.error, viewModel.computeBmiColor(32.0f));
+    }
+
+    @Test
+    public void computeBmiColor_boundaryObese_returnsError() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals(ntu.quy65132908.smartgym_ai.R.color.error, viewModel.computeBmiColor(30.0f));
+    }
+
+    @Test
+    public void formatGoalDisplay_positiveGoal_showsMinusPrefix() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals("\u22126", viewModel.formatGoalDisplay(6));
+    }
+
+    @Test
+    public void formatGoalDisplay_zeroGoal_showsZero() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals("0", viewModel.formatGoalDisplay(0));
+    }
+
+    @Test
+    public void formatGoalDisplay_negativeGoal_showsMinusAbsolute() {
+        DashboardViewModel viewModel = createViewModelWithUser(
+                new User("test-uid", "Test", "test@email.com"), Collections.emptyList());
+        assertEquals("\u22123", viewModel.formatGoalDisplay(-3));
+    }
 }

@@ -80,4 +80,11 @@
     <string name="profile_saved">Đã lưu!</string>
     <string name="profile_name_empty">Tên không được để trống</string>
     <string name="profile_invalid_number">Số không hợp lệ</string>
+
+    <!-- Dashboard empty states -->
+    <string name="empty_plan_title">Chưa có kế hoạch tuần</string>
+    <string name="empty_plan_subtitle">Hãy tạo kế hoạch tập luyện để bắt đầu hành trình</string>
+    <string name="btn_create_plan">Tạo kế hoạch</string>
+    <string name="rest_day_title">Hôm nay là ngày nghỉ!</string>
+    <string name="rest_day_subtitle">Hãy nghỉ ngơi để cơ thể phục hồi 💪</string>
 </resources>
