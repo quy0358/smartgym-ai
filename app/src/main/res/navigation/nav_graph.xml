@@ -88,4 +88,11 @@
         android:name="ntu.quy65132908.smartgym_ai.ui.analysis.AIAnalysisFragment"
         android:label="@string/ai_analysis"
         tools:layout="@layout/fragment_ai_analysis" />
+
+    <!-- Global actions -->
+    <action
+        android:id="@+id/action_global_to_login"
+        app:destination="@id/nav_login"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 </navigation>

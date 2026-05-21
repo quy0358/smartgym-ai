@@ -77,9 +77,9 @@ public class ProfileFragment extends Fragment {
         );
 
         viewModel.getSignedOut().observe(getViewLifecycleOwner(), signedOut -> {
-            if (signedOut) {
+            if (signedOut != null && signedOut) {
                 Navigation.findNavController(requireView())
-                        .navigate(R.id.nav_login);
+                        .navigate(R.id.action_global_to_login);
             }
         });
     }
