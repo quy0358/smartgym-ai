@@ -51,15 +51,15 @@ public class User {
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("uid", uid);
-        map.put("displayName", displayName);
-        map.put("email", email);
-        map.put("photoUrl", photoUrl);
-        map.put("weight", weight);
-        map.put("height", height);
-        map.put("bmi", bmi);
-        map.put("bmiCategory", bmiCategory);
-        map.put("goal", goal);
+        if (uid != null) map.put("uid", uid);
+        if (displayName != null) map.put("displayName", displayName);
+        if (email != null) map.put("email", email);
+        if (photoUrl != null) map.put("photoUrl", photoUrl);
+        if (weight != null) map.put("weight", weight);
+        if (height != null) map.put("height", height);
+        if (bmi != null) map.put("bmi", bmi);
+        if (bmiCategory != null) map.put("bmiCategory", bmiCategory);
+        if (goal != null) map.put("goal", goal);
         map.put("createdAt", createdAt);
         return map;
     }

@@ -19,3 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Firebase model classes (reflection-based deserialization)
+-keep class ntu.quy65132908.smartgym_ai.data.model.** { *; }
+
+# Firebase
+-keep class com.google.firebase.** { *; }
+
+# Gemini AI SDK
+-keep class com.google.ai.** { *; }
+
+# Glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep class * extends com.bumptech.glide.module.AppGlideModule { <init>(...); }
