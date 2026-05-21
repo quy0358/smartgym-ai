@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import ntu.quy65132908.smartgym_ai.util.SingleLiveEvent;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import javax.inject.Inject;
@@ -20,7 +22,7 @@ public class ProfileViewModel extends ViewModel {
 
     private final MutableLiveData<String> displayName = new MutableLiveData<>("Người dùng");
     private final MutableLiveData<String> email = new MutableLiveData<>("");
-    private final MutableLiveData<Boolean> signedOut = new MutableLiveData<>(false);
+    private final SingleLiveEvent<Boolean> signedOut = new SingleLiveEvent<>();
 
     public LiveData<String> getDisplayName() { return displayName; }
     public LiveData<String> getEmail() { return email; }

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "000000000000",
-    "project_id": "smartgym-ai-placeholder",
-    "storage_bucket": "smartgym-ai-placeholder.appspot.com"
+    "project_number": "644529455872",
+    "project_id": "smartgym-ai-e44cc",
+    "storage_bucket": "smartgym-ai-e44cc.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
+        "mobilesdk_app_id": "1:644529455872:android:50648c89b6d717e4b9a9e5",
         "android_client_info": {
           "package_name": "ntu.quy65132908.smartgym_ai"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSy_PLACEHOLDER_REPLACE_ME"
+          "current_key": "AIzaSyCTlGsfsZvP241tadBOrgtYp4Qfp3425HM"
         }
       ],
       "services": {

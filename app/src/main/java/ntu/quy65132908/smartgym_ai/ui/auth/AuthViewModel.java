@@ -1,9 +1,19 @@
 package ntu.quy65132908.smartgym_ai.ui.auth;
 
+import android.util.Log;
+import android.util.Patterns;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import ntu.quy65132908.smartgym_ai.util.SingleLiveEvent;
+
+import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 import javax.inject.Inject;
@@ -17,8 +27,8 @@ public class AuthViewModel extends ViewModel {
     private final AuthRepository authRepository;
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private final MutableLiveData<FirebaseUser> authSuccess = new MutableLiveData<>();
+    private final SingleLiveEvent<String> errorMessage = new SingleLiveEvent<>();
+    private final SingleLiveEvent<FirebaseUser> authSuccess = new SingleLiveEvent<>();
 
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
@@ -38,6 +48,10 @@ public class AuthViewModel extends ViewModel {
             errorMessage.setValue("Vui lòng nhập đầy đủ thông tin");
             return;
         }
+        if (!isValidEmail(email)) {
+            errorMessage.setValue("Email không hợp lệ");
+            return;
+        }
         isLoading.setValue(true);
         errorMessage.setValue(null);
 
@@ -51,7 +65,7 @@ public class AuthViewModel extends ViewModel {
             @Override
             public void onError(Exception e) {
                 isLoading.postValue(false);
-                errorMessage.postValue("Đăng nhập thất bại: " + e.getMessage());
+                errorMessage.postValue(mapFirebaseError(e));
             }
         });
     }
@@ -59,6 +73,10 @@ public class AuthViewModel extends ViewModel {
     public void signUp(String name, String email, String password) {
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             errorMessage.setValue("Vui lòng nhập đầy đủ thông tin");
+            return;
+        }
+        if (!isValidEmail(email)) {
+            errorMessage.setValue("Email không hợp lệ");
             return;
         }
         if (password.length() < 6) {
@@ -78,8 +96,30 @@ public class AuthViewModel extends ViewModel {
             @Override
             public void onError(Exception e) {
                 isLoading.postValue(false);
-                errorMessage.postValue("Đăng ký thất bại: " + e.getMessage());
+                errorMessage.postValue(mapFirebaseError(e));
             }
         });
+    }
+
+    private boolean isValidEmail(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private String mapFirebaseError(Exception e) {
+        Log.e("AuthViewModel", "Auth error: " + e.getClass().getSimpleName() + " - " + e.getMessage(), e);
+
+        if (e instanceof FirebaseAuthInvalidUserException) {
+            return "Tài khoản không tồn tại";
+        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+            return "Email hoặc mật khẩu không đúng";
+        } else if (e instanceof FirebaseAuthUserCollisionException) {
+            return "Email này đã được sử dụng";
+        } else if (e instanceof FirebaseAuthWeakPasswordException) {
+            return "Mật khẩu quá yếu";
+        } else if (e instanceof FirebaseNetworkException) {
+            return "Không có kết nối mạng. Vui lòng kiểm tra lại.";
+        } else {
+            return "Đã xảy ra lỗi: " + e.getMessage();
+        }
     }
 }
