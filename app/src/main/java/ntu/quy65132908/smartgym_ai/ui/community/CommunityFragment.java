@@ -43,7 +43,14 @@ public class CommunityFragment extends Fragment {
         binding.rvPosts.setAdapter(adapter);
 
         viewModel.getPosts().observe(getViewLifecycleOwner(), posts -> {
-            if (posts != null) adapter.submitList(posts);
+            binding.progressBar.setVisibility(View.GONE);
+            if (posts != null && !posts.isEmpty()) {
+                adapter.submitList(posts);
+                binding.tvEmpty.setVisibility(View.GONE);
+                binding.swipeRefresh.setVisibility(View.VISIBLE);
+            } else {
+                binding.tvEmpty.setVisibility(View.VISIBLE);
+            }
         });
 
         // Pull-to-refresh
@@ -53,7 +60,13 @@ public class CommunityFragment extends Fragment {
         });
 
         viewModel.getIsRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
-            if (refreshing != null) binding.swipeRefresh.setRefreshing(refreshing);
+            if (refreshing != null) {
+                binding.swipeRefresh.setRefreshing(refreshing);
+                if (refreshing) {
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.tvEmpty.setVisibility(View.GONE);
+                }
+            }
         });
 
         binding.fabPost.setOnClickListener(v ->

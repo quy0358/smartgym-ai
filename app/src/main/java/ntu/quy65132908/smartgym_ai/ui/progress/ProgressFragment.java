@@ -60,6 +60,12 @@ public class ProgressFragment extends Fragment {
     }
 
     private void observeViewModel() {
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
+            if (loading != null) {
+                binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+            }
+        });
+
         viewModel.getEntries().observe(getViewLifecycleOwner(), entries -> {
             if (entries != null && !entries.isEmpty()) {
                 TextView wValue = binding.statWorkouts.getRoot().findViewById(R.id.tv_stat_value);
