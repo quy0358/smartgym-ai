@@ -12,6 +12,7 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
+import ntu.quy65132908.smartgym_ai.util.GeminiKeyProvider;
 
 @Module
 @InstallIn(SingletonComponent.class)
@@ -45,5 +46,11 @@ public class AppModule {
     @Singleton
     public UserRepository provideUserRepository(FirebaseFirestore firestore) {
         return new UserRepository(firestore);
+    }
+
+    @Provides
+    @Singleton
+    public GeminiKeyProvider provideGeminiKeyProvider() {
+        return new GeminiKeyProvider();
     }
 }

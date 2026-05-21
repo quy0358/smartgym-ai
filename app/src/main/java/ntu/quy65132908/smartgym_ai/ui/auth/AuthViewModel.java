@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import ntu.quy65132908.smartgym_ai.util.InputValidator;
 import ntu.quy65132908.smartgym_ai.util.SingleLiveEvent;
 
 import com.google.firebase.FirebaseNetworkException;
@@ -71,7 +72,8 @@ public class AuthViewModel extends ViewModel {
     }
 
     public void signUp(String name, String email, String password) {
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        String sanitizedName = InputValidator.sanitizeName(name);
+        if (!InputValidator.isValidName(sanitizedName) || email.isEmpty() || password.isEmpty()) {
             errorMessage.setValue("Vui lòng nhập đầy đủ thông tin");
             return;
         }
@@ -86,7 +88,7 @@ public class AuthViewModel extends ViewModel {
         isLoading.setValue(true);
         errorMessage.setValue(null);
 
-        authRepository.signUp(name, email, password, new AuthRepository.AuthCallback() {
+        authRepository.signUp(sanitizedName, email, password, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess(FirebaseUser user) {
                 isLoading.postValue(false);
