@@ -46,9 +46,9 @@ public class CommunityFragment extends Fragment {
             if (posts != null) adapter.submitList(posts);
         });
 
-        binding.fabPost.setOnClickListener(v -> {
-            // TODO: Open create post dialog (Task 11)
-        });
+        binding.fabPost.setOnClickListener(v ->
+            new CreatePostBottomSheet().show(getChildFragmentManager(), "create_post")
+        );
     }
 
     @Override
