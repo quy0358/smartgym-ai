@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_stat_card_rounded"
     android:gravity="center_horizontal"
+    android:minHeight="112dp"
     android:orientation="vertical"
     android:padding="@dimen/spacing_lg">
 
     <TextView
         android:id="@+id/tv_stat_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Label"
-        android:textAppearance="@style/TextStyle.LabelCaps" />
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textAppearance="@style/TextStyle.LabelCaps"
+        tools:text="BMI" />
 
     <TextView
         android:id="@+id/tv_stat_value"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_sm"
-        android:text="0"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
         android:textAppearance="@style/TextStyle.HeadlineMd"
-        android:textColor="@color/primary" />
+        android:textColor="@color/on_surface"
+        tools:text="22.5" />
 
     <TextView
         android:id="@+id/tv_stat_unit"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_xs"
-        android:text="unit"
-        android:textAppearance="@style/TextStyle.LabelCaps" />
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textAppearance="@style/TextStyle.LabelCaps"
+        tools:text="kg" />
 </LinearLayout>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:implementationMode="compatible"
+        app:layout_constraintBottom_toTopOf="@id/pose_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:scaleType="fillCenter" />
+
+    <ntu.quy65132908.smartgym_ai.ui.pose.PoseOverlayView
+        android:id="@+id/pose_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/preview_view"
+        app:layout_constraintEnd_toEndOf="@id/preview_view"
+        app:layout_constraintStart_toStartOf="@id/preview_view"
+        app:layout_constraintTop_toTopOf="@id/preview_view" />
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#66000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/white"
+        app:title="@string/pose_trainer_title"
+        app:titleTextColor="@color/white" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_switch_camera"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/pose_switch_camera"
+        app:backgroundTint="@color/surface_container_high"
+        app:icon="@drawable/ic_camera_switch"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="@id/toolbar"
+        app:layout_constraintTop_toTopOf="@id/toolbar" />
+
+    <LinearLayout
+        android:id="@+id/layout_permission"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lg"
+        android:background="@drawable/bg_pose_chip"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lg"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/preview_view"
+        app:layout_constraintEnd_toEndOf="@id/preview_view"
+        app:layout_constraintStart_toStartOf="@id/preview_view"
+        app:layout_constraintTop_toTopOf="@id/preview_view"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/pose_camera_permission_title"
+            android:textAppearance="@style/TextStyle.BodyBold"
+            android:textColor="@color/on_surface" />
+
+        <TextView
+            android:id="@+id/tv_permission_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:gravity="center"
+            android:text="@string/pose_camera_permission_message"
+            android:textAppearance="@style/TextStyle.BodyBase" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_grant_camera"
+            style="@style/Widget.SmartGym.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:minHeight="48dp"
+            android:text="@string/pose_grant_camera" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/primary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/preview_view"
+        app:layout_constraintEnd_toEndOf="@id/preview_view"
+        app:layout_constraintStart_toStartOf="@id/preview_view"
+        app:layout_constraintTop_toTopOf="@id/preview_view" />
+
+    <LinearLayout
+        android:id="@+id/pose_panel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pose_panel"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tv_exercise_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextStyle.LabelCaps"
+            android:textColor="@color/primary"
+            tools:text="Chống đẩy" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/group_pose_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            app:checkedButton="@id/btn_pose_push_up"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pose_push_up"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/pose_type_push_up" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pose_squat"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/pose_type_squat" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pose_plank"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/pose_type_plank" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_voice_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:checked="true"
+            android:text="@string/pose_voice_feedback"
+            android:textAppearance="@style/TextStyle.BodyBase"
+            android:textColor="@color/on_surface_variant" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_marginEnd="@dimen/spacing_xs"
+                android:layout_weight="1"
+                android:background="@drawable/bg_pose_chip"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_sm">
+
+                <TextView
+                    android:id="@+id/tv_primary_metric_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pose_reps_label"
+                    android:textAppearance="@style/TextStyle.LabelCaps" />
+
+                <TextView
+                    android:id="@+id/tv_reps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="@style/TextStyle.HeadlineMd"
+                    android:textColor="@color/on_surface"
+                    tools:text="0 lần" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_weight="1"
+                android:background="@drawable/bg_pose_chip"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pose_quality_label"
+                    android:textAppearance="@style/TextStyle.LabelCaps" />
+
+                <TextView
+                    android:id="@+id/tv_quality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="@style/TextStyle.HeadlineMd"
+                    android:textColor="@color/on_surface"
+                    tools:text="--%" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_feedback_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:text="@string/pose_feedback_label"
+            android:textAppearance="@style/TextStyle.LabelCaps" />
+
+        <TextView
+            android:id="@+id/tv_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:minHeight="44dp"
+            android:text="@string/pose_feedback_ready"
+            android:textAppearance="@style/TextStyle.BodyBold"
+            android:textColor="@color/on_surface" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

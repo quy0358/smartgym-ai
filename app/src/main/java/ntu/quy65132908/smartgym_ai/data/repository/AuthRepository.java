@@ -36,7 +36,14 @@ public class AuthRepository {
 
     public void signIn(String email, String password, AuthCallback callback) {
         auth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(result -> callback.onSuccess(result.getUser()))
+                .addOnSuccessListener(result -> {
+                    FirebaseUser user = result.getUser();
+                    if (user != null) {
+                        callback.onSuccess(user);
+                    } else {
+                        callback.onError(new IllegalStateException("Firebase sign-in returned no user"));
+                    }
+                })
                 .addOnFailureListener(callback::onError);
     }
 
@@ -52,6 +59,8 @@ public class AuthRepository {
                                 .set(user.toMap())
                                 .addOnSuccessListener(v -> callback.onSuccess(firebaseUser))
                                 .addOnFailureListener(callback::onError);
+                    } else {
+                        callback.onError(new IllegalStateException("Firebase sign-up returned no user"));
                     }
                 })
                 .addOnFailureListener(callback::onError);
@@ -71,12 +80,20 @@ public class AuthRepository {
                             firestore.collection("users").document(user.getUid())
                                     .set(newUser.toMap())
                                     .addOnSuccessListener(v -> callback.onSuccess(user))
-                                    .addOnFailureListener(e -> callback.onSuccess(user)); // Still succeed even if profile creation fails
+                                    .addOnFailureListener(callback::onError);
                         } else {
                             callback.onSuccess(user);
                         }
+                    } else {
+                        callback.onError(new IllegalStateException("Google sign-in returned no user"));
                     }
                 })
+                .addOnFailureListener(callback::onError);
+    }
+
+    public void sendPasswordResetEmail(String email, SimpleCallback callback) {
+        auth.sendPasswordResetEmail(email)
+                .addOnSuccessListener(v -> callback.onSuccess())
                 .addOnFailureListener(callback::onError);
     }
 
@@ -86,6 +103,11 @@ public class AuthRepository {
 
     public interface AuthCallback {
         void onSuccess(FirebaseUser user);
+        void onError(Exception e);
+    }
+
+    public interface SimpleCallback {
+        void onSuccess();
         void onError(Exception e);
     }
 }

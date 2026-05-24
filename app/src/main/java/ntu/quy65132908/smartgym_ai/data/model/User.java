@@ -8,6 +8,8 @@ public class User {
     private String displayName;
     private String email;
     private String photoUrl;
+    private String beforePhotoUrl;
+    private String afterPhotoUrl;
     private Float weight;
     private Float height;
     private Float bmi;
@@ -30,6 +32,8 @@ public class User {
     public String getDisplayName() { return displayName != null ? displayName : ""; }
     public String getEmail() { return email != null ? email : ""; }
     public String getPhotoUrl() { return photoUrl; }
+    public String getBeforePhotoUrl() { return beforePhotoUrl; }
+    public String getAfterPhotoUrl() { return afterPhotoUrl; }
     public Float getWeight() { return weight; }
     public Float getHeight() { return height; }
     public Float getBmi() { return bmi; }
@@ -42,6 +46,8 @@ public class User {
     public void setDisplayName(String displayName) { this.displayName = displayName; }
     public void setEmail(String email) { this.email = email; }
     public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
+    public void setBeforePhotoUrl(String beforePhotoUrl) { this.beforePhotoUrl = beforePhotoUrl; }
+    public void setAfterPhotoUrl(String afterPhotoUrl) { this.afterPhotoUrl = afterPhotoUrl; }
     public void setWeight(Float weight) { this.weight = weight; }
     public void setHeight(Float height) { this.height = height; }
     public void setBmi(Float bmi) { this.bmi = bmi; }
@@ -55,6 +61,8 @@ public class User {
         if (displayName != null) map.put("displayName", displayName);
         if (email != null) map.put("email", email);
         if (photoUrl != null) map.put("photoUrl", photoUrl);
+        if (beforePhotoUrl != null) map.put("beforePhotoUrl", beforePhotoUrl);
+        if (afterPhotoUrl != null) map.put("afterPhotoUrl", afterPhotoUrl);
         if (weight != null) map.put("weight", weight);
         if (height != null) map.put("height", height);
         if (bmi != null) map.put("bmi", bmi);

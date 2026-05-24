@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/background"
+            android:title="@string/wellness_title"
+            app:navigationContentDescription="@string/action_back"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:titleTextColor="@color/on_background" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/spacing_xl"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lg">
+
+                <androidx.cardview.widget.CardView
+                    style="@style/Widget.SmartGym.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_lg">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wellness_reminder_title"
+                            android:textAppearance="@style/TextStyle.BodyBold" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_reminder_title"
+                            style="@style/Widget.SmartGym.TextField"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_md"
+                            android:hint="@string/wellness_reminder_name_hint">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_reminder_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:maxLength="80"
+                                android:text="@string/wellness_default_reminder"
+                                android:textColor="@color/on_surface" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_reminder_time"
+                            style="@style/Widget.SmartGym.TextField"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:hint="@string/wellness_reminder_time_hint"
+                            app:endIconContentDescription="@string/wellness_pick_time"
+                            app:endIconDrawable="@drawable/ic_notification_bell"
+                            app:endIconMode="custom">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_reminder_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:focusable="false"
+                                android:inputType="none"
+                                android:text="@string/wellness_default_reminder_time"
+                                android:textColor="@color/on_surface" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_reminder_enabled"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:checked="true"
+                            android:text="@string/wellness_reminder_enabled" />
+
+                        <TextView
+                            android:id="@+id/tv_reminder_days_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_md"
+                            android:text="@string/wellness_reminder_days"
+                            android:textAppearance="@style/TextStyle.BodyBase" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:scrollbars="none">
+
+                            <com.google.android.material.button.MaterialButtonToggleGroup
+                                android:id="@+id/toggle_reminder_days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:selectionRequired="false"
+                                app:singleSelection="false">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_day_mon"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="48dp"
+                                    android:text="@string/day_monday_short" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_day_tue"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="48dp"
+                                    android:text="@string/day_tuesday_short" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_day_wed"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="48dp"
+                                    android:text="@string/day_wednesday_short" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_day_thu"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="48dp"
+                                    android:text="@string/day_thursday_short" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_day_fri"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="48dp"
+                                    android:text="@string/day_friday_short" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_day_sat"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="48dp"
+                                    android:text="@string/day_saturday_short" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_day_sun"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="48dp"
+                                    android:text="@string/day_sunday_short" />
+                            </com.google.android.material.button.MaterialButtonToggleGroup>
+                        </HorizontalScrollView>
+
+                        <TextView
+                            android:id="@+id/tv_reminder_days_error"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:textAppearance="@style/TextStyle.BodyBase"
+                            android:textColor="@color/error"
+                            android:visibility="gone" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_save_reminder"
+                            style="@style/Widget.SmartGym.Button.Primary"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_marginTop="@dimen/spacing_md"
+                            android:text="@string/wellness_save_reminder" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    style="@style/Widget.SmartGym.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_lg">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wellness_injury_title"
+                            android:textAppearance="@style/TextStyle.BodyBold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:text="@string/wellness_injury_subtitle"
+                            android:textAppearance="@style/TextStyle.BodyBase" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:text="@string/wellness_injury_safety_note"
+                            android:textAppearance="@style/TextStyle.BodyBase"
+                            android:textColor="@color/warning" />
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/cb_knee"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:text="@string/wellness_knee" />
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/cb_shoulder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wellness_shoulder" />
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/cb_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wellness_back" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_injury_notes"
+                            style="@style/Widget.SmartGym.TextField"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:hint="@string/wellness_injury_notes_hint">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_injury_notes"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textMultiLine"
+                                android:maxLength="500"
+                                android:maxLines="3"
+                                android:textColor="@color/on_surface" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_save_injury_profile"
+                            style="@style/Widget.SmartGym.Button.Outline"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_marginTop="@dimen/spacing_md"
+                            android:text="@string/wellness_save_injury" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:text="@string/wellness_challenges"
+                    android:textAppearance="@style/TextStyle.BodyBold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_challenges"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/ai_loading"
+        android:indeterminateTint="@color/primary"
+        android:visibility="gone" />
+</FrameLayout>

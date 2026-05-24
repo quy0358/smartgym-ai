@@ -6,9 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Calendar;
+import java.text.Normalizer;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,54 +17,58 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import ntu.quy65132908.smartgym_ai.R;
+import ntu.quy65132908.smartgym_ai.data.model.User;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.WorkoutRepository;
+import ntu.quy65132908.smartgym_ai.util.DateUtils;
 import ntu.quy65132908.smartgym_ai.util.SingleLiveEvent;
 
+/**
+ * ViewModel for the Dashboard Home tab.
+ *
+ * Data flow:
+ * startLoad() → [UserRepository.getUser]
+ *   → loadWeeklyPlan()
+ *   → [WorkoutRepository.getWeeklyPlan]
+ *   → publish a single DashboardUiState
+ * Profile load errors fall back to default profile data so the weekly plan can still render.
+ *
+ * Design decisions:
+ * - Constructor-time loading: intentional, ViewModel survives config changes
+ * - Single UI state: keeps the today card, plan, profile and loading flags in sync
+ * - SingleLiveEvent for errors: acceptable loss if Fragment is backgrounded
+ * - Request generation: stale async callbacks from older loads are ignored
+ * - Refresh cooldown: 5s minimum between refreshes to prevent Firestore quota waste
+ */
 @HiltViewModel
 public class DashboardViewModel extends ViewModel {
+
+    private static final Pattern GOAL_NUMBER_PATTERN = Pattern.compile("[-+]?\\d+");
+    private static final String PLACEHOLDER = "--";
+    private static final String UNICODE_MINUS = "\u2212";
+    private static final long REFRESH_COOLDOWN_MS = 5000; // 5 seconds
 
     private final AuthRepository authRepository;
     private final UserRepository userRepository;
     private final WorkoutRepository workoutRepository;
 
-    // User profile data
-    private final MutableLiveData<String> userName = new MutableLiveData<>("Bạn");
-    private final MutableLiveData<String> avatarLetter = new MutableLiveData<>("U");
-    private final MutableLiveData<Integer> weight = new MutableLiveData<>(0);
-    private final MutableLiveData<Float> bmi = new MutableLiveData<>(0f);
-    private final MutableLiveData<String> bmiCategory = new MutableLiveData<>("");
-    private final MutableLiveData<Integer> goalWeight = new MutableLiveData<>(0);
-    private final MutableLiveData<Integer> bmiColorRes = new MutableLiveData<>(R.color.on_surface_variant);
-    private final MutableLiveData<String> goalDisplay = new MutableLiveData<>("0");
+    private final MutableLiveData<DashboardUiState> uiState = new MutableLiveData<>(DashboardUiState.initial());
+    private final SingleLiveEvent<DashboardError> errorEvent = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> requireLoginEvent = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> refreshSuccessEvent = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> refreshThrottledEvent = new SingleLiveEvent<>();
 
-    // AI Recommendation
-    private final MutableLiveData<Workout> aiRecommendation = new MutableLiveData<>(null);
+    private long lastRefreshTime = 0;
+    private boolean isLoadInProgress = false;
+    private int loadGeneration = 0;
 
-    // Weekly Plan
-    private final MutableLiveData<List<Workout>> weeklyPlan = new MutableLiveData<>(Collections.emptyList());
-
-    // UI State
-    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(true);
-    private final MutableLiveData<Boolean> isRefreshing = new MutableLiveData<>(false);
-    private final SingleLiveEvent<String> errorMessage = new SingleLiveEvent<>();
-
-    // Public getters
-    public LiveData<String> getUserName() { return userName; }
-    public LiveData<String> getAvatarLetter() { return avatarLetter; }
-    public LiveData<Integer> getWeight() { return weight; }
-    public LiveData<Float> getBmi() { return bmi; }
-    public LiveData<String> getBmiCategory() { return bmiCategory; }
-    public LiveData<Integer> getGoalWeight() { return goalWeight; }
-    public LiveData<Integer> getBmiColorRes() { return bmiColorRes; }
-    public LiveData<String> getGoalDisplay() { return goalDisplay; }
-    public LiveData<Workout> getAiRecommendation() { return aiRecommendation; }
-    public LiveData<List<Workout>> getWeeklyPlan() { return weeklyPlan; }
-    public LiveData<Boolean> getIsLoading() { return isLoading; }
-    public LiveData<Boolean> getIsRefreshing() { return isRefreshing; }
-    public LiveData<String> getErrorMessage() { return errorMessage; }
+    public LiveData<DashboardUiState> getUiState() { return uiState; }
+    public LiveData<DashboardError> getErrorEvent() { return errorEvent; }
+    public LiveData<Boolean> getRequireLoginEvent() { return requireLoginEvent; }
+    public LiveData<Boolean> getRefreshSuccessEvent() { return refreshSuccessEvent; }
+    public LiveData<Boolean> getRefreshThrottledEvent() { return refreshThrottledEvent; }
 
     @Inject
     public DashboardViewModel(AuthRepository authRepository,
@@ -72,19 +77,35 @@ public class DashboardViewModel extends ViewModel {
         this.authRepository = authRepository;
         this.userRepository = userRepository;
         this.workoutRepository = workoutRepository;
-        loadUserData();
+
+        startLoad(false);
     }
 
     public void refresh() {
-        isRefreshing.setValue(true);
-        loadUserData();
+        long now = System.currentTimeMillis();
+        DashboardUiState current = currentState();
+        if (now - lastRefreshTime < REFRESH_COOLDOWN_MS) {
+            if (!current.isRefreshing()) {
+                publishState(copyState(current, null, false, null));
+            }
+            refreshThrottledEvent.setValue(true);
+            return;
+        }
+        lastRefreshTime = now;
+        startLoad(true);
     }
 
-    private void loadUserData() {
+    private void startLoad(boolean refresh) {
+        isLoadInProgress = true;
+        int generation = ++loadGeneration;
+        DashboardUiState current = currentState();
+        publishState(copyState(current, current.isInitialLoading() && !hasDashboardData(current), refresh, null));
+
         FirebaseUser currentUser = authRepository.getCurrentUser();
         if (currentUser == null) {
-            isLoading.setValue(false);
-            isRefreshing.setValue(false);
+            publishState(copyState(currentState(), false, false, null));
+            isLoadInProgress = false;
+            requireLoginEvent.setValue(true);
             return;
         }
 
@@ -92,55 +113,180 @@ public class DashboardViewModel extends ViewModel {
 
         userRepository.getUser(uid, new UserRepository.UserCallback() {
             @Override
-            public void onSuccess(ntu.quy65132908.smartgym_ai.data.model.User user) {
-                String name = user.getDisplayName();
-                userName.postValue(name != null && !name.isEmpty() ? name : "Bạn");
-                avatarLetter.postValue(computeAvatarLetter(name));
-                weight.postValue(user.getWeight() != null ? user.getWeight().intValue() : 0);
-                bmi.postValue(user.getBmi() != null ? user.getBmi() : 0f);
-                bmiCategory.postValue(user.getBmiCategory() != null ? user.getBmiCategory() : "");
-                goalWeight.postValue(parseGoalWeight(user.getGoal()));
-                goalDisplay.postValue(formatGoalDisplay(parseGoalWeight(user.getGoal())));
-                bmiColorRes.postValue(computeBmiColor(user.getBmi() != null ? user.getBmi() : 0f));
-
-                loadWeeklyPlan(uid);
+            public void onSuccess(User user) {
+                if (!isCurrentGeneration(generation)) {
+                    return;
+                }
+                loadWeeklyPlan(uid, generation, user, refresh, false);
             }
 
             @Override
             public void onError(Exception e) {
-                isLoading.postValue(false);
-                isRefreshing.postValue(false);
-                errorMessage.postValue("Không thể tải dữ liệu. Kéo xuống để thử lại.");
+                if (!isCurrentGeneration(generation)) {
+                    return;
+                }
+                errorEvent.postValue(DashboardError.PROFILE_LOAD_FAILED);
+                loadWeeklyPlan(uid, generation, null, refresh, true);
             }
         });
     }
 
-    private void loadWeeklyPlan(String uid) {
+    private void loadWeeklyPlan(String uid, int generation, User user, boolean refresh, boolean profileFallback) {
         workoutRepository.getWeeklyPlan(uid, new WorkoutRepository.WorkoutListCallback() {
             @Override
             public void onSuccess(List<Workout> workouts) {
-                weeklyPlan.postValue(workouts);
-                aiRecommendation.postValue(findTodayWorkout(workouts));
-                isLoading.postValue(false);
-                isRefreshing.postValue(false);
+                if (!isCurrentGeneration(generation)) {
+                    return;
+                }
+                List<Workout> safeWorkouts = workouts != null ? workouts : Collections.emptyList();
+
+                TodayState state = determineTodayState(safeWorkouts);
+                Workout recommendation = state == TodayState.WORKOUT ? findTodayWorkout(safeWorkouts) : null;
+                DashboardUiState next = buildState(user, safeWorkouts, state, recommendation,
+                        false, false, false);
+                publishState(next);
+
+                isLoadInProgress = false;
+                if (refresh) {
+                    refreshSuccessEvent.postValue(true);
+                }
             }
 
             @Override
             public void onError(Exception e) {
-                weeklyPlan.postValue(Collections.emptyList());
-                aiRecommendation.postValue(null);
-                isLoading.postValue(false);
-                isRefreshing.postValue(false);
-                errorMessage.postValue("Không thể tải kế hoạch tuần.");
+                if (!isCurrentGeneration(generation)) {
+                    return;
+                }
+                DashboardUiState current = currentState();
+                DashboardUiState profileState = applyProfileToExistingState(user, current, hasDashboardData(current));
+                publishState(copyState(profileState, false, false, hasDashboardData(profileState)));
+                isLoadInProgress = false;
+                errorEvent.postValue(DashboardError.WEEKLY_PLAN_LOAD_FAILED);
             }
         });
+    }
+
+    private DashboardUiState buildState(User user,
+                                        List<Workout> workouts,
+                                        TodayState state,
+                                        Workout recommendation,
+                                        boolean initialLoading,
+                                        boolean refreshing,
+                                        boolean dataStale) {
+        String name = displayNameOrDefault(user);
+        Float userBmi = user != null ? user.getBmi() : null;
+        return new DashboardUiState(
+                name,
+                user != null && user.getPhotoUrl() != null ? user.getPhotoUrl() : "",
+                user != null && user.getWeight() != null ? user.getWeight().intValue() : null,
+                userBmi,
+                userBmi != null ? user.getBmiCategory() : "",
+                userBmi != null ? computeBmiColor(userBmi) : R.color.on_surface_variant,
+                user != null ? formatGoalDisplay(user.getGoal()) : PLACEHOLDER,
+                state,
+                recommendation,
+                workouts,
+                initialLoading,
+                refreshing,
+                dataStale
+        );
+    }
+
+    private DashboardUiState applyProfileToExistingState(User user, DashboardUiState current, boolean dataStale) {
+        if (user == null) {
+            return copyState(current, false, false, dataStale);
+        }
+
+        Float userBmi = user.getBmi();
+        return new DashboardUiState(
+                displayNameOrDefault(user),
+                user.getPhotoUrl() != null ? user.getPhotoUrl() : "",
+                user.getWeight() != null ? user.getWeight().intValue() : null,
+                userBmi,
+                userBmi != null ? user.getBmiCategory() : "",
+                userBmi != null ? computeBmiColor(userBmi) : R.color.on_surface_variant,
+                formatGoalDisplay(user.getGoal()),
+                current.getTodayState(),
+                current.getAiRecommendation(),
+                current.getWeeklyPlan(),
+                false,
+                false,
+                dataStale
+        );
+    }
+
+    private DashboardUiState copyState(DashboardUiState state,
+                                       Boolean initialLoading,
+                                       Boolean refreshing,
+                                       Boolean dataStale) {
+        return new DashboardUiState(
+                state.getUserName(),
+                state.getPhotoUrl(),
+                state.getWeight(),
+                state.getBmi(),
+                state.getBmiCategory(),
+                state.getBmiColorRes(),
+                state.getGoalDisplay(),
+                state.getTodayState(),
+                state.getAiRecommendation(),
+                state.getWeeklyPlan(),
+                initialLoading != null ? initialLoading : state.isInitialLoading(),
+                refreshing != null ? refreshing : state.isRefreshing(),
+                dataStale != null ? dataStale : state.isDataStale()
+        );
+    }
+
+    private DashboardUiState currentState() {
+        DashboardUiState state = uiState.getValue();
+        return state != null ? state : DashboardUiState.initial();
+    }
+
+    private void publishState(DashboardUiState state) {
+        uiState.setValue(state);
+    }
+
+    private boolean isCurrentGeneration(int generation) {
+        return generation == loadGeneration;
+    }
+
+    private boolean hasDashboardData(DashboardUiState state) {
+        return state != null && (state.getWeight() != null
+                || state.getBmi() != null
+                || !state.getWeeklyPlan().isEmpty()
+                || state.getAiRecommendation() != null);
+    }
+
+    private String displayNameOrDefault(User user) {
+        if (user == null || user.getDisplayName() == null || user.getDisplayName().trim().isEmpty()) {
+            return "Bạn";
+        }
+        return user.getDisplayName();
+    }
+
+    TodayState determineTodayState(List<Workout> workouts) {
+        if (workouts == null || workouts.isEmpty()) {
+            return TodayState.NO_PLAN;
+        }
+
+        Workout todayWorkout = findTodayWorkout(workouts);
+        if (todayWorkout == null) {
+            // Plan exists but no entry for today → implicit rest day
+            return TodayState.REST_DAY;
+        }
+
+        if (todayWorkout.isRestDay()
+                || DateUtils.isRestDayWorkout(todayWorkout.getTitle(), todayWorkout.getDurationMinutes())) {
+            return TodayState.REST_DAY;
+        }
+
+        return TodayState.WORKOUT;
     }
 
     String computeAvatarLetter(String displayName) {
         if (displayName == null || displayName.trim().isEmpty()) {
             return "U";
         }
-        return String.valueOf(displayName.trim().charAt(0)).toUpperCase();
+        return String.valueOf(displayName.trim().charAt(0)).toUpperCase(Locale.ROOT);
     }
 
     int computeBmiColor(float bmiValue) {
@@ -150,44 +296,113 @@ public class DashboardViewModel extends ViewModel {
         return R.color.error;
     }
 
-    String formatGoalDisplay(int goal) {
-        if (goal == 0) return "0";
-        return "\u2212" + Math.abs(goal);
+    String formatGoalDisplay(String goal) {
+        GoalValue parsed = parseGoal(goal);
+        if (parsed == null) {
+            return PLACEHOLDER;
+        }
+        if (parsed.isDelta) {
+            return formatSignedGoal(parsed.value);
+        }
+        return String.valueOf(Math.abs(parsed.value));
     }
 
     int parseGoalWeight(String goal) {
-        if (goal == null || goal.isEmpty()) {
-            return 0;
-        }
-        try {
-            return Integer.parseInt(goal.trim());
-        } catch (NumberFormatException ignored) {}
+        Integer parsed = parseGoalWeightOrNull(goal);
+        return parsed != null ? parsed : 0;
+    }
 
-        Pattern pattern = Pattern.compile("\\d+");
-        Matcher matcher = pattern.matcher(goal);
-        if (matcher.find()) {
-            try {
-                return Integer.parseInt(matcher.group());
-            } catch (NumberFormatException ignored) {}
+    Integer parseGoalWeightOrNull(String goal) {
+        GoalValue parsed = parseGoal(goal);
+        return parsed != null ? parsed.value : null;
+    }
+
+    private GoalValue parseGoal(String goal) {
+        if (goal == null || goal.trim().isEmpty()) {
+            return null;
         }
-        return 0;
+
+        Matcher matcher = GOAL_NUMBER_PATTERN.matcher(goal.trim());
+        if (!matcher.find()) {
+            return null;
+        }
+
+        String numberToken = matcher.group();
+        int value;
+        try {
+            value = Integer.parseInt(numberToken);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+
+        boolean explicitSign = numberToken.startsWith("+") || numberToken.startsWith("-");
+        String normalized = normalizeGoal(goal);
+        boolean targetGoal = hasTargetKeyword(normalized);
+        boolean deltaGoal = explicitSign || (hasDeltaKeyword(normalized) && !targetGoal);
+
+        if (deltaGoal && !explicitSign && containsWord(normalized, "giam")) {
+            value = -Math.abs(value);
+        }
+
+        return new GoalValue(value, deltaGoal);
+    }
+
+    private String formatSignedGoal(int value) {
+        if (value < 0) {
+            return UNICODE_MINUS + Math.abs(value);
+        }
+        if (value > 0) {
+            return "+" + value;
+        }
+        return "0";
+    }
+
+    private String normalizeGoal(String goal) {
+        String decomposed = Normalizer.normalize(goal, Normalizer.Form.NFD);
+        return decomposed.replace('đ', 'd')
+                .replace('Đ', 'D')
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT);
+    }
+
+    private boolean hasDeltaKeyword(String normalizedGoal) {
+        return containsWord(normalizedGoal, "giam") || containsWord(normalizedGoal, "tang");
+    }
+
+    private boolean hasTargetKeyword(String normalizedGoal) {
+        return containsWord(normalizedGoal, "ve")
+                || containsWord(normalizedGoal, "xuong")
+                || containsWord(normalizedGoal, "len")
+                || containsWord(normalizedGoal, "den")
+                || normalizedGoal.contains("muc tieu")
+                || normalizedGoal.contains("target");
+    }
+
+    private boolean containsWord(String normalizedGoal, String word) {
+        Pattern pattern = Pattern.compile("(^|\\W)" + Pattern.quote(word) + "(\\W|$)");
+        return pattern.matcher(normalizedGoal).find();
+    }
+
+    private static class GoalValue {
+        final int value;
+        final boolean isDelta;
+
+        GoalValue(int value, boolean isDelta) {
+            this.value = value;
+            this.isDelta = isDelta;
+        }
     }
 
     private Workout findTodayWorkout(List<Workout> workouts) {
         if (workouts == null || workouts.isEmpty()) {
             return null;
         }
-        int todayDow = getTodayDayOfWeek();
+        int todayDow = DateUtils.getTodayDayOfWeek();
         for (Workout w : workouts) {
             if (w.getDayOfWeek() == todayDow) {
                 return w;
             }
         }
         return null;
-    }
-
-    private int getTodayDayOfWeek() {
-        int calDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        return calDay == Calendar.SUNDAY ? 7 : calDay - 1;
     }
 }

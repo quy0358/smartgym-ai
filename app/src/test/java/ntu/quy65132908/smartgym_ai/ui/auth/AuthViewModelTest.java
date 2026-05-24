@@ -92,4 +92,32 @@ public class AuthViewModelTest {
         assertTrue(viewModel.isLoggedIn());
         verify(authRepository).isLoggedIn();
     }
+
+    @Test
+    public void resetPassword_emptyEmail_setsError() {
+        viewModel.resetPassword("");
+
+        assertEquals("Vui lòng nhập email", viewModel.getErrorMessage().getValue());
+    }
+
+    @Test
+    public void resetPassword_invalidEmail_setsError() {
+        viewModel.resetPassword("notanemail");
+
+        assertEquals("Email không hợp lệ", viewModel.getErrorMessage().getValue());
+    }
+
+    @Test
+    public void resetPassword_validEmail_callsRepository() {
+        viewModel.resetPassword("test@email.com");
+
+        verify(authRepository).sendPasswordResetEmail(eq("test@email.com"), any());
+    }
+
+    @Test
+    public void reportGoogleSignInFailure_setsVisibleError() {
+        viewModel.reportGoogleSignInFailure("Canceled");
+
+        assertEquals("Đăng nhập Google thất bại: Canceled", viewModel.getErrorMessage().getValue());
+    }
 }

@@ -12,12 +12,18 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.ChallengeRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.CommunityRepository;
-import ntu.quy65132908.smartgym_ai.data.repository.GeminiRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.DeepSeekRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.ExerciseCatalogRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.InjuryProfileRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.NutritionRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.ProgressRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.ReminderRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.WorkoutRepository;
-import ntu.quy65132908.smartgym_ai.util.GeminiKeyProvider;
+import ntu.quy65132908.smartgym_ai.util.DeepSeekKeyProvider;
+import ntu.quy65132908.smartgym_ai.util.ReminderScheduler;
 
 @Module
 @InstallIn(SingletonComponent.class)
@@ -60,14 +66,50 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public GeminiKeyProvider provideGeminiKeyProvider() {
-        return new GeminiKeyProvider();
+    public DeepSeekKeyProvider provideDeepSeekKeyProvider() {
+        return new DeepSeekKeyProvider();
     }
 
     @Provides
     @Singleton
     public WorkoutRepository provideWorkoutRepository(FirebaseFirestore firestore) {
         return new WorkoutRepository(firestore);
+    }
+
+    @Provides
+    @Singleton
+    public ExerciseCatalogRepository provideExerciseCatalogRepository() {
+        return new ExerciseCatalogRepository();
+    }
+
+    @Provides
+    @Singleton
+    public NutritionRepository provideNutritionRepository(FirebaseFirestore firestore) {
+        return new NutritionRepository(firestore);
+    }
+
+    @Provides
+    @Singleton
+    public ReminderRepository provideReminderRepository(FirebaseFirestore firestore) {
+        return new ReminderRepository(firestore);
+    }
+
+    @Provides
+    @Singleton
+    public ChallengeRepository provideChallengeRepository(FirebaseFirestore firestore) {
+        return new ChallengeRepository(firestore);
+    }
+
+    @Provides
+    @Singleton
+    public InjuryProfileRepository provideInjuryProfileRepository(FirebaseFirestore firestore) {
+        return new InjuryProfileRepository(firestore);
+    }
+
+    @Provides
+    @Singleton
+    public ReminderScheduler provideReminderScheduler() {
+        return new ReminderScheduler();
     }
 
     @Provides
@@ -84,7 +126,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public GeminiRepository provideGeminiRepository(GeminiKeyProvider keyProvider) {
-        return new GeminiRepository(keyProvider);
+    public DeepSeekRepository provideDeepSeekRepository(DeepSeekKeyProvider keyProvider) {
+        return new DeepSeekRepository(keyProvider);
     }
 }

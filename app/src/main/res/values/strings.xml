@@ -19,9 +19,14 @@
     <string name="weekly_plan">Kế hoạch tuần</string>
     <string name="view_all">Xem tất cả</string>
     <string name="workout_detail">Chi tiết bài tập</string>
+    <string name="workout_detail_rest_title">Hôm nay là ngày nghỉ</string>
+    <string name="workout_detail_rest_subtitle">Không cần hoàn thành bài tập. Ưu tiên ngủ đủ, uống nước và phục hồi.</string>
+    <string name="workout_detail_empty_exercises">Chưa có bài tập nào</string>
+    <string name="workout_detail_exercise_list">DANH SÁCH BÀI TẬP</string>
     <string name="ai_analysis">Phân tích AI</string>
     <string name="sign_out">Đăng xuất</string>
     <string name="settings">Cài đặt</string>
+    <string name="action_back">Quay lại</string>
     <string name="weight">Cân nặng</string>
     <string name="height">Chiều cao</string>
     <string name="bmi">BMI</string>
@@ -39,18 +44,36 @@
     <string name="error_no_network">Không có kết nối mạng. Vui lòng kiểm tra lại.</string>
     <string name="error_generic">Đã xảy ra lỗi: %s</string>
     <string name="error_google_sign_in">Đăng nhập Google thất bại: %s</string>
+    <string name="error_google_no_credential">Không tìm thấy tài khoản Google phù hợp trên thiết bị.</string>
 
     <!-- Dashboard stat labels -->
     <string name="stat_weight">CÂN NẶNG</string>
     <string name="stat_bmi">BMI</string>
     <string name="stat_goal">MỤC TIÊU</string>
     <string name="stat_normal">Bình thường</string>
+    <string name="brand_fitai" translatable="false">FitAI</string>
+    <string name="default_avatar_letter" translatable="false">U</string>
+    <string name="value_unavailable" translatable="false">--</string>
+    <string name="avatar">Ảnh đại diện</string>
     <string name="unit_kg">kg</string>
-    <string name="greeting_format">Chào %s! 💪</string>
+    <string name="greeting_format">Chào %1$s! 💪</string>
     <string name="notification">Thông báo</string>
+    <string name="notification_coming_soon">Thông báo sẽ được cập nhật sau.</string>
     <string name="ai_suggestion_label">⚡ AI ĐỀ XUẤT</string>
     <string name="btn_start">Bắt đầu</string>
     <string name="workout_subtitle_format">%1$d bài • %2$d phút • %3$s</string>
+    <string name="workout_subtitle_without_count_format">%1$d phút • %2$s</string>
+    <string name="workout_meta_with_count">%1$d phút • %2$s • %3$d bài</string>
+    <string name="workout_meta_without_count">%1$d phút • %2$s</string>
+    <string name="workout_meta_rest">Nghỉ hoàn toàn</string>
+    <string name="workout_type_recovery">PHỤC HỒI</string>
+    <string name="workout_type_rest">NGHỈ</string>
+    <string name="workout_untitled">Bài tập hôm nay</string>
+    <string name="ai_empty_workout_title">Chưa có bài tập hôm nay</string>
+    <string name="ai_empty_workout_subtitle">Tạo kế hoạch để AI đề xuất bài tập phù hợp.</string>
+    <string name="error_open_workout">Không thể mở bài tập này.</string>
+    <string name="action_retry">Thử lại</string>
+    <string name="error_load_profile_partial">Không thể tải hồ sơ. Kế hoạch tập vẫn được hiển thị nếu có.</string>
     <string name="error_load_dashboard">Không thể tải dữ liệu. Kéo xuống để thử lại.</string>
     <string name="error_load_weekly_plan">Không thể tải kế hoạch tuần.</string>
     <string name="no_workout_today">Hôm nay không có bài tập. Hãy nghỉ ngơi! 🧘</string>
@@ -69,12 +92,34 @@
     <string name="stat_burned">đốt cháy</string>
 
     <!-- AI Analysis -->
-    <string name="ai_loading">Đang tải...</string>
+    <string name="ai_loading">Đang tải…</string>
     <string name="ai_enter_info">Nhập đủ thông tin</string>
+    <string name="ai_title">Phân tích AI</string>
+    <string name="ai_body_report_label">Báo cáo cơ thể</string>
+    <string name="ai_plan_title">AI trợ lý</string>
+    <string name="ai_plan_subtitle">Tạo gợi ý 7 ngày dựa trên hồ sơ hiện tại.</string>
+    <string name="ai_btn_suggest_plan">Gợi ý kế hoạch tập</string>
+    <string name="ai_form_title">Phân tích form</string>
+    <string name="ai_form_subtitle">Nhập bài tập và mô tả kỹ thuật để nhận góp ý an toàn.</string>
+    <string name="ai_exercise_name_hint">Tên bài tập</string>
+    <string name="ai_form_description_hint">Mô tả cách bạn thực hiện</string>
+    <string name="ai_btn_analyze_form">Phân tích form</string>
+    <string name="ai_plan_result_label">Gợi ý kế hoạch</string>
+    <string name="ai_form_result_label">Kết quả phân tích</string>
+    <string name="ai_stat_body_fat">Tỷ lệ mỡ</string>
+    <string name="ai_stat_lean_mass">Lean mass</string>
+    <string name="unit_percent">%</string>
+    <string name="unit_kg_upper">KG</string>
+    <string name="ai_error_prefix">Cảnh báo: %s</string>
 
     <!-- Community -->
     <string name="post_empty_content">Nội dung trống</string>
     <string name="post_user_default">Người dùng</string>
+    <string name="post_likes_format">%1$d ❤️</string>
+    <string name="time_just_now">Vừa xong</string>
+    <string name="time_minutes_ago_format">%1$d phút trước</string>
+    <string name="time_hours_ago_format">%1$d giờ trước</string>
+    <string name="time_days_ago_format">%1$d ngày trước</string>
 
     <!-- Edit Profile -->
     <string name="profile_saved">Đã lưu!</string>
@@ -82,9 +127,203 @@
     <string name="profile_invalid_number">Số không hợp lệ</string>
 
     <!-- Dashboard empty states -->
+    <string name="empty_plan_icon">📋</string>
     <string name="empty_plan_title">Chưa có kế hoạch tuần</string>
     <string name="empty_plan_subtitle">Hãy tạo kế hoạch tập luyện để bắt đầu hành trình</string>
     <string name="btn_create_plan">Tạo kế hoạch</string>
+    <string name="creating_plan">Đang tạo…</string>
+    <string name="today_badge">HÔM NAY</string>
+    <string name="rest_day_icon">🧘</string>
     <string name="rest_day_title">Hôm nay là ngày nghỉ!</string>
     <string name="rest_day_subtitle">Hãy nghỉ ngơi để cơ thể phục hồi 💪</string>
+
+    <!-- Dashboard loading/refresh -->
+    <string name="loading_dashboard">Đang tải dữ liệu…</string>
+    <string name="refresh_success">Đã cập nhật!</string>
+    <string name="refresh_throttled">Vừa cập nhật. Vui lòng thử lại sau vài giây.</string>
+    <string name="data_offline">Dữ liệu offline</string>
+
+    <!-- Pose Trainer -->
+    <string name="pose_trainer_title">Huấn luyện tư thế AI</string>
+    <string name="pose_camera_permission_title">Cần quyền camera</string>
+    <string name="pose_camera_permission_message">Cho phép camera để SmartGym AI nhận diện khung xương và góp ý tư thế theo thời gian thực.</string>
+    <string name="pose_grant_camera">Cho phép camera</string>
+    <string name="pose_permission_denied">Không thể mở camera khi chưa có quyền. Bạn có thể bật lại quyền trong cài đặt ứng dụng.</string>
+    <string name="pose_camera_loading">Đang mở camera…</string>
+    <string name="pose_camera_error">Không thể mở camera. Vui lòng thử lại.</string>
+    <string name="pose_no_person">Đưa toàn thân vào khung hình để bắt đầu nhận diện.</string>
+    <string name="pose_feedback_ready">Sẵn sàng. Giữ toàn thân trong khung hình.</string>
+    <string name="pose_reps_format">%1$d lần</string>
+    <string name="pose_reps_label">Số lần</string>
+    <string name="pose_feedback_label">Gợi ý</string>
+    <string name="pose_quality_label">Độ ổn định</string>
+    <string name="pose_type_push_up">Chống đẩy</string>
+    <string name="pose_type_squat">Squat</string>
+    <string name="pose_type_plank">Plank</string>
+    <string name="pose_open_camera">Mở camera sửa form</string>
+    <string name="pose_start_workout">Tập với AI Pose</string>
+
+    <string name="pose_hold_time_format">%1$d giây</string>
+    <string name="pose_hold_time_label">Thời gian giữ</string>
+    <string name="pose_start_specific_format">Tập %1$s với AI Pose</string>
+    <string name="pose_choose_exercise">Chọn bài AI Pose</string>
+    <string name="pose_switch_camera">Đổi camera</string>
+    <string name="pose_voice_feedback">Phản hồi giọng nói</string>
+    <string name="pose_no_supported_exercise">Chưa có bài hỗ trợ AI Pose.</string>
+
+    <!-- Modarb-inspired v1 upgrades -->
+    <string name="exercise_library_title">Thư viện bài tập</string>
+    <string name="exercise_library_subtitle">Chọn bài phù hợp để tạo workout tùy chỉnh.</string>
+    <string name="exercise_search_hint">Tìm bài tập hoặc nhóm cơ</string>
+    <string name="exercise_filter_all">Tất cả</string>
+    <string name="exercise_filter_pose">AI Pose</string>
+    <string name="exercise_filter_no_equipment">Không dụng cụ</string>
+    <string name="exercise_filter_dumbbell">Tạ đơn</string>
+    <string name="exercise_filter_beginner">Cơ bản</string>
+    <string name="exercise_filter_intermediate">Trung bình</string>
+    <string name="exercise_empty_search">Không có bài tập phù hợp với bộ lọc hiện tại.</string>
+    <string name="exercise_selected_count_default">Đã chọn: 0 bài</string>
+    <string name="exercise_selected_count_format">Đã chọn: %1$d bài</string>
+    <string name="exercise_save_custom_workout">Lưu workout tùy chỉnh</string>
+    <string name="exercise_choose">Chọn</string>
+    <string name="exercise_chosen">Đã chọn</string>
+    <string name="exercise_prescription_format">%1$d hiệp × %2$d lần</string>
+    <string name="exercise_library_load_error">Không thể tải thư viện bài tập.</string>
+    <string name="exercise_login_required">Bạn cần đăng nhập để lưu bài tập.</string>
+    <string name="exercise_select_required">Chọn ít nhất một bài tập.</string>
+    <string name="exercise_custom_title">Bài tập tùy chỉnh</string>
+    <string name="exercise_custom_goal">Tập luyện cá nhân</string>
+    <string name="exercise_custom_intensity">Tùy chỉnh</string>
+    <string name="exercise_custom_saved">Đã lưu bài tập tùy chỉnh.</string>
+    <string name="exercise_custom_save_error">Không thể lưu bài tập tùy chỉnh.</string>
+    <string name="exercise_item_a11y">%1$s, %2$s, %3$s</string>
+    <string name="nutrition_title">Dinh dưỡng</string>
+    <string name="nutrition_today_summary">Tổng quan hôm nay</string>
+    <string name="nutrition_add_food">Ghi bữa ăn</string>
+    <string name="nutrition_food_name_hint">Tên món ăn</string>
+    <string name="nutrition_meal_type_hint">Bữa ăn</string>
+    <string name="nutrition_calories_hint">Calories</string>
+    <string name="nutrition_protein_hint">Đạm</string>
+    <string name="nutrition_carbs_hint">Carb</string>
+    <string name="nutrition_fat_hint">Béo</string>
+    <string name="nutrition_btn_add_food">Lưu bữa ăn</string>
+    <string name="nutrition_btn_saving_food">Đang lưu...</string>
+    <string name="nutrition_ai_plan">Kế hoạch ăn AI</string>
+    <string name="nutrition_generate_plan">Tạo kế hoạch ăn 7 ngày</string>
+    <string name="nutrition_generating_plan">Đang tạo kế hoạch...</string>
+    <string name="nutrition_empty_plan">Chưa có kế hoạch ăn. Tạo bằng AI để bắt đầu.</string>
+    <string name="nutrition_default_meal_type">Sáng</string>
+    <string name="nutrition_fallback_meal_type">Bữa ăn</string>
+    <string name="nutrition_unit_kcal">kcal</string>
+    <string name="nutrition_unit_g">g</string>
+    <string name="nutrition_calories_format">%1$d / %2$d kcal</string>
+    <string name="nutrition_calories_a11y">%1$d trên %2$d kilocalories, đạt %3$d phần trăm mục tiêu hôm nay</string>
+    <string name="nutrition_food_calories_format">%1$d kcal</string>
+    <string name="nutrition_macros_format">%1$dg đạm • %2$dg carb • %3$dg béo</string>
+    <string name="nutrition_food_name_error">Nhập tên món ăn hợp lệ.</string>
+    <string name="nutrition_calories_error">Nhập calories lớn hơn 0.</string>
+    <string name="nutrition_macro_error">Macro phải là số không âm.</string>
+    <string name="nutrition_food_saved">Đã lưu bữa ăn.</string>
+    <string name="nutrition_food_save_error">Không thể lưu bữa ăn. Vui lòng kiểm tra mạng và thử lại.</string>
+    <string name="nutrition_food_login_required">Bạn cần đăng nhập để lưu bữa ăn.</string>
+    <string name="nutrition_today_food_logs">Bữa ăn hôm nay</string>
+    <string name="nutrition_empty_food_logs">Chưa có bữa ăn nào hôm nay.</string>
+    <string name="nutrition_empty_food_logs_logged_out">Đăng nhập để lưu và xem bữa ăn hôm nay.</string>
+    <string name="nutrition_food_logs_load_error">Không thể tải bữa ăn hôm nay.</string>
+    <string name="nutrition_login_required">Bạn cần đăng nhập để tạo kế hoạch ăn.</string>
+    <string name="nutrition_plan_saved">Đã tạo kế hoạch ăn 7 ngày.</string>
+    <string name="nutrition_plan_save_error">AI đã tạo kế hoạch nhưng chưa lưu được.</string>
+    <string name="nutrition_plan_empty_error">AI chưa tạo được kế hoạch ăn hợp lệ. Vui lòng thử lại.</string>
+    <string name="nutrition_profile_load_error">Không thể tải hồ sơ dinh dưỡng.</string>
+    <string-array name="nutrition_meal_types">
+        <item>Sáng</item>
+        <item>Trưa</item>
+        <item>Tối</item>
+        <item>Phụ</item>
+    </string-array>
+    <string name="wellness_title">Sức khỏe và thói quen</string>
+    <string name="wellness_reminder_title">Nhắc lịch tập</string>
+    <string name="wellness_reminder_name_hint">Tên nhắc lịch</string>
+    <string name="wellness_reminder_time_hint">Giờ tập (HH:mm)</string>
+    <string name="wellness_default_reminder">Đến giờ tập luyện</string>
+    <string name="wellness_default_reminder_time" translatable="false">06:30</string>
+    <string name="wellness_reminder_enabled">Bật nhắc lịch</string>
+    <string name="wellness_reminder_days">Ngày nhắc</string>
+    <string name="wellness_pick_time">Chọn giờ tập</string>
+    <string name="wellness_time_picker_title">Chọn giờ tập luyện</string>
+    <string name="wellness_save_reminder">Lưu nhắc lịch</string>
+    <string name="wellness_injury_title">Hồ sơ an toàn vận động</string>
+    <string name="wellness_injury_subtitle">Chọn vùng cần giảm tải để SmartGym AI gợi ý bài tập an toàn hơn.</string>
+    <string name="wellness_injury_safety_note">Nếu đang đau hoặc chấn thương, hãy ưu tiên tư vấn chuyên môn trước khi tập.</string>
+    <string name="wellness_knee">Đầu gối nhạy cảm</string>
+    <string name="wellness_shoulder">Vai nhạy cảm</string>
+    <string name="wellness_back">Lưng dưới nhạy cảm</string>
+    <string name="wellness_injury_notes_hint">Ghi chú hạn chế vận động</string>
+    <string name="wellness_save_injury">Lưu hồ sơ an toàn</string>
+    <string name="wellness_challenges">Thử thách</string>
+    <string name="wellness_join_challenge">Tham gia</string>
+    <string name="wellness_challenge_meta_format">%1$d ngày • %2$d phút/ngày</string>
+    <string name="wellness_challenge_progress_format">Đã hoàn thành %1$d/%2$d ngày</string>
+    <string name="wellness_challenge_completed_status">Đã hoàn thành thử thách</string>
+    <string name="wellness_challenge_joined_button">Đã tham gia</string>
+    <string name="wellness_challenge_completed_button">Hoàn thành</string>
+    <string name="wellness_challenge_button_a11y">%1$s thử thách %2$s</string>
+    <string name="wellness_reminder_login_required">Bạn cần đăng nhập để lưu nhắc lịch.</string>
+    <string name="wellness_reminder_load_error">Không thể tải nhắc lịch.</string>
+    <string name="wellness_reminder_title_error">Tên nhắc lịch không được để trống.</string>
+    <string name="wellness_reminder_title_length_error">Tên nhắc lịch tối đa 80 ký tự.</string>
+    <string name="wellness_reminder_time_error">Nhập giờ theo định dạng HH:mm.</string>
+    <string name="wellness_reminder_days_error">Chọn ít nhất một ngày để bật nhắc lịch.</string>
+    <string name="wellness_reminder_saved">Đã lưu nhắc lịch tập luyện.</string>
+    <string name="wellness_reminder_save_error">Không thể lưu nhắc lịch.</string>
+    <string name="wellness_notification_permission_denied">Chưa có quyền thông báo nên nhắc lịch chưa được bật trên thiết bị.</string>
+    <string name="wellness_injury_login_required">Bạn cần đăng nhập để lưu hồ sơ chấn thương.</string>
+    <string name="wellness_injury_load_error">Không thể tải hồ sơ an toàn.</string>
+    <string name="wellness_injury_notes_length_error">Ghi chú tối đa 500 ký tự.</string>
+    <string name="wellness_injury_saved">Đã lưu hồ sơ an toàn vận động.</string>
+    <string name="wellness_injury_save_error">Không thể lưu hồ sơ an toàn.</string>
+    <string name="wellness_challenge_login_required">Bạn cần đăng nhập để tham gia thử thách.</string>
+    <string name="wellness_challenge_joined_format">Đã tham gia thử thách: %1$s</string>
+    <string name="wellness_challenge_join_error">Không thể tham gia thử thách.</string>
+    <string name="wellness_challenge_load_error">Không thể tải thử thách.</string>
+    <string name="wellness_saving">Đang lưu...</string>
+    <string name="wellness_notification_body">Hôm nay bạn có lịch tập trong SmartGym AI.</string>
+    <string name="wellness_notification_default_body">Mở SmartGym AI để tiếp tục kế hoạch hôm nay.</string>
+    <string name="wellness_notification_channel">Nhắc lịch tập luyện</string>
+    <string name="day_monday_short">T2</string>
+    <string name="day_tuesday_short">T3</string>
+    <string name="day_wednesday_short">T4</string>
+    <string name="day_thursday_short">T5</string>
+    <string name="day_friday_short">T6</string>
+    <string name="day_saturday_short">T7</string>
+    <string name="day_sunday_short">CN</string>
+    <string name="smart_tools_title">Công cụ thông minh</string>
+    <string name="open_nutrition">Dinh dưỡng</string>
+    <string name="open_wellness">Nhắc lịch và an toàn</string>
+    <string name="open_exercise_library">Thư viện bài tập</string>
+
+    <!-- Accessibility -->
+    <string name="stat_weight_a11y">Cân nặng: %1$s kg</string>
+    <string name="stat_bmi_a11y">BMI: %1$s, %2$s</string>
+    <string name="stat_goal_a11y">Mục tiêu: %1$s kg</string>
+    <string name="stat_weight_unavailable_a11y">Chưa có dữ liệu cân nặng</string>
+    <string name="stat_bmi_unavailable_a11y">Chưa có dữ liệu BMI</string>
+    <string name="stat_goal_unavailable_a11y">Chưa có dữ liệu mục tiêu cân nặng</string>
+    <string name="greeting_a11y">Chào %1$s</string>
+    <string name="rest_day_a11y">Hôm nay là ngày nghỉ. Hãy nghỉ ngơi để cơ thể phục hồi.</string>
+    <string name="workout_day_fallback">Ngày %1$d</string>
+    <string name="workout_status_completed">đã hoàn thành</string>
+    <string name="workout_status_pending">chưa hoàn thành</string>
+    <string name="workout_status_unavailable">không thể mở</string>
+    <string name="weekly_plan_item_a11y">%1$s, %2$s, %3$s, %4$s</string>
+
+    <string-array name="weekly_plan_day_names">
+        <item>Thứ 2</item>
+        <item>Thứ 3</item>
+        <item>Thứ 4</item>
+        <item>Thứ 5</item>
+        <item>Thứ 6</item>
+        <item>Thứ 7</item>
+        <item>Chủ nhật</item>
+    </string-array>
 </resources>

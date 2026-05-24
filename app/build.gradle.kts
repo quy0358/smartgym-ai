@@ -13,6 +13,15 @@ val localProperties = Properties().apply {
         load(localPropertiesFile.inputStream())
     }
 }
+val debugDeepSeekApiKey = localProperties.getProperty("DEEPSEEK_API_KEY", "")
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+val debugDeepSeekBaseUrl = localProperties.getProperty("DEEPSEEK_BASE_URL", "https://api.deepseek.com/chat/completions")
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+val debugDeepSeekModel = localProperties.getProperty("DEEPSEEK_MODEL", "deepseek-v4-flash")
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
 
 android {
     namespace = "ntu.quy65132908.smartgym_ai"
@@ -27,16 +36,19 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Gemini API Key — read from local.properties (GEMINI_API_KEY=your_key)
-        buildConfigField(
-            "String",
-            "GEMINI_API_KEY",
-            "\"${localProperties.getProperty("GEMINI_API_KEY", "")}\""
-        )
     }
 
     buildTypes {
+        debug {
+            // Development-only key from local.properties. Release builds must not ship a raw AI key.
+            buildConfigField("String", "DEEPSEEK_API_KEY", "\"$debugDeepSeekApiKey\"")
+            buildConfigField("String", "DEEPSEEK_BASE_URL", "\"$debugDeepSeekBaseUrl\"")
+            buildConfigField("String", "DEEPSEEK_MODEL", "\"$debugDeepSeekModel\"")
+        }
         release {
+            buildConfigField("String", "DEEPSEEK_API_KEY", "\"\"")
+            buildConfigField("String", "DEEPSEEK_BASE_URL", "\"https://api.deepseek.com/chat/completions\"")
+            buildConfigField("String", "DEEPSEEK_MODEL", "\"deepseek-v4-flash\"")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -92,16 +104,24 @@ dependencies {
     implementation(libs.credentials.play.services)
     implementation(libs.google.id)
 
-    // Gemini AI
-    implementation(libs.generative.ai)
-    implementation(libs.guava)
-
     // Image Loading
     implementation(libs.glide)
     ksp(libs.glide.compiler)
 
+    // Chart
+    implementation(libs.mpandroidchart)
+
+    // Camera + pose detection
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.mlkit.pose.detection)
+    implementation(libs.work.runtime)
+
     // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.json)
     testImplementation(libs.mockito.core)
     testImplementation(libs.core.testing)
     testImplementation(libs.robolectric)

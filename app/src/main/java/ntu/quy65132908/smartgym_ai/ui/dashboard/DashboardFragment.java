@@ -7,21 +7,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.databinding.FragmentDashboardBinding;
+import ntu.quy65132908.smartgym_ai.ui.navigation.BottomNavHost;
 
 @AndroidEntryPoint
 public class DashboardFragment extends Fragment {
@@ -57,7 +54,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        weeklyPlanAdapter = new WeeklyPlanAdapter();
+        weeklyPlanAdapter = new WeeklyPlanAdapter(this::navigateToWorkoutDetail);
         binding.rvWeeklyPlan.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvWeeklyPlan.setAdapter(weeklyPlanAdapter);
     }
@@ -69,97 +66,105 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupClickListeners() {
+        binding.btnNotification.setVisibility(View.GONE);
+
         binding.btnStartWorkout.setOnClickListener(v -> {
-            Workout recommendation = viewModel.getAiRecommendation().getValue();
-            if (recommendation != null && recommendation.getId() != null) {
-                Bundle args = new Bundle();
-                args.putString("workoutId", recommendation.getId());
-                Navigation.findNavController(v).navigate(
-                        R.id.action_dashboard_to_workout_detail, args);
+            DashboardUiState state = viewModel.getUiState().getValue();
+            if (state != null && state.getTodayState() == TodayState.WORKOUT) {
+                Workout recommendation = state.getAiRecommendation();
+                if (recommendation != null) {
+                    navigateToWorkoutDetail(recommendation);
+                    return;
+                }
             }
+            navigateToWorkoutTab();
         });
 
-        binding.tvViewAll.setOnClickListener(v -> {
-            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_nav);
-            if (bottomNav != null) {
-                bottomNav.setSelectedItemId(R.id.nav_workout);
+        binding.btnViewAll.setOnClickListener(v -> navigateToWorkoutTab());
+
+        binding.btnCreatePlan.setOnClickListener(v -> navigateToWorkoutTab());
+        binding.btnOpenNutrition.setOnClickListener(v ->
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_nutrition));
+        binding.btnOpenWellness.setOnClickListener(v ->
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_wellness));
+        binding.btnOpenPose.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putString("exerciseType", "push_up");
+            args.putBoolean("selectionRequired", true);
+            args.putString("workoutId", "");
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_dashboard_to_pose_trainer, args);
+        });
+    }
+
+    private void navigateToWorkoutDetail(Workout workout) {
+        if (workout == null || workout.getId() == null || workout.getId().isEmpty()) {
+            Snackbar.make(binding.getRoot(), R.string.error_open_workout, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        Navigation.findNavController(binding.getRoot()).navigate(
+                DashboardFragmentDirections.actionDashboardToWorkoutDetail(
+                        workout.getId(),
+                        workout.getTitle() != null ? workout.getTitle() : "",
+                        workout.getDurationMinutes(),
+                        workout.getDayType()));
+    }
+
+    private void observeViewModel() {
+        viewModel.getUiState().observe(getViewLifecycleOwner(), this::renderState);
+
+        // Error event observer — maps error codes to strings
+        viewModel.getErrorEvent().observe(getViewLifecycleOwner(), error -> {
+            int msgRes;
+            switch (error) {
+                case WEEKLY_PLAN_LOAD_FAILED:
+                    msgRes = R.string.error_load_weekly_plan;
+                    break;
+                case PROFILE_LOAD_FAILED:
+                    msgRes = R.string.error_load_profile_partial;
+                    break;
+                case USER_LOAD_FAILED:
+                default:
+                    msgRes = R.string.error_load_dashboard;
+                    break;
             }
+            Snackbar.make(binding.getRoot(), msgRes, Snackbar.LENGTH_LONG).show();
         });
 
-        binding.btnCreatePlan.setOnClickListener(v -> {
-            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_nav);
-            if (bottomNav != null) {
-                bottomNav.setSelectedItemId(R.id.nav_workout);
+        viewModel.getRefreshSuccessEvent().observe(getViewLifecycleOwner(), success ->
+                Snackbar.make(binding.getRoot(), R.string.refresh_success, Snackbar.LENGTH_SHORT).show());
+
+        viewModel.getRefreshThrottledEvent().observe(getViewLifecycleOwner(), throttled ->
+                Snackbar.make(binding.getRoot(), R.string.refresh_throttled, Snackbar.LENGTH_SHORT).show());
+
+        viewModel.getRequireLoginEvent().observe(getViewLifecycleOwner(), requireLogin -> {
+            if (Boolean.TRUE.equals(requireLogin)) {
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_to_login);
             }
         });
     }
 
-    private void observeViewModel() {
-        viewModel.getUserName().observe(getViewLifecycleOwner(), name ->
-                binding.tvGreeting.setText(getString(R.string.greeting_format, name)));
+    private void renderState(DashboardUiState state) {
+        if (state == null) {
+            return;
+        }
 
-        viewModel.getAvatarLetter().observe(getViewLifecycleOwner(), letter ->
-                binding.tvAvatar.setText(letter));
+        DashboardRenderer.render(binding, requireContext(), weeklyPlanAdapter, state);
 
-        viewModel.getWeight().observe(getViewLifecycleOwner(), w ->
-                binding.statWeight.tvStatValue.setText(String.valueOf(w)));
-
-        viewModel.getBmi().observe(getViewLifecycleOwner(), bmiVal ->
-                binding.statBmi.tvStatValue.setText(String.format("%.1f", bmiVal)));
-
-        viewModel.getBmiCategory().observe(getViewLifecycleOwner(), category ->
-                binding.statBmi.tvStatUnit.setText(category));
-
-        viewModel.getBmiColorRes().observe(getViewLifecycleOwner(), colorRes -> {
-            int color = ContextCompat.getColor(requireContext(), colorRes);
-            binding.statBmi.tvStatValue.setTextColor(color);
-            binding.statBmi.tvStatUnit.setTextColor(color);
-        });
-
-        viewModel.getGoalDisplay().observe(getViewLifecycleOwner(), display ->
-                binding.statGoal.tvStatValue.setText(display));
-
-        viewModel.getAiRecommendation().observe(getViewLifecycleOwner(), workout -> {
-            if (workout != null) {
-                binding.cardAiWorkout.setVisibility(View.VISIBLE);
-                binding.cardRestDay.setVisibility(View.GONE);
-                binding.tvWorkoutTitle.setText(workout.getTitle());
-                int exerciseCount = workout.getExercises() != null ? workout.getExercises().size() : 0;
-                binding.tvWorkoutSubtitle.setText(getString(
-                        R.string.workout_subtitle_format,
-                        exerciseCount,
-                        workout.getDurationMinutes(),
-                        workout.getIntensity() != null ? workout.getIntensity() : ""));
-            } else {
-                binding.cardAiWorkout.setVisibility(View.GONE);
-                List<Workout> plan = viewModel.getWeeklyPlan().getValue();
-                boolean hasPlan = plan != null && !plan.isEmpty();
-                binding.cardRestDay.setVisibility(hasPlan ? View.VISIBLE : View.GONE);
-            }
-        });
-
-        viewModel.getWeeklyPlan().observe(getViewLifecycleOwner(), plan -> {
-            boolean isEmpty = plan == null || plan.isEmpty();
-            binding.rvWeeklyPlan.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-            binding.layoutEmptyPlan.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-            weeklyPlanAdapter.submitList(plan);
-        });
-
-        viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
-            binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-            binding.scrollView.setVisibility(loading ? View.GONE : View.VISIBLE);
-        });
-
-        viewModel.getIsRefreshing().observe(getViewLifecycleOwner(), refreshing ->
-                binding.swipeRefresh.setRefreshing(refreshing));
-
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg ->
-                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show());
+        if (state.isDataStale()) {
+            Snackbar.make(binding.getRoot(), R.string.data_offline, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void navigateToWorkoutTab() {
+        if (getActivity() instanceof BottomNavHost) {
+            ((BottomNavHost) getActivity()).selectTab(R.id.nav_workout);
+        }
     }
 }

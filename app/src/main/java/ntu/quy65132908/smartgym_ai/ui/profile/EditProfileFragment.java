@@ -12,7 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import java.util.Locale;
+
 import dagger.hilt.android.AndroidEntryPoint;
+import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.databinding.FragmentEditProfileBinding;
 
 @AndroidEntryPoint
@@ -40,7 +43,11 @@ public class EditProfileFragment extends Fragment {
                 if (user.getHeight() != null) binding.etHeight.setText(String.valueOf(user.getHeight()));
                 if (user.getGoal() != null) binding.etGoal.setText(user.getGoal());
                 if (user.getBmi() != null) {
-                    binding.tvBmiDisplay.setText(String.format("BMI: %.1f (%s)", user.getBmi(), user.getBmiCategory()));
+                    binding.tvBmiDisplay.setText(String.format(
+                            Locale.getDefault(),
+                            "BMI: %.1f (%s)",
+                            user.getBmi(),
+                            user.getBmiCategory()));
                 }
             }
         });
@@ -64,7 +71,7 @@ public class EditProfileFragment extends Fragment {
 
         viewModel.getSaveSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success != null && success) {
-                Toast.makeText(requireContext(), "Đã lưu!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), R.string.profile_saved, Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(view).popBackStack();
             }
         });

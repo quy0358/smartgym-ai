@@ -13,13 +13,16 @@ import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
+import androidx.credentials.exceptions.NoCredentialException;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -60,12 +63,18 @@ public class LoginFragment extends Fragment {
         );
 
         binding.btnGoogle.setOnClickListener(v -> signInWithGoogle());
+
+        binding.tvForgotPassword.setOnClickListener(v -> {
+            String email = binding.etEmail.getText().toString().trim();
+            viewModel.resetPassword(email);
+        });
     }
 
     private void observeViewModel() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             binding.btnLogin.setEnabled(!isLoading);
+            binding.btnGoogle.setEnabled(!isLoading);
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
@@ -83,6 +92,12 @@ public class LoginFragment extends Fragment {
                         .navigate(R.id.action_login_to_dashboard);
             }
         });
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null) {
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void signInWithGoogle() {
@@ -97,11 +112,12 @@ public class LoginFragment extends Fragment {
                 .addCredentialOption(googleIdOption)
                 .build();
 
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         credentialManager.getCredentialAsync(
                 requireContext(),
                 request,
                 null, // CancellationSignal
-                Executors.newSingleThreadExecutor(),
+                executor,
                 new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                     @Override
                     public void onResult(GetCredentialResponse result) {
@@ -109,17 +125,29 @@ public class LoginFragment extends Fragment {
                             GoogleIdTokenCredential credential = GoogleIdTokenCredential.createFrom(
                                     result.getCredential().getData());
                             String idToken = credential.getIdToken();
-                            requireActivity().runOnUiThread(() -> viewModel.signInWithGoogle(idToken));
+                            if (isAdded()) {
+                                requireActivity().runOnUiThread(() -> viewModel.signInWithGoogle(idToken));
+                            }
                         } catch (Exception e) {
-                            requireActivity().runOnUiThread(() ->
-                                    Log.e("LoginFragment", "Google sign-in parsing failed", e));
+                            if (isAdded()) {
+                                requireActivity().runOnUiThread(() ->
+                                        viewModel.reportGoogleSignInFailure(e.getMessage()));
+                            }
+                        } finally {
+                            executor.shutdown();
                         }
                     }
 
                     @Override
                     public void onError(@NonNull GetCredentialException e) {
-                        requireActivity().runOnUiThread(() ->
-                                Log.e("LoginFragment", "Google sign-in failed", e));
+                        String message = e instanceof NoCredentialException
+                                ? getString(R.string.error_google_no_credential)
+                                : e.getMessage();
+                        if (isAdded()) {
+                            requireActivity().runOnUiThread(() ->
+                                    viewModel.reportGoogleSignInFailure(message));
+                        }
+                        executor.shutdown();
                     }
                 }
         );

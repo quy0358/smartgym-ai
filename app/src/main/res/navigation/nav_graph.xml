@@ -45,13 +45,26 @@
         <action
             android:id="@+id/action_dashboard_to_ai_analysis"
             app:destination="@id/nav_ai_analysis" />
+        <action
+            android:id="@+id/action_dashboard_to_pose_trainer"
+            app:destination="@id/nav_pose_trainer" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_workout"
-        android:name="ntu.quy65132908.smartgym_ai.ui.workout.WorkoutDetailFragment"
+        android:name="ntu.quy65132908.smartgym_ai.ui.workout.WorkoutListFragment"
         android:label="@string/workout_plan"
-        tools:layout="@layout/fragment_workout_detail" />
+        tools:layout="@layout/fragment_workout_list">
+        <action
+            android:id="@+id/action_workout_to_workout_detail"
+            app:destination="@id/nav_workout_detail" />
+        <action
+            android:id="@+id/action_workout_to_ai_analysis"
+            app:destination="@id/nav_ai_analysis" />
+        <action
+            android:id="@+id/action_workout_to_pose_trainer"
+            app:destination="@id/nav_pose_trainer" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_progress"
@@ -91,13 +104,69 @@
             android:name="workoutId"
             app:argType="string"
             android:defaultValue="" />
+        <argument
+            android:name="workoutTitle"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="workoutDuration"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="dayType"
+            app:argType="string"
+            android:defaultValue="TRAINING" />
+        <action
+            android:id="@+id/action_workout_detail_to_pose_trainer"
+            app:destination="@id/nav_pose_trainer" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_ai_analysis"
         android:name="ntu.quy65132908.smartgym_ai.ui.analysis.AIAnalysisFragment"
         android:label="@string/ai_analysis"
-        tools:layout="@layout/fragment_ai_analysis" />
+        tools:layout="@layout/fragment_ai_analysis">
+        <action
+            android:id="@+id/action_ai_analysis_to_pose_trainer"
+            app:destination="@id/nav_pose_trainer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_pose_trainer"
+        android:name="ntu.quy65132908.smartgym_ai.ui.pose.PoseTrainerFragment"
+        android:label="@string/pose_trainer_title"
+        tools:layout="@layout/fragment_pose_trainer">
+        <argument
+            android:name="exerciseType"
+            app:argType="string"
+            android:defaultValue="push_up" />
+        <argument
+            android:name="workoutId"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="selectionRequired"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_exercise_library"
+        android:name="ntu.quy65132908.smartgym_ai.ui.workout.ExerciseLibraryFragment"
+        android:label="@string/exercise_library_title"
+        tools:layout="@layout/fragment_exercise_library" />
+
+    <fragment
+        android:id="@+id/nav_nutrition"
+        android:name="ntu.quy65132908.smartgym_ai.ui.nutrition.NutritionFragment"
+        android:label="@string/nutrition_title"
+        tools:layout="@layout/fragment_nutrition" />
+
+    <fragment
+        android:id="@+id/nav_wellness"
+        android:name="ntu.quy65132908.smartgym_ai.ui.wellness.WellnessFragment"
+        android:label="@string/wellness_title"
+        tools:layout="@layout/fragment_wellness" />
 
     <!-- Global actions -->
     <action

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -18,6 +18,16 @@
             android:layout_gravity="center"
             android:visibility="gone"
             android:indeterminateTint="@color/primary" />
+
+        <TextView
+            android:id="@+id/tv_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:text="@string/loading_dashboard"
+            android:textAppearance="@style/TextStyle.BodyBase"
+            android:visibility="gone" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view"
@@ -38,23 +48,36 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tv_avatar"
+                    <FrameLayout
                         android:layout_width="@dimen/avatar_sm"
-                        android:layout_height="@dimen/avatar_sm"
-                        android:background="@drawable/bg_avatar_circle"
-                        android:gravity="center"
-                        android:text="U"
-                        android:textColor="@color/primary"
-                        android:fontFamily="@font/inter_semibold"
-                        android:textSize="16sp" />
+                        android:layout_height="@dimen/avatar_sm">
+
+                        <ImageView
+                            android:id="@+id/iv_avatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="@string/avatar" />
+
+                        <TextView
+                            android:id="@+id/tv_avatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_avatar_circle"
+                            android:gravity="center"
+                            android:text="@string/default_avatar_letter"
+                            android:textColor="@color/primary"
+                            android:fontFamily="@font/inter_semibold"
+                            android:textSize="16sp" />
+                    </FrameLayout>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_md"
                         android:layout_weight="1"
-                        android:text="FitAI"
+                        android:text="@string/brand_fitai"
                         android:textColor="@color/primary"
                         android:fontFamily="@font/montserrat_bold"
                         android:textSize="22sp" />
@@ -75,7 +98,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lg"
-                    android:textAppearance="@style/TextStyle.HeadlineMd" />
+                    android:textAppearance="@style/TextStyle.HeadlineMd"
+                    tools:text="Chào Quy!" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -89,34 +113,95 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lg"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:orientation="vertical">
 
-                    <include
-                        android:id="@+id/stat_weight"
-                        layout="@layout/item_stat_card"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="@dimen/spacing_xs" />
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
-                    <include
-                        android:id="@+id/stat_bmi"
-                        layout="@layout/item_stat_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="@dimen/spacing_xs"
-                        android:layout_marginEnd="@dimen/spacing_xs" />
+                        <include
+                            android:id="@+id/stat_weight"
+                            layout="@layout/item_stat_card"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/spacing_xs"
+                            android:layout_weight="1" />
+
+                        <include
+                            android:id="@+id/stat_bmi"
+                            layout="@layout/item_stat_card"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/spacing_xs"
+                            android:layout_weight="1" />
+                    </LinearLayout>
 
                     <include
                         android:id="@+id/stat_goal"
                         layout="@layout/item_stat_card"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="@dimen/spacing_xs" />
+                        android:layout_marginTop="@dimen/spacing_sm" />
                 </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    style="@style/Widget.SmartGym.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_lg">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/smart_tools_title"
+                            android:textAppearance="@style/TextStyle.BodyBold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_md"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_open_nutrition"
+                                style="@style/Widget.SmartGym.Button.Outline"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                app:icon="@drawable/ic_nav_progress"
+                                app:iconGravity="textStart"
+                                android:text="@string/open_nutrition" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_open_wellness"
+                                style="@style/Widget.SmartGym.Button.Outline"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_marginTop="@dimen/spacing_sm"
+                                app:icon="@drawable/ic_notification_bell"
+                                app:iconGravity="textStart"
+                                android:text="@string/open_wellness" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_open_pose"
+                                style="@style/Widget.SmartGym.Button.Outline"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_marginTop="@dimen/spacing_sm"
+                                app:icon="@drawable/ic_play_circle"
+                                app:iconGravity="textStart"
+                                android:text="@string/pose_open_camera" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <!-- AI Workout Card -->
                 <androidx.cardview.widget.CardView
@@ -146,6 +231,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_sm"
+                            android:text="@string/ai_empty_workout_title"
                             android:textAppearance="@style/TextStyle.HeadlineMd" />
 
                         <TextView
@@ -153,6 +239,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
+                            android:text="@string/ai_empty_workout_subtitle"
                             android:textAppearance="@style/TextStyle.BodyBase" />
 
                         <com.google.android.material.button.MaterialButton
@@ -188,8 +275,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="🧘"
-                            android:textSize="36sp" />
+                            android:text="@string/rest_day_icon"
+                            android:textSize="36sp"
+                            android:importantForAccessibility="no" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -229,24 +317,25 @@
                         android:text="@string/weekly_plan"
                         android:textAppearance="@style/TextStyle.BodyBold" />
 
-                    <TextView
-                        android:id="@+id/tv_view_all"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_view_all"
+                        style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
+                        android:minWidth="48dp"
                         android:text="@string/view_all"
-                        android:textAppearance="@style/TextStyle.LabelCaps"
-                        android:textColor="@color/primary"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:padding="@dimen/spacing_xs" />
+                        android:textColor="@color/primary" />
                 </LinearLayout>
 
-                <!-- Weekly Plan List -->
+                <!-- nestedScrollingEnabled=false required inside NestedScrollView;
+                     max 7 items so recycling loss is negligible -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_weekly_plan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_md"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
 
                 <!-- Empty State for Weekly Plan -->
                 <LinearLayout
@@ -256,14 +345,14 @@
                     android:layout_marginTop="@dimen/spacing_xl"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_xl"
-                    android:visibility="gone">
+                    android:padding="@dimen/spacing_xl">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📋"
-                        android:textSize="48sp" />
+                        android:text="@string/empty_plan_icon"
+                        android:textSize="48sp"
+                        android:importantForAccessibility="no" />
 
                     <TextView
                         android:layout_width="wrap_content"

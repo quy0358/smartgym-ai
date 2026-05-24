@@ -20,17 +20,30 @@
             android:textAppearance="@style/TextStyle.HeadlineLg" />
 
         <!-- Avatar -->
-        <TextView
-            android:id="@+id/tv_profile_avatar"
+        <FrameLayout
             android:layout_width="@dimen/avatar_lg"
             android:layout_height="@dimen/avatar_lg"
-            android:layout_marginTop="@dimen/spacing_xl"
-            android:background="@drawable/bg_avatar_circle"
-            android:gravity="center"
-            android:text="U"
-            android:textColor="@color/primary"
-            android:fontFamily="@font/inter_semibold"
-            android:textSize="28sp" />
+            android:layout_marginTop="@dimen/spacing_xl">
+
+            <ImageView
+                android:id="@+id/iv_profile_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                android:contentDescription="Avatar" />
+
+            <TextView
+                android:id="@+id/tv_profile_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_avatar_circle"
+                android:gravity="center"
+                android:text="U"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/inter_semibold"
+                android:textSize="28sp" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tv_profile_name"
@@ -97,6 +110,14 @@
             android:layout_height="@dimen/button_height"
             android:layout_marginTop="@dimen/spacing_md"
             android:text="Chỉnh sửa hồ sơ" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_open_wellness"
+            style="@style/Widget.SmartGym.Button.Outline"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:text="@string/open_wellness" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sign_out"

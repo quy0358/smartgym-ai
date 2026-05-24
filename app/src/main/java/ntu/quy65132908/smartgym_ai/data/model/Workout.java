@@ -3,6 +3,10 @@ package ntu.quy65132908.smartgym_ai.data.model;
 import java.util.List;
 
 public class Workout {
+    public static final String DAY_TYPE_TRAINING = "TRAINING";
+    public static final String DAY_TYPE_RECOVERY = "RECOVERY";
+    public static final String DAY_TYPE_REST = "REST";
+
     private String id;
     private String title;
     private String subtitle;
@@ -11,6 +15,8 @@ public class Workout {
     private List<Exercise> exercises;
     private boolean isCompleted;
     private int dayOfWeek; // 1=Monday...7=Sunday
+    private int exerciseCount; // Denormalized count for dashboard display
+    private String dayType = DAY_TYPE_TRAINING;
 
     public Workout() {}
 
@@ -29,6 +35,7 @@ public class Workout {
     public int getDurationMinutes() { return durationMinutes; }
     public List<Exercise> getExercises() { return exercises; }
     public boolean isCompleted() { return isCompleted; }
+    public String getDayType() { return normalizeDayType(dayType); }
 
     public void setId(String id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }
@@ -37,7 +44,39 @@ public class Workout {
     public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
     public void setExercises(List<Exercise> exercises) { this.exercises = exercises; }
     public void setCompleted(boolean completed) { isCompleted = completed; }
+    public void setDayType(String dayType) { this.dayType = normalizeDayType(dayType); }
 
     public int getDayOfWeek() { return dayOfWeek; }
     public void setDayOfWeek(int dayOfWeek) { this.dayOfWeek = dayOfWeek; }
+
+    public int getExerciseCount() { return exerciseCount; }
+    public void setExerciseCount(int exerciseCount) { this.exerciseCount = exerciseCount; }
+
+    public boolean isTrainingDay() {
+        return DAY_TYPE_TRAINING.equals(getDayType());
+    }
+
+    public boolean isRecoveryDay() {
+        return DAY_TYPE_RECOVERY.equals(getDayType());
+    }
+
+    public boolean isRestDay() {
+        return DAY_TYPE_REST.equals(getDayType());
+    }
+
+    public static String normalizeDayType(String rawDayType) {
+        if (rawDayType == null) {
+            return DAY_TYPE_TRAINING;
+        }
+        String normalized = rawDayType.trim().toUpperCase();
+        switch (normalized) {
+            case DAY_TYPE_REST:
+                return DAY_TYPE_REST;
+            case DAY_TYPE_RECOVERY:
+                return DAY_TYPE_RECOVERY;
+            case DAY_TYPE_TRAINING:
+            default:
+                return DAY_TYPE_TRAINING;
+        }
+    }
 }

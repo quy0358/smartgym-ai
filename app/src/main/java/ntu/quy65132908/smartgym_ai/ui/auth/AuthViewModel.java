@@ -29,10 +29,12 @@ public class AuthViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final SingleLiveEvent<String> errorMessage = new SingleLiveEvent<>();
+    private final SingleLiveEvent<String> successMessage = new SingleLiveEvent<>();
     private final SingleLiveEvent<FirebaseUser> authSuccess = new SingleLiveEvent<>();
 
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
+    public LiveData<String> getSuccessMessage() { return successMessage; }
     public LiveData<FirebaseUser> getAuthSuccess() { return authSuccess; }
 
     @Inject
@@ -119,6 +121,39 @@ public class AuthViewModel extends ViewModel {
                 errorMessage.postValue("Đăng nhập Google thất bại: " + e.getMessage());
             }
         });
+    }
+
+    public void resetPassword(String email) {
+        String sanitizedEmail = email != null ? email.trim() : "";
+        if (sanitizedEmail.isEmpty()) {
+            errorMessage.setValue("Vui lòng nhập email");
+            return;
+        }
+        if (!isValidEmail(sanitizedEmail)) {
+            errorMessage.setValue("Email không hợp lệ");
+            return;
+        }
+
+        isLoading.setValue(true);
+        errorMessage.setValue(null);
+        authRepository.sendPasswordResetEmail(sanitizedEmail, new AuthRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                isLoading.postValue(false);
+                successMessage.postValue("Đã gửi email đặt lại mật khẩu");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                isLoading.postValue(false);
+                errorMessage.postValue(mapFirebaseError(e));
+            }
+        });
+    }
+
+    public void reportGoogleSignInFailure(String detail) {
+        String safeDetail = detail != null && !detail.trim().isEmpty() ? detail.trim() : "Không rõ nguyên nhân";
+        errorMessage.setValue("Đăng nhập Google thất bại: " + safeDetail);
     }
 
     private boolean isValidEmail(String email) {

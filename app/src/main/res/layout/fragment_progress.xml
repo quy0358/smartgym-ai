@@ -21,40 +21,180 @@
             android:text="Tiến trình"
             android:textAppearance="@style/TextStyle.HeadlineLg" />
 
-        <!-- Weight Chart placeholder -->
+        <!-- Add progress entry -->
+        <androidx.cardview.widget.CardView
+            style="@style/Widget.SmartGym.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CẬP NHẬT TIẾN TRÌNH"
+                    android:textAppearance="@style/TextStyle.LabelCaps"
+                    android:textColor="@color/primary" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.SmartGym.TextField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:hint="Cân nặng (kg)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_progress_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/on_surface" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.SmartGym.TextField"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_xs"
+                        android:layout_weight="1"
+                        android:hint="Mỡ (%)">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_progress_body_fat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/on_surface" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.SmartGym.TextField"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_xs"
+                        android:layout_weight="1"
+                        android:hint="Lean mass">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_progress_lean_mass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/on_surface" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.SmartGym.TextField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:hint="Ghi chú">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_progress_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:maxLines="2"
+                        android:textColor="@color/on_surface" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_progress"
+                    style="@style/Widget.SmartGym.Button.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="Lưu tiến trình" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Weight Chart -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="240dp"
             android:layout_marginTop="@dimen/spacing_lg"
             style="@style/Widget.SmartGym.Card">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📊 BIỂU ĐỒ CÂN NẶNG"
-                    android:textAppearance="@style/TextStyle.LabelCaps" />
+                    android:layout_marginBottom="@dimen/spacing_sm">
 
-                <TextView
-                    android:id="@+id/tv_current_weight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_sm"
-                    android:text="70.0 kg"
-                    android:textAppearance="@style/TextStyle.HeadlineLg"
-                    android:textColor="@color/primary" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="↓ 2.5 kg so với tháng trước"
-                    android:textAppearance="@style/TextStyle.BodyBase"
-                    android:textColor="@color/tertiary" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📊 BIỂU ĐỒ CÂN NẶNG"
+                            android:textAppearance="@style/TextStyle.LabelCaps" />
+
+                        <TextView
+                            android:id="@+id/tv_weight_change"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Đang tải..."
+                            android:textAppearance="@style/TextStyle.BodyBase"
+                            android:textColor="@color/tertiary" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_current_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="-- kg"
+                        android:textAppearance="@style/TextStyle.HeadlineLg"
+                        android:textColor="@color/primary" />
+                </RelativeLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/weight_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_chart_placeholder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Chưa có dữ liệu cân nặng để vẽ biểu đồ."
+                        android:textAppearance="@style/TextStyle.BodyBase"
+                        android:textColor="@color/outline"
+                        android:visibility="visible" />
+                </FrameLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -92,6 +232,42 @@
                 android:layout_marginStart="@dimen/spacing_xs" />
         </LinearLayout>
 
+        <androidx.cardview.widget.CardView
+            style="@style/Widget.SmartGym.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lg">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/smart_tools_title"
+                    android:textAppearance="@style/TextStyle.BodyBold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_open_nutrition"
+                    style="@style/Widget.SmartGym.Button.Outline"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="@string/open_nutrition" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_open_wellness"
+                    style="@style/Widget.SmartGym.Button.Outline"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:text="@string/open_wellness" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <!-- Body photo slots -->
         <TextView
             android:layout_width="match_parent"
@@ -102,39 +278,93 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="180dp"
             android:layout_marginTop="@dimen/spacing_md"
             android:orientation="horizontal"
             android:weightSum="2">
 
             <FrameLayout
+                android:id="@+id/btn_before_photo"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginEnd="@dimen/spacing_xs"
-                android:background="@color/surface_container">
+                android:background="@color/surface_container"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-                <TextView
+                <ImageView
+                    android:id="@+id/iv_before_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_before_placeholder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="📷 Trước"
-                    android:textAppearance="@style/TextStyle.BodyBase" />
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📷"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:text="Trước"
+                        android:textColor="@color/white"
+                        android:textAppearance="@style/TextStyle.BodyBase" />
+                </LinearLayout>
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/btn_after_photo"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/spacing_xs"
-                android:background="@color/surface_container">
+                android:background="@color/surface_container"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-                <TextView
+                <ImageView
+                    android:id="@+id/iv_after_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_after_placeholder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="📷 Sau"
-                    android:textAppearance="@style/TextStyle.BodyBase" />
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📷"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:text="Sau"
+                        android:textColor="@color/white"
+                        android:textAppearance="@style/TextStyle.BodyBase" />
+                </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

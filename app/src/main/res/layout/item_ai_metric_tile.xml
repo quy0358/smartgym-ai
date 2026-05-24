@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_ai_metric_tile"
+    android:gravity="center"
+    android:minHeight="88dp"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_md">
+
+    <TextView
+        android:id="@+id/tv_stat_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextStyle.LabelCaps"
+        tools:text="Tỷ lệ mỡ" />
+
+    <TextView
+        android:id="@+id/tv_stat_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextStyle.HeadlineMd"
+        android:textColor="@color/primary"
+        tools:text="18" />
+
+    <TextView
+        android:id="@+id/tv_stat_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextStyle.LabelCaps"
+        tools:text="%" />
+</LinearLayout>

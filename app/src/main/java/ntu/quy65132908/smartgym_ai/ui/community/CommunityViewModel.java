@@ -48,6 +48,14 @@ public class CommunityViewModel extends ViewModel {
         });
     }
 
+    /**
+     * H2: Real refresh — restart listener to force re-query.
+     */
+    public void refresh() {
+        communityRepo.removeListener();
+        startListening();
+    }
+
     public void createPost(String content) {
         FirebaseUser u = authRepo.getCurrentUser();
         if (u == null) return;

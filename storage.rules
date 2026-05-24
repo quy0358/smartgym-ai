@@ -1,0 +1,24 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isAllowedBodyPhoto(fileName) {
+      return fileName.matches('(before|after)_photo\\.jpg');
+    }
+
+    function isValidImageUpload() {
+      return request.resource != null
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    match /users/{uid}/{fileName} {
+      allow read: if isOwner(uid) && isAllowedBodyPhoto(fileName);
+      allow write: if isOwner(uid) && isAllowedBodyPhoto(fileName) && isValidImageUpload();
+    }
+  }
+}

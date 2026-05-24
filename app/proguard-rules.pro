@@ -26,9 +26,6 @@
 # Firebase
 -keep class com.google.firebase.** { *; }
 
-# Gemini AI SDK
--keep class com.google.ai.** { *; }
-
 # Glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class * extends com.bumptech.glide.module.AppGlideModule { <init>(...); }

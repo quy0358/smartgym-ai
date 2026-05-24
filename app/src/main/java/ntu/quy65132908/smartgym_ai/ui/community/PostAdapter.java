@@ -11,6 +11,12 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.Post;
 
@@ -37,7 +43,11 @@ public class PostAdapter extends ListAdapter<Post, PostAdapter.ViewHolder> {
         }
         @Override
         public boolean areContentsTheSame(@NonNull Post a, @NonNull Post b) {
-            return a.getLikes() == b.getLikes() && a.getContent().equals(b.getContent());
+            return a.getLikes() == b.getLikes()
+                    && a.getCreatedAt() == b.getCreatedAt()
+                    && Objects.equals(a.getAuthorName(), b.getAuthorName())
+                    && Objects.equals(a.getContent(), b.getContent())
+                    && Objects.equals(a.getLikedBy(), b.getLikedBy());
         }
     };
 
@@ -53,13 +63,36 @@ public class PostAdapter extends ListAdapter<Post, PostAdapter.ViewHolder> {
         Post post = getItem(position);
         holder.tvAuthor.setText(post.getAuthorName());
         holder.tvContent.setText(post.getContent());
-        holder.tvLikes.setText(post.getLikes() + " ❤️");
-        holder.tvAvatar.setText(post.getAuthorName().isEmpty() ? "U" : String.valueOf(post.getAuthorName().charAt(0)));
+        holder.tvLikes.setText(holder.itemView.getContext().getString(R.string.post_likes_format, post.getLikes()));
+        holder.tvAvatar.setText(post.getAuthorName().isEmpty()
+                ? holder.itemView.getContext().getString(R.string.default_avatar_letter)
+                : String.valueOf(post.getAuthorName().charAt(0)).toUpperCase(Locale.getDefault()));
+        holder.tvTime.setText(formatRelativeTime(holder, post.getCreatedAt()));
 
         boolean isLiked = currentUserId != null && post.getLikedBy().contains(currentUserId);
+        holder.btnLike.setImageResource(isLiked ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off);
         holder.btnLike.setOnClickListener(v -> {
             if (likeListener != null) likeListener.onLike(post, isLiked);
         });
+    }
+
+    private static String formatRelativeTime(ViewHolder holder, long createdAt) {
+        if (createdAt <= 0) return "";
+        long diffMs = Math.max(0, System.currentTimeMillis() - createdAt);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(diffMs);
+        if (minutes < 1) return holder.itemView.getContext().getString(R.string.time_just_now);
+        if (minutes < 60) {
+            return holder.itemView.getContext().getString(R.string.time_minutes_ago_format, minutes);
+        }
+        long hours = TimeUnit.MILLISECONDS.toHours(diffMs);
+        if (hours < 24) {
+            return holder.itemView.getContext().getString(R.string.time_hours_ago_format, hours);
+        }
+        long days = TimeUnit.MILLISECONDS.toDays(diffMs);
+        if (days < 7) {
+            return holder.itemView.getContext().getString(R.string.time_days_ago_format, days);
+        }
+        return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date(createdAt));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

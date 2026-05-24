@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_sm"
-    android:background="@color/surface_container"
+    android:background="@drawable/bg_workout_item_rounded"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/spacing_md">
+    android:padding="@dimen/spacing_md"
+    tools:ignore="Overdraw">
 
     <!-- Status Icon -->
     <FrameLayout
@@ -20,7 +22,8 @@
             android:layout_width="@dimen/icon_md"
             android:layout_height="@dimen/icon_md"
             android:layout_gravity="center"
-            android:src="@android:drawable/ic_menu_agenda"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_dumbbell"
             app:tint="@color/on_surface_variant" />
     </FrameLayout>
 
@@ -36,28 +39,58 @@
             android:id="@+id/tv_workout_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Workout Name"
-            android:textAppearance="@style/TextStyle.BodyBold" />
+            android:textAppearance="@style/TextStyle.BodyBold"
+            tools:text="Upper Body Strength" />
 
         <TextView
             android:id="@+id/tv_workout_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Th 2"
-            android:textAppearance="@style/TextStyle.LabelCaps" />
+            android:textAppearance="@style/TextStyle.LabelCaps"
+            tools:text="Thứ 2" />
+
+        <TextView
+            android:id="@+id/tv_workout_meta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:textAppearance="@style/TextStyle.BodyBase"
+            android:textColor="@color/on_surface_variant"
+            tools:text="45 phút • Vừa • 6 bài" />
     </LinearLayout>
 
-    <!-- Badge -->
-    <TextView
-        android:id="@+id/tv_badge"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_badge_today"
-        android:paddingHorizontal="@dimen/spacing_sm"
-        android:paddingVertical="2dp"
-        android:text="HÔM NAY"
-        android:textAppearance="@style/TextStyle.LabelCaps"
-        android:textColor="@color/primary"
-        android:textSize="10sp"
-        android:visibility="gone" />
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_type_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pose_chip"
+            android:paddingHorizontal="@dimen/spacing_sm"
+            android:paddingVertical="2dp"
+            android:textAppearance="@style/TextStyle.LabelCaps"
+            android:textColor="@color/on_surface_variant"
+            android:textSize="11sp"
+            android:visibility="gone"
+            tools:text="PHỤC HỒI"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:background="@drawable/bg_badge_today"
+            android:paddingHorizontal="@dimen/spacing_sm"
+            android:paddingVertical="2dp"
+            android:text="@string/today_badge"
+            android:textAppearance="@style/TextStyle.LabelCaps"
+            android:textColor="@color/primary"
+            android:textSize="11sp"
+            android:visibility="gone" />
+    </LinearLayout>
 </LinearLayout>

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -42,22 +43,32 @@ public class CommunityFragment extends Fragment {
         binding.rvPosts.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvPosts.setAdapter(adapter);
 
+        // H3: Fix visibility logic — show loading initially
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.tvEmpty.setVisibility(View.GONE);
+        binding.swipeRefresh.setVisibility(View.GONE);
+
         viewModel.getPosts().observe(getViewLifecycleOwner(), posts -> {
-            binding.progressBar.setVisibility(View.GONE);
+            // H3: Only update visibility when not refreshing
+            Boolean refreshing = viewModel.getIsRefreshing().getValue();
+            boolean isRefreshing = refreshing != null && refreshing;
+
+            if (!isRefreshing) {
+                binding.progressBar.setVisibility(View.GONE);
+            }
+
             if (posts != null && !posts.isEmpty()) {
                 adapter.submitList(posts);
                 binding.tvEmpty.setVisibility(View.GONE);
                 binding.swipeRefresh.setVisibility(View.VISIBLE);
-            } else {
+            } else if (!isRefreshing) {
                 binding.tvEmpty.setVisibility(View.VISIBLE);
+                binding.swipeRefresh.setVisibility(View.GONE);
             }
         });
 
-        // Pull-to-refresh
-        binding.swipeRefresh.setOnRefreshListener(() -> {
-            // The real-time listener already provides updates, just show refresh briefly
-            binding.swipeRefresh.setRefreshing(false);
-        });
+        // H2: Real pull-to-refresh — actually refresh data
+        binding.swipeRefresh.setOnRefreshListener(() -> viewModel.refresh());
 
         viewModel.getIsRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
             if (refreshing != null) {
@@ -65,7 +76,16 @@ public class CommunityFragment extends Fragment {
                 if (refreshing) {
                     binding.progressBar.setVisibility(View.VISIBLE);
                     binding.tvEmpty.setVisibility(View.GONE);
+                } else {
+                    binding.progressBar.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        // H8: Error handling
+        viewModel.getError().observe(getViewLifecycleOwner(), msg -> {
+            if (msg != null) {
+                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
             }
         });
 

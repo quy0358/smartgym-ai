@@ -1,6 +1,7 @@
 package ntu.quy65132908.smartgym_ai.data.repository;
 
-import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
@@ -58,17 +59,40 @@ public class CommunityRepository {
     }
 
     public void toggleLike(String postId, String uid, boolean isLiked, SimpleCallback cb) {
-        Map<String, Object> updates = new HashMap<>();
-        if (isLiked) {
-            updates.put("likedBy", FieldValue.arrayRemove(uid));
-            updates.put("likes", FieldValue.increment(-1));
-        } else {
-            updates.put("likedBy", FieldValue.arrayUnion(uid));
-            updates.put("likes", FieldValue.increment(1));
-        }
-        firestore.collection("posts").document(postId).update(updates)
+        DocumentReference postRef = firestore.collection("posts").document(postId);
+        firestore.runTransaction(transaction -> {
+                    DocumentSnapshot snapshot = transaction.get(postRef);
+                    List<String> updatedLikedBy = readLikedBy(snapshot);
+
+                    if (isLiked) {
+                        updatedLikedBy.remove(uid);
+                    } else if (!updatedLikedBy.contains(uid)) {
+                        updatedLikedBy.add(uid);
+                    }
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("likedBy", updatedLikedBy);
+                    updates.put("likes", updatedLikedBy.size());
+                    transaction.update(postRef, updates);
+                    return null;
+                })
                 .addOnSuccessListener(v -> cb.onSuccess())
                 .addOnFailureListener(cb::onError);
+    }
+
+    private List<String> readLikedBy(DocumentSnapshot snapshot) {
+        Object rawLikedBy = snapshot.get("likedBy");
+        List<String> likedBy = new ArrayList<>();
+        if (!(rawLikedBy instanceof List<?>)) {
+            return likedBy;
+        }
+
+        for (Object item : (List<?>) rawLikedBy) {
+            if (item instanceof String) {
+                likedBy.add((String) item);
+            }
+        }
+        return likedBy;
     }
 
     public void removeListener() {
