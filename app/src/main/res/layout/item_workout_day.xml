@@ -13,18 +13,29 @@
 
     <!-- Status Icon -->
     <FrameLayout
-        android:layout_width="@dimen/avatar_sm"
-        android:layout_height="@dimen/avatar_sm"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:background="@drawable/bg_rounded_12">
 
         <ImageView
+            android:id="@+id/iv_workout_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToOutline="true"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_workout_program" />
+
+        <ImageView
             android:id="@+id/iv_status"
-            android:layout_width="@dimen/icon_md"
-            android:layout_height="@dimen/icon_md"
-            android:layout_gravity="center"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/bg_pose_chip"
+            android:padding="5dp"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_dumbbell"
-            app:tint="@color/on_surface_variant" />
+            app:tint="@color/on_surface" />
     </FrameLayout>
 
     <!-- Info -->
@@ -89,7 +100,7 @@
             android:paddingVertical="2dp"
             android:text="@string/today_badge"
             android:textAppearance="@style/TextStyle.LabelCaps"
-            android:textColor="@color/primary"
+            android:textColor="@color/on_primary_container"
             android:textSize="11sp"
             android:visibility="gone" />
     </LinearLayout>

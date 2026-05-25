@@ -1,59 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary (Neon Lime) -->
-    <color name="primary">#FFC3F400</color>
-    <color name="on_primary">#FF1B1C00</color>
-    <color name="primary_container">#FF2A2F00</color>
-    <color name="on_primary_container">#FFDEFF33</color>
+    <!-- Modarb-inspired dark purple system -->
+    <color name="primary">#FF6739FF</color>
+    <color name="on_primary">#FFFFFFFF</color>
+    <color name="primary_container">#FF2F225C</color>
+    <color name="on_primary_container">#FFE9DDFF</color>
 
-    <!-- Secondary (Electric Blue) -->
-    <color name="secondary">#FF0356FF</color>
+    <color name="secondary">#FF997AFF</color>
     <color name="on_secondary">#FFFFFFFF</color>
-    <color name="secondary_container">#FF0356FF</color>
-    <color name="on_secondary_container">#FFFFFFFF</color>
+    <color name="secondary_container">#FF3A2A73</color>
+    <color name="on_secondary_container">#FFE9DDFF</color>
 
-    <!-- Tertiary (Cyan) -->
-    <color name="tertiary">#FF00E5FF</color>
-    <color name="on_tertiary">#FF003544</color>
+    <color name="tertiary">#FF34C759</color>
+    <color name="on_tertiary">#FF06220D</color>
 
-    <!-- Error -->
     <color name="error">#FFFF6B6B</color>
-    <!-- Warning (Orange) -->
-    <color name="warning">#FFFFB74D</color>
-    <color name="on_error">#FF690005</color>
-    <color name="error_container">#FF93000A</color>
-    <color name="on_error_container">#FFFFB4AB</color>
+    <color name="warning">#FFFFD24A</color>
+    <color name="on_error">#FFFFFFFF</color>
+    <color name="error_container">#FF522222</color>
+    <color name="on_error_container">#FFFFDADA</color>
 
-    <!-- Background/Surface (Pure Dark) -->
-    <color name="background">#FF0E0E0E</color>
-    <color name="on_background">#FFE5E2E1</color>
-    <color name="surface">#FF131313</color>
-    <color name="on_surface">#FFE5E2E1</color>
-    <color name="surface_variant">#FF49454F</color>
-    <color name="on_surface_variant">#FFC4C9AC</color>
+    <color name="background">#FF151515</color>
+    <color name="on_background">#FFFFFFFF</color>
+    <color name="surface">#FF1B1B1B</color>
+    <color name="on_surface">#FFFFFFFF</color>
+    <color name="surface_variant">#FF5A5A5A</color>
+    <color name="on_surface_variant">#FFC9C3D8</color>
 
-    <!-- Surface containers -->
-    <color name="surface_container">#FF201F1F</color>
-    <color name="surface_container_high">#FF2B2A2A</color>
-    <color name="surface_container_highest">#FF363535</color>
-    <color name="surface_container_low">#FF1B1B1B</color>
-    <color name="surface_container_lowest">#FF0E0E0E</color>
+    <color name="surface_container">#FF232323</color>
+    <color name="surface_container_high">#FF2B2B2B</color>
+    <color name="surface_container_highest">#FF353238</color>
+    <color name="surface_container_low">#FF1A1A1A</color>
+    <color name="surface_container_lowest">#FF101010</color>
 
-    <!-- Outline -->
-    <color name="outline">#FF938F99</color>
-    <color name="outline_variant">#FF49454F</color>
+    <color name="outline">#FF908A9D</color>
+    <color name="outline_variant">#FF4E4859</color>
 
-    <!-- Inverse -->
-    <color name="inverse_surface">#FFE5E2E1</color>
-    <color name="inverse_on_surface">#FF313030</color>
-    <color name="inverse_primary">#FF4C5400</color>
+    <color name="inverse_surface">#FFECE8F5</color>
+    <color name="inverse_on_surface">#FF25212A</color>
+    <color name="inverse_primary">#FF5E35E8</color>
 
-    <!-- Standard -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <!-- Gradient colors -->
-    <color name="gradient_blue_start">#FF0356FF</color>
-    <color name="gradient_lime_end">#FFC3F400</color>
+    <color name="purple_deep">#FF15101F</color>
+    <color name="purple_card">#FF282133</color>
+    <color name="lavender">#FFECE5FF</color>
+    <color name="nutrition_green">#FF34C759</color>
+    <color name="nutrition_yellow">#FFF3D026</color>
+
+    <color name="gradient_blue_start">#FF6739FF</color>
+    <color name="gradient_lime_end">#FF997AFF</color>
 </resources>

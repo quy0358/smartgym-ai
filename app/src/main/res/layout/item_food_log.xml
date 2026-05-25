@@ -8,35 +8,54 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="@dimen/spacing_md">
 
-        <TextView
-            android:id="@+id/tv_food_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextStyle.BodyBold" />
+        <ImageView
+            android:id="@+id/iv_food_image"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="@dimen/spacing_md"
+            android:background="@drawable/bg_rounded_12"
+            android:clipToOutline="true"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_meal_default" />
 
-        <TextView
-            android:id="@+id/tv_food_meal"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:textAppearance="@style/TextStyle.BodyBase" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_food_calories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:textColor="@color/primary"
-            android:textAppearance="@style/TextStyle.BodyBold" />
+            <TextView
+                android:id="@+id/tv_food_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextStyle.BodyBold" />
 
-        <TextView
-            android:id="@+id/tv_food_macros"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:textAppearance="@style/TextStyle.BodyBase" />
+            <TextView
+                android:id="@+id/tv_food_meal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="@style/TextStyle.BodyBase" />
+
+            <TextView
+                android:id="@+id/tv_food_calories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="@style/TextStyle.BodyBold"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:id="@+id/tv_food_macros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="@style/TextStyle.BodyBase" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

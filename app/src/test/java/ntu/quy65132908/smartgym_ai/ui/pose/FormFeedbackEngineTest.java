@@ -90,5 +90,28 @@ public class FormFeedbackEngineTest {
 
         assertEquals(0, feedback.getReps());
         assertFalse(feedback.isPersonDetected());
+        assertEquals("Đưa toàn thân vào khung hình để bắt đầu nhận diện.", feedback.getMessage());
+        assertNoMojibake(feedback.getMessage());
+    }
+
+    @Test
+    public void readyAndExerciseFeedback_useReadableVietnamese() {
+        FormFeedbackEngine engine = new FormFeedbackEngine();
+
+        assertEquals("Sẵn sàng. Giữ toàn thân trong khung hình.", engine.getReadyMessage());
+        assertNoMojibake(engine.getReadyMessage());
+
+        PoseFeedback feedback = engine.evaluate(PoseTestFactory.pushUpTop());
+
+        assertNoMojibake(feedback.getMessage());
+        assertTrue(feedback.getMessage().contains("chống đẩy"));
+    }
+
+    private static void assertNoMojibake(String value) {
+        String[] markers = {"Ã", "Ä", "á»", "áº", "Æ", "â€¢", "â€", "â€¦", "â†", "â", "ðŸ", "ï¸", "Å"};
+        for (String marker : markers) {
+            assertFalse("Unexpected mojibake marker " + marker + " in: " + value,
+                    value.contains(marker));
+        }
     }
 }

@@ -18,11 +18,22 @@
             android:text="@string/community"
             android:textAppearance="@style/TextStyle.HeadlineLg" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="112dp"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:background="@drawable/bg_onboarding_hero"
+            android:clipToOutline="true"
+            android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_hero_community" />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginTop="@dimen/spacing_md"
             android:layout_weight="1">
 
             <FrameLayout

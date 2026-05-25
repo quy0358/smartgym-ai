@@ -22,6 +22,17 @@
             android:text="@string/ai_title"
             android:textAppearance="@style/TextStyle.HeadlineMd" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="128dp"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:background="@drawable/bg_onboarding_hero"
+            android:clipToOutline="true"
+            android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_hero_progress" />
+
         <androidx.cardview.widget.CardView
             style="@style/Widget.SmartGym.Card"
             android:layout_width="match_parent"

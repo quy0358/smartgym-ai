@@ -15,6 +15,7 @@ import java.util.Objects;
 import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.databinding.ItemWorkoutDayBinding;
+import ntu.quy65132908.smartgym_ai.ui.media.UiImageResolver;
 import ntu.quy65132908.smartgym_ai.util.DateUtils;
 
 public class WeeklyPlanAdapter extends ListAdapter<Workout, WeeklyPlanAdapter.ViewHolder> {
@@ -76,6 +77,7 @@ public class WeeklyPlanAdapter extends ListAdapter<Workout, WeeklyPlanAdapter.Vi
 
         holder.binding.tvWorkoutDay.setText(dayName);
         holder.binding.tvWorkoutName.setText(title);
+        holder.binding.ivWorkoutImage.setImageResource(UiImageResolver.workoutImageFor(workout));
         String metaText = buildMetaText(holder, workout);
         holder.binding.tvWorkoutMeta.setText(metaText);
 

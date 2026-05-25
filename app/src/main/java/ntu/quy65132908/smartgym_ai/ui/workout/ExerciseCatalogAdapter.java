@@ -14,6 +14,7 @@ import java.util.Set;
 import ntu.quy65132908.smartgym_ai.data.model.ExerciseCatalogItem;
 import ntu.quy65132908.smartgym_ai.databinding.ItemExerciseCatalogBinding;
 import ntu.quy65132908.smartgym_ai.R;
+import ntu.quy65132908.smartgym_ai.ui.media.UiImageResolver;
 
 public class ExerciseCatalogAdapter extends RecyclerView.Adapter<ExerciseCatalogAdapter.ViewHolder> {
     public interface Listener {
@@ -58,6 +59,10 @@ public class ExerciseCatalogAdapter extends RecyclerView.Adapter<ExerciseCatalog
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ExerciseCatalogItem item = items.get(position);
+        holder.binding.ivExerciseImage.setImageResource(UiImageResolver.exerciseImageFor(
+                item.getId(),
+                item.getName(),
+                item.getPrimaryMuscle()));
         holder.binding.tvExerciseName.setText(item.getName());
         holder.binding.tvExerciseMeta.setText(item.getPrimaryMuscle() + " • " + item.getEquipment() + " • " + item.getDifficulty());
         holder.binding.tvExercisePrescription.setText(holder.itemView.getContext().getString(

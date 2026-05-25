@@ -3,6 +3,7 @@ package ntu.quy65132908.smartgym_ai.ui.workout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import java.util.Objects;
 
 import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.Exercise;
+import ntu.quy65132908.smartgym_ai.ui.media.UiImageResolver;
 
 public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ViewHolder> {
 
@@ -57,6 +59,10 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ViewH
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Exercise ex = getItem(position);
+        holder.ivExercise.setImageResource(UiImageResolver.exerciseImageFor(
+                ex.getPoseTypeKey(),
+                ex.getName(),
+                ex.getNotes()));
         holder.tvName.setText(ex.getName());
         String detail = formatExerciseDetail(ex);
         holder.tvDetail.setText(detail);
@@ -91,10 +97,12 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ViewH
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tvName, tvDetail;
+        final ImageView ivExercise;
         final MaterialCheckBox cbDone;
 
         ViewHolder(View view) {
             super(view);
+            ivExercise = view.findViewById(R.id.iv_exercise_image);
             tvName = view.findViewById(R.id.tv_exercise_name);
             tvDetail = view.findViewById(R.id.tv_exercise_detail);
             cbDone = view.findViewById(R.id.cb_done);

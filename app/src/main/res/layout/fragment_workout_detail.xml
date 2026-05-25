@@ -32,10 +32,21 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_lg">
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="152dp"
+                android:background="@drawable/bg_onboarding_hero"
+                android:clipToOutline="true"
+                android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_workout_program" />
+
             <TextView
                 android:id="@+id/tv_workout_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
                 android:text=""
                 android:textAppearance="@style/TextStyle.BodyBase" />
 

@@ -57,13 +57,13 @@ public class ExerciseCatalogRepositoryTest {
                 "plank",
                 "Plank",
                 "Core",
-                "Khong dung cu",
-                "Co ban",
+                "Không dụng cụ",
+                "Cơ bản",
                 3,
                 30,
                 45,
                 "plank",
-                "Giu than nguoi thang");
+                "Giữ thân người thẳng");
 
         Exercise exercise = item.toExercise();
 

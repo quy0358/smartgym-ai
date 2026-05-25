@@ -15,6 +15,7 @@ import ntu.quy65132908.smartgym_ai.data.model.Challenge;
 import ntu.quy65132908.smartgym_ai.data.model.ChallengeProgress;
 import ntu.quy65132908.smartgym_ai.databinding.ItemChallengeBinding;
 import ntu.quy65132908.smartgym_ai.R;
+import ntu.quy65132908.smartgym_ai.ui.media.UiImageResolver;
 
 public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder> {
     public interface Listener {
@@ -56,6 +57,7 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.View
         if (challenge == null) {
             return;
         }
+        holder.binding.ivChallengeImage.setImageResource(UiImageResolver.challengeImageFor(challenge));
         holder.binding.tvChallengeTitle.setText(challenge.getTitle());
         holder.binding.tvChallengeDescription.setText(challenge.getDescription());
         holder.binding.tvChallengeMeta.setText(context.getString(

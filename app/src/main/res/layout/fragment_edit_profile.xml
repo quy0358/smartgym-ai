@@ -49,12 +49,23 @@
                     android:text="@string/profile_edit_subtitle"
                     android:textAppearance="@style/TextStyle.BodyBase" />
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="112dp"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:background="@drawable/bg_onboarding_hero"
+                    android:clipToOutline="true"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_hero_profile" />
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_display_name"
                     style="@style/Widget.SmartGym.TextField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:layout_marginTop="@dimen/spacing_lg"
                     android:hint="@string/profile_display_name_hint">
 
                     <com.google.android.material.textfield.TextInputEditText

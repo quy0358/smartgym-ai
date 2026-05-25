@@ -12,6 +12,7 @@ import java.util.List;
 import ntu.quy65132908.smartgym_ai.data.model.FoodLogEntry;
 import ntu.quy65132908.smartgym_ai.databinding.ItemFoodLogBinding;
 import ntu.quy65132908.smartgym_ai.R;
+import ntu.quy65132908.smartgym_ai.ui.media.UiImageResolver;
 
 public class FoodLogAdapter extends RecyclerView.Adapter<FoodLogAdapter.ViewHolder> {
     private final List<FoodLogEntry> items = new ArrayList<>();
@@ -38,6 +39,9 @@ public class FoodLogAdapter extends RecyclerView.Adapter<FoodLogAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FoodLogEntry entry = items.get(position);
+        holder.binding.ivFoodImage.setImageResource(UiImageResolver.mealImageFor(
+                entry.getMealType(),
+                entry.getName()));
         holder.binding.tvFoodName.setText(entry.getName());
         holder.binding.tvFoodMeal.setText(entry.getMealType());
         holder.binding.tvFoodCalories.setText(holder.itemView.getContext().getString(
