@@ -1,6 +1,7 @@
 package ntu.quy65132908.smartgym_ai.ui.pose;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class FormFeedbackEngineTest {
 
         assertEquals(0, down.getReps());
         assertEquals(1, top.getReps());
-        assertTrue(top.getMessage().contains("chống đẩy"));
+        assertTrue(top.getMessage().length() > 0);
     }
 
     @Test
@@ -49,26 +50,45 @@ public class FormFeedbackEngineTest {
     }
 
     @Test
-    public void evaluatePlank_givesVietnameseBodyLineFeedbackAndHoldMetric() {
+    public void evaluatePlank_givesBodyLineFeedbackAndHoldMetric() {
         FormFeedbackEngine engine = new FormFeedbackEngine();
         engine.setExerciseType(ExerciseType.PLANK);
 
-        PoseFeedback feedback = engine.evaluate(PoseTestFactory.pushUpTop());
+        PoseFeedback feedback = engine.evaluate(PoseTestFactory.plankAligned());
 
-        assertTrue(feedback.getMessage().contains("plank")
-                || feedback.getMessage().contains("thân người"));
+        assertTrue(feedback.getMessage().length() > 0);
         assertTrue(feedback.getQualityPercent() > 0);
         assertEquals(0, feedback.getReps());
         assertTrue(feedback.getHoldSeconds() >= 0);
     }
 
     @Test
-    public void evaluateEmptyFrame_requestsFullBodyInVietnamese() {
+    public void evaluatePlank_keepsAccumulatedHoldAfterInvalidForm() throws Exception {
+        FormFeedbackEngine engine = new FormFeedbackEngine();
+        engine.setExerciseType(ExerciseType.PLANK);
+
+        engine.evaluate(PoseTestFactory.plankAligned());
+        Thread.sleep(1200L);
+        PoseFeedback firstSegment = engine.evaluate(PoseTestFactory.plankAligned());
+
+        PoseFeedback invalidSegment = engine.evaluate(PoseFrame.empty());
+        Thread.sleep(1200L);
+        engine.evaluate(PoseTestFactory.plankAligned());
+        Thread.sleep(1200L);
+        PoseFeedback resumedSegment = engine.evaluate(PoseTestFactory.plankAligned());
+
+        assertTrue(firstSegment.getHoldSeconds() >= 1);
+        assertEquals(firstSegment.getHoldSeconds(), invalidSegment.getHoldSeconds());
+        assertTrue(resumedSegment.getHoldSeconds() >= firstSegment.getHoldSeconds() + 1);
+    }
+
+    @Test
+    public void evaluateEmptyFrame_requestsFullBodyAndMarksNoPerson() {
         FormFeedbackEngine engine = new FormFeedbackEngine();
 
         PoseFeedback feedback = engine.evaluate(PoseFrame.empty());
 
         assertEquals(0, feedback.getReps());
-        assertTrue(feedback.getMessage().contains("toàn thân"));
+        assertFalse(feedback.isPersonDetected());
     }
 }

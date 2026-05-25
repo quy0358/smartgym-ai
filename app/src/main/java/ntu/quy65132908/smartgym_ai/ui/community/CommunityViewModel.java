@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -19,68 +22,236 @@ import ntu.quy65132908.smartgym_ai.util.SingleLiveEvent;
 
 @HiltViewModel
 public class CommunityViewModel extends ViewModel {
+    private static final String MESSAGE_LOGIN_TO_POST = "Bạn cần đăng nhập để đăng bài.";
+    private static final String MESSAGE_LOGIN_TO_LIKE = "Bạn cần đăng nhập để thích bài viết.";
+    private static final String MESSAGE_EMPTY_CONTENT = "Nội dung trống";
+    private static final String MESSAGE_DEFAULT_USER = "Người dùng";
+    private static final String MESSAGE_GENERIC_ERROR = "Đã xảy ra lỗi";
+
     private final CommunityRepository communityRepo;
     private final AuthRepository authRepo;
-    private final MutableLiveData<List<Post>> posts = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isRefreshing = new MutableLiveData<>(false);
-    private final SingleLiveEvent<String> error = new SingleLiveEvent<>();
+    private final MutableLiveData<CommunityUiState> uiState = new MutableLiveData<>(CommunityUiState.initial());
+    private final SingleLiveEvent<String> message = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> postCreated = new SingleLiveEvent<>();
+    private final SingleLiveEvent<CommunityUiEvent> event = new SingleLiveEvent<>();
+    private String currentUserDisplayName = "";
 
-    public LiveData<List<Post>> getPosts() { return posts; }
-    public LiveData<Boolean> getIsRefreshing() { return isRefreshing; }
-    public LiveData<String> getError() { return error; }
+    public LiveData<CommunityUiState> getUiState() { return uiState; }
+    public LiveData<String> getMessage() { return message; }
     public LiveData<Boolean> getPostCreated() { return postCreated; }
+    public LiveData<CommunityUiEvent> getEvent() { return event; }
 
     @Inject
     public CommunityViewModel(CommunityRepository communityRepo, AuthRepository authRepo) {
         this.communityRepo = communityRepo;
         this.authRepo = authRepo;
-        startListening();
+        loadCurrentUserDisplayName();
+        startListening(false);
     }
 
-    private void startListening() {
-        isRefreshing.setValue(true);
+    private void startListening(boolean refreshing) {
+        CommunityUiState current = currentState();
+        uiState.setValue(current
+                .withRefreshing(refreshing)
+                .withInitialLoading(!refreshing && current.getPosts().isEmpty()));
         communityRepo.listenToPosts(new CommunityRepository.PostsCallback() {
             @Override
-            public void onSuccess(List<Post> list) { isRefreshing.postValue(false); posts.postValue(list); }
+            public void onSuccess(List<Post> list) {
+                uiState.postValue(currentState()
+                        .withPosts(enrichPosts(list))
+                        .withInitialLoading(false)
+                        .withRefreshing(false));
+            }
+
             @Override
-            public void onError(Exception e) { isRefreshing.postValue(false); error.postValue(e.getMessage()); }
+            public void onError(Exception e) {
+                uiState.postValue(currentState().withInitialLoading(false).withRefreshing(false));
+                emitMessage(messageFrom(e));
+            }
         });
     }
 
-    /**
-     * H2: Real refresh — restart listener to force re-query.
-     */
     public void refresh() {
         communityRepo.removeListener();
-        startListening();
+        startListening(true);
     }
 
     public void createPost(String content) {
-        FirebaseUser u = authRepo.getCurrentUser();
-        if (u == null) return;
+        FirebaseUser user = authRepo.getCurrentUser();
+        if (user == null) {
+            emitMessage(MESSAGE_LOGIN_TO_POST);
+            return;
+        }
+
         String sanitized = InputValidator.sanitizeContent(content);
-        if (sanitized.isEmpty()) { error.setValue("Nội dung trống"); return; }
-        String name = u.getDisplayName() != null ? u.getDisplayName() : "Người dùng";
-        communityRepo.createPost(u.getUid(), name, sanitized, new CommunityRepository.SimpleCallback() {
+        if (sanitized.isEmpty()) {
+            emitMessage(MESSAGE_EMPTY_CONTENT);
+            return;
+        }
+
+        if (currentState().isSubmittingPost()) {
+            return;
+        }
+
+        uiState.setValue(currentState().withSubmittingPost(true));
+        authRepo.getCurrentUserDisplayName(new AuthRepository.DisplayNameCallback() {
             @Override
-            public void onSuccess() { postCreated.postValue(true); }
+            public void onSuccess(String displayName) {
+                String resolvedName = resolveDisplayName(displayName, user.getDisplayName());
+                currentUserDisplayName = resolvedName;
+                createPostWithResolvedName(user.getUid(), resolvedName, sanitized);
+            }
+
             @Override
-            public void onError(Exception e) { error.postValue(e.getMessage()); }
+            public void onError(Exception e) {
+                String resolvedName = resolveDisplayName("", user.getDisplayName());
+                currentUserDisplayName = resolvedName;
+                createPostWithResolvedName(user.getUid(), resolvedName, sanitized);
+            }
         });
     }
 
-    public void toggleLike(String postId, boolean isLiked) {
-        FirebaseUser u = authRepo.getCurrentUser();
-        if (u == null) return;
-        communityRepo.toggleLike(postId, u.getUid(), isLiked, new CommunityRepository.SimpleCallback() {
+    private void createPostWithResolvedName(String uid, String name, String sanitizedContent) {
+        communityRepo.createPost(uid, name, sanitizedContent, new CommunityRepository.SimpleCallback() {
             @Override
-            public void onSuccess() {}
+            public void onSuccess() {
+                uiState.postValue(currentState().withSubmittingPost(false));
+                postCreated.postValue(true);
+                event.postValue(CommunityUiEvent.postCreated());
+            }
+
             @Override
-            public void onError(Exception e) { error.postValue(e.getMessage()); }
+            public void onError(Exception e) {
+                uiState.postValue(currentState().withSubmittingPost(false));
+                emitMessage(messageFrom(e));
+            }
+        });
+    }
+
+    public void toggleLike(Post post) {
+        FirebaseUser user = authRepo.getCurrentUser();
+        if (user == null) {
+            emitMessage(MESSAGE_LOGIN_TO_LIKE);
+            return;
+        }
+        if (post == null || post.getId() == null || post.getId().trim().isEmpty()) {
+            return;
+        }
+
+        String postId = post.getId();
+        Set<String> pending = new HashSet<>(currentState().getPendingLikePostIds());
+        if (!pending.add(postId)) {
+            return;
+        }
+        uiState.setValue(currentState().withPendingLikePostIds(pending));
+
+        communityRepo.toggleLike(postId, user.getUid(), new CommunityRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                removePendingLike(postId);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                removePendingLike(postId);
+                emitMessage(messageFrom(e));
+            }
         });
     }
 
     @Override
-    protected void onCleared() { super.onCleared(); communityRepo.removeListener(); }
+    protected void onCleared() {
+        super.onCleared();
+        communityRepo.removeListener();
+    }
+
+    private void removePendingLike(String postId) {
+        Set<String> pending = new HashSet<>(currentState().getPendingLikePostIds());
+        pending.remove(postId);
+        uiState.postValue(currentState().withPendingLikePostIds(pending));
+    }
+
+    private CommunityUiState currentState() {
+        CommunityUiState state = uiState.getValue();
+        return state != null ? state : CommunityUiState.initial();
+    }
+
+    private void loadCurrentUserDisplayName() {
+        if (authRepo.getCurrentUser() == null) {
+            currentUserDisplayName = "";
+            return;
+        }
+
+        authRepo.getCurrentUserDisplayName(new AuthRepository.DisplayNameCallback() {
+            @Override
+            public void onSuccess(String displayName) {
+                currentUserDisplayName = resolveDisplayName(displayName, null);
+                if (!currentUserDisplayName.isEmpty()) {
+                    uiState.postValue(currentState().withPosts(enrichPosts(currentState().getPosts())));
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                currentUserDisplayName = "";
+            }
+        });
+    }
+
+    private List<Post> enrichPosts(List<Post> posts) {
+        if (posts == null || posts.isEmpty() || currentUserDisplayName.isEmpty()) {
+            return posts;
+        }
+
+        FirebaseUser user = authRepo.getCurrentUser();
+        if (user == null) {
+            return posts;
+        }
+
+        List<Post> enriched = new ArrayList<>(posts.size());
+        for (Post post : posts) {
+            if (post != null
+                    && user.getUid().equals(post.getAuthorId())
+                    && isGenericAuthorName(post.getAuthorName())) {
+                enriched.add(copyPostWithAuthorName(post, currentUserDisplayName));
+            } else {
+                enriched.add(post);
+            }
+        }
+        return enriched;
+    }
+
+    private static Post copyPostWithAuthorName(Post source, String authorName) {
+        Post copy = new Post();
+        copy.setId(source.getId());
+        copy.setAuthorId(source.getAuthorId());
+        copy.setAuthorName(authorName);
+        copy.setContent(source.getContent());
+        copy.setLikes(source.getLikes());
+        copy.setLikedBy(new ArrayList<>(source.getLikedBy()));
+        copy.setCreatedAt(source.getCreatedAt());
+        return copy;
+    }
+
+    private static boolean isGenericAuthorName(String authorName) {
+        String sanitized = InputValidator.sanitizeName(authorName);
+        return sanitized.isEmpty() || MESSAGE_DEFAULT_USER.equals(sanitized);
+    }
+
+    private static String resolveDisplayName(String profileName, String firebaseName) {
+        String resolved = InputValidator.sanitizeName(profileName);
+        if (resolved.isEmpty()) {
+            resolved = InputValidator.sanitizeName(firebaseName);
+        }
+        return resolved.isEmpty() ? MESSAGE_DEFAULT_USER : resolved;
+    }
+
+    private void emitMessage(String value) {
+        message.postValue(value);
+        event.postValue(CommunityUiEvent.message(value));
+    }
+
+    private static String messageFrom(Exception e) {
+        return e != null && e.getMessage() != null ? e.getMessage() : MESSAGE_GENERIC_ERROR;
+    }
 }

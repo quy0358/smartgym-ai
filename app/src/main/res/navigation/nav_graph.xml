@@ -19,6 +19,9 @@
             app:destination="@id/nav_dashboard"
             app:popUpTo="@id/nav_login"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_login_to_onboarding"
+            app:destination="@id/nav_onboarding" />
     </fragment>
 
     <fragment
@@ -28,6 +31,21 @@
         tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_register_to_dashboard"
+            app:destination="@id/nav_dashboard"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_register_to_onboarding"
+            app:destination="@id/nav_onboarding" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_onboarding"
+        android:name="ntu.quy65132908.smartgym_ai.ui.onboarding.OnboardingFragment"
+        android:label="@string/onboarding_title"
+        tools:layout="@layout/fragment_onboarding">
+        <action
+            android:id="@+id/action_onboarding_to_dashboard"
             app:destination="@id/nav_dashboard"
             app:popUpTo="@id/nav_login"
             app:popUpToInclusive="true" />
@@ -91,7 +109,7 @@
     <fragment
         android:id="@+id/nav_edit_profile"
         android:name="ntu.quy65132908.smartgym_ai.ui.profile.EditProfileFragment"
-        android:label="Edit Profile"
+        android:label="@string/profile_edit_title"
         tools:layout="@layout/fragment_edit_profile" />
 
     <!-- Detail screens (overlay, not in bottom nav) -->

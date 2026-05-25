@@ -46,6 +46,16 @@ final class PoseTestFactory {
                 BodyLandmark.RIGHT_ANKLE, 700, 620);
     }
 
+    static PoseFrame plankAligned() {
+        return frame(
+                BodyLandmark.LEFT_SHOULDER, 200, 500,
+                BodyLandmark.LEFT_HIP, 430, 500,
+                BodyLandmark.LEFT_ANKLE, 700, 600,
+                BodyLandmark.RIGHT_SHOULDER, 200, 620,
+                BodyLandmark.RIGHT_HIP, 430, 620,
+                BodyLandmark.RIGHT_ANKLE, 700, 720);
+    }
+
     static PoseFrame squatTop() {
         return frame(
                 BodyLandmark.LEFT_SHOULDER, 470, 280,

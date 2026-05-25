@@ -97,6 +97,17 @@ public class DashboardViewModelTest {
     }
 
     @Test
+    public void uiState_usesOnboardingTargetWeightForGoalDisplay() {
+        User user = new User("test-uid", "Nguyen", "test@email.com");
+        user.setGoal("Giảm cân");
+        user.setTargetWeight(58f);
+
+        DashboardViewModel viewModel = createViewModelWithUser(user, Collections.emptyList());
+
+        assertEquals("58", state(viewModel).getGoalDisplay());
+    }
+
+    @Test
     public void uiState_missingProfileValuesUsePlaceholders() {
         User user = new User("test-uid", null, "test@email.com");
         user.setWeight(null);

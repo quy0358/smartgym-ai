@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "644529455872",
+    "firebase_url": "https://smartgym-ai-e44cc-default-rtdb.firebaseio.com",
     "project_id": "smartgym-ai-e44cc",
     "storage_bucket": "smartgym-ai-e44cc.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "ntu.quy65132908.smartgym_ai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "644529455872-rmc6kqh85bs8hq76acq3ate1li1lsc6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ntu.quy65132908.smartgym_ai",
+            "certificate_hash": "d0c72c2043e10c41047c6b7ac1dccc2376c5ef6c"
+          }
+        },
+        {
+          "client_id": "644529455872-t7t9538ejotq8alf5hk1aqneoc6q1b8t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCTlGsfsZvP241tadBOrgtYp4Qfp3425HM"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "644529455872-t7t9538ejotq8alf5hk1aqneoc6q1b8t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

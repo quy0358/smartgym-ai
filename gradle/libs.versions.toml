@@ -58,7 +58,6 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
-firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 
 # Google Sign-In (Credential Manager)
 credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }

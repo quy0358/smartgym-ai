@@ -12,41 +12,66 @@
         android:padding="@dimen/spacing_xl">
 
         <!-- Logo -->
+        <ImageView
+            android:id="@+id/iv_brand_logo"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginTop="48dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_smartgym_mark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:text="FitAI"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:text="@string/brand_fitai"
             android:textColor="@color/primary"
-            android:textSize="36sp"
+            android:textSize="32sp"
             android:fontFamily="@font/montserrat_bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/iv_brand_logo" />
 
         <TextView
             android:id="@+id/tv_tagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_sm"
-            android:text="Huấn luyện thông minh cùng AI"
+            android:text="@string/login_tagline"
             android:textAppearance="@style/TextStyle.BodyBase"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_logo" />
+
+        <ImageView
+            android:id="@+id/iv_login_hero"
+            android:layout_width="0dp"
+            android:layout_height="132dp"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:background="@drawable/bg_onboarding_hero"
+            android:contentDescription="@string/onboarding_hero_a11y"
+            android:padding="@dimen/spacing_md"
+            android:scaleType="centerInside"
+            android:src="@drawable/illustration_onboarding_ai"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_tagline" />
 
         <!-- Welcome Text -->
         <TextView
             android:id="@+id/tv_welcome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="@dimen/spacing_lg"
             android:text="@string/welcome_back"
             android:textAppearance="@style/TextStyle.HeadlineMd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_tagline" />
+            app:layout_constraintTop_toBottomOf="@id/iv_login_hero" />
 
         <TextView
             android:id="@+id/tv_subtitle"
@@ -169,9 +194,10 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:text="Google"
+            android:contentDescription="@string/login_with_google"
+            android:text="@string/google"
             android:textColor="@color/on_surface"
-            app:icon="@android:drawable/ic_menu_search"
+            app:icon="@drawable/ic_google_24"
             app:iconGravity="textStart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

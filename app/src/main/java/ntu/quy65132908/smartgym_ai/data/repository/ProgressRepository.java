@@ -40,11 +40,17 @@ public class ProgressRepository {
     public void addEntry(String uid, ProgressEntry entry, SimpleCallback cb) {
         Map<String, Object> data = new HashMap<>();
         data.put("weight", entry.getWeight());
-        data.put("bodyFat", entry.getBodyFat());
-        data.put("leanMass", entry.getLeanMass());
         data.put("date", entry.getDate());
-        data.put("note", entry.getNote());
         data.put("userId", uid);
+        if (entry.getBodyFat() != null) {
+            data.put("bodyFat", entry.getBodyFat());
+        }
+        if (entry.getLeanMass() != null) {
+            data.put("leanMass", entry.getLeanMass());
+        }
+        if (entry.getNote() != null && !entry.getNote().trim().isEmpty()) {
+            data.put("note", entry.getNote());
+        }
         firestore.collection("users").document(uid).collection("progress").add(data)
                 .addOnSuccessListener(r -> cb.onSuccess()).addOnFailureListener(cb::onError);
     }

@@ -19,14 +19,20 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import ntu.quy65132908.smartgym_ai.data.model.User;
+import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 import ntu.quy65132908.smartgym_ai.databinding.ActivityMainBinding;
 import ntu.quy65132908.smartgym_ai.ui.navigation.BottomNavHost;
+import ntu.quy65132908.smartgym_ai.ui.onboarding.OnboardingDestinationResolver;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity implements BottomNavHost {
 
     @Inject
     FirebaseAuth firebaseAuth;
+
+    @Inject
+    UserRepository userRepository;
 
     private ActivityMainBinding binding;
     private NavController navController;
@@ -67,12 +73,34 @@ public class MainActivity extends AppCompatActivity implements BottomNavHost {
             }
         });
 
-        // Auto-navigate to dashboard if already logged in
+        // Auto-route logged-in users through mandatory onboarding when needed.
         if (firebaseAuth.getCurrentUser() != null) {
             NavDestination currentDest = navController.getCurrentDestination();
             if (currentDest != null && currentDest.getId() == R.id.nav_login) {
-                navController.navigate(R.id.action_login_to_dashboard);
+                routeLoggedInUser(firebaseAuth.getCurrentUser().getUid());
             }
+        }
+    }
+
+    private void routeLoggedInUser(String uid) {
+        userRepository.getUser(uid, new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User user) {
+                runOnUiThread(() -> navigateToInitialDestination(user));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                runOnUiThread(() -> navController.navigate(R.id.action_login_to_onboarding));
+            }
+        });
+    }
+
+    private void navigateToInitialDestination(User user) {
+        if (OnboardingDestinationResolver.requiresOnboarding(user)) {
+            navController.navigate(R.id.action_login_to_onboarding);
+        } else {
+            navController.navigate(R.id.action_login_to_dashboard);
         }
     }
 

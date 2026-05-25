@@ -36,61 +36,26 @@ public class CommunityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(CommunityViewModel.class);
 
-        adapter = new PostAdapter((post, isLiked) -> viewModel.toggleLike(post.getId(), isLiked));
+        adapter = new PostAdapter(post -> viewModel.toggleLike(post));
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) adapter.setCurrentUserId(user.getUid());
+        if (user != null) {
+            adapter.setCurrentUserId(user.getUid());
+        }
 
         binding.rvPosts.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvPosts.setAdapter(adapter);
 
-        // H3: Fix visibility logic — show loading initially
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.tvEmpty.setVisibility(View.GONE);
-        binding.swipeRefresh.setVisibility(View.GONE);
-
-        viewModel.getPosts().observe(getViewLifecycleOwner(), posts -> {
-            // H3: Only update visibility when not refreshing
-            Boolean refreshing = viewModel.getIsRefreshing().getValue();
-            boolean isRefreshing = refreshing != null && refreshing;
-
-            if (!isRefreshing) {
-                binding.progressBar.setVisibility(View.GONE);
-            }
-
-            if (posts != null && !posts.isEmpty()) {
-                adapter.submitList(posts);
-                binding.tvEmpty.setVisibility(View.GONE);
-                binding.swipeRefresh.setVisibility(View.VISIBLE);
-            } else if (!isRefreshing) {
-                binding.tvEmpty.setVisibility(View.VISIBLE);
-                binding.swipeRefresh.setVisibility(View.GONE);
-            }
-        });
-
-        // H2: Real pull-to-refresh — actually refresh data
         binding.swipeRefresh.setOnRefreshListener(() -> viewModel.refresh());
-
-        viewModel.getIsRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
-            if (refreshing != null) {
-                binding.swipeRefresh.setRefreshing(refreshing);
-                if (refreshing) {
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    binding.tvEmpty.setVisibility(View.GONE);
-                } else {
-                    binding.progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        // H8: Error handling
-        viewModel.getError().observe(getViewLifecycleOwner(), msg -> {
+        viewModel.getUiState().observe(getViewLifecycleOwner(),
+                state -> CommunityRenderer.render(binding, adapter, state));
+        viewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
             if (msg != null) {
                 Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
             }
         });
 
         binding.fabPost.setOnClickListener(v ->
-            new CreatePostBottomSheet().show(getChildFragmentManager(), "create_post")
+                new CreatePostBottomSheet().show(getChildFragmentManager(), "create_post")
         );
     }
 

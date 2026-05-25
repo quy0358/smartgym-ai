@@ -11,12 +11,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.google.firebase.auth.FirebaseUser;
+
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 import ntu.quy65132908.smartgym_ai.R;
+import ntu.quy65132908.smartgym_ai.data.model.User;
+import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 import ntu.quy65132908.smartgym_ai.databinding.FragmentRegisterBinding;
+import ntu.quy65132908.smartgym_ai.ui.onboarding.OnboardingDestinationResolver;
 
 @AndroidEntryPoint
 public class RegisterFragment extends Fragment {
+
+    @Inject
+    UserRepository userRepository;
 
     private FragmentRegisterBinding binding;
     private AuthViewModel viewModel;
@@ -59,10 +69,39 @@ public class RegisterFragment extends Fragment {
 
         viewModel.getAuthSuccess().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                Navigation.findNavController(requireView())
-                        .navigate(R.id.action_register_to_dashboard);
+                navigateAfterAuth(user);
             }
         });
+    }
+
+    private void navigateAfterAuth(FirebaseUser firebaseUser) {
+        if (firebaseUser == null || binding == null) {
+            return;
+        }
+        userRepository.getUser(firebaseUser.getUid(), new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User user) {
+                if (binding != null && isAdded()) {
+                    requireActivity().runOnUiThread(() -> navigateToPostAuthDestination(user));
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                if (binding != null && isAdded()) {
+                    requireActivity().runOnUiThread(() ->
+                            Navigation.findNavController(binding.getRoot())
+                                    .navigate(R.id.action_register_to_onboarding));
+                }
+            }
+        });
+    }
+
+    private void navigateToPostAuthDestination(User user) {
+        int actionId = OnboardingDestinationResolver.requiresOnboarding(user)
+                ? R.id.action_register_to_onboarding
+                : R.id.action_register_to_dashboard;
+        Navigation.findNavController(binding.getRoot()).navigate(actionId);
     }
 
     @Override

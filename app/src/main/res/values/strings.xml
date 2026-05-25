@@ -8,14 +8,25 @@
     <string name="profile">Hồ sơ</string>
     <string name="login">Đăng nhập</string>
     <string name="register">Đăng ký</string>
+    <string name="google" translatable="false">Google</string>
+    <string name="login_with_google">Đăng nhập với Google</string>
     <string name="email">Email</string>
     <string name="password">Mật khẩu</string>
     <string name="welcome_back">Chào mừng trở lại!</string>
+    <string name="login_tagline">Huấn luyện thông minh cùng AI</string>
     <string name="break_limits">Hãy phá vỡ giới hạn ngày hôm nay</string>
     <string name="forgot_password">Quên mật khẩu?</string>
     <string name="or_login_with">HOẶC ĐĂNG NHẬP VỚI</string>
     <string name="no_account">Chưa có tài khoản?</string>
     <string name="register_now">Đăng ký ngay</string>
+    <string name="password_reset_title">Đặt lại mật khẩu</string>
+    <string name="password_reset_message">Nhập email đã đăng ký để nhận liên kết đặt lại mật khẩu.</string>
+    <string name="password_reset_send">Gửi email</string>
+    <string name="password_reset_email_sent">Đã gửi email đặt lại mật khẩu tới %1$s</string>
+    <string name="register_title">Tạo tài khoản</string>
+    <string name="register_subtitle">Bắt đầu hành trình thay đổi cơ thể ngay hôm nay</string>
+    <string name="full_name">Họ và tên</string>
+    <string name="already_have_account_login">Đã có tài khoản? Đăng nhập</string>
     <string name="weekly_plan">Kế hoạch tuần</string>
     <string name="view_all">Xem tất cả</string>
     <string name="workout_detail">Chi tiết bài tập</string>
@@ -31,7 +42,7 @@
     <string name="height">Chiều cao</string>
     <string name="bmi">BMI</string>
     <string name="goal">Mục tiêu</string>
-    <string name="default_web_client_id" translatable="false">644529455872-placeholder.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">644529455872-t7t9538ejotq8alf5hk1aqneoc6q1b8t.apps.googleusercontent.com</string>
 
     <!-- Auth errors -->
     <string name="error_empty_fields">Vui lòng nhập đầy đủ thông tin</string>
@@ -43,19 +54,25 @@
     <string name="error_password_too_weak">Mật khẩu quá yếu</string>
     <string name="error_no_network">Không có kết nối mạng. Vui lòng kiểm tra lại.</string>
     <string name="error_generic">Đã xảy ra lỗi: %s</string>
+    <string name="error_unknown_reason">Không rõ nguyên nhân</string>
+    <string name="error_reset_email_required">Vui lòng nhập email để đặt lại mật khẩu</string>
     <string name="error_google_sign_in">Đăng nhập Google thất bại: %s</string>
-    <string name="error_google_no_credential">Không tìm thấy tài khoản Google phù hợp trên thiết bị.</string>
+    <string name="error_google_no_credential">Không tìm thấy tài khoản Google trên thiết bị. Hãy thêm tài khoản Google rồi thử lại.</string>
+    <string name="error_google_config_missing">Google Sign-In chưa được cấu hình đúng. Hãy kiểm tra OAuth client và default_web_client_id.</string>
+    <string name="error_google_invalid_credential">Không xác thực được tài khoản Google. Vui lòng chọn lại tài khoản.</string>
+    <string name="error_google_credential">Không thể mở đăng nhập Google: %s</string>
 
     <!-- Dashboard stat labels -->
     <string name="stat_weight">CÂN NẶNG</string>
     <string name="stat_bmi">BMI</string>
     <string name="stat_goal">MỤC TIÊU</string>
     <string name="stat_normal">Bình thường</string>
-    <string name="brand_fitai" translatable="false">FitAI</string>
+    <string name="brand_fitai" translatable="false">SmartGym AI</string>
     <string name="default_avatar_letter" translatable="false">U</string>
     <string name="value_unavailable" translatable="false">--</string>
     <string name="avatar">Ảnh đại diện</string>
     <string name="unit_kg">kg</string>
+    <string name="unit_cm">cm</string>
     <string name="greeting_format">Chào %1$s! 💪</string>
     <string name="notification">Thông báo</string>
     <string name="notification_coming_soon">Thông báo sẽ được cập nhật sau.</string>
@@ -113,6 +130,14 @@
     <string name="ai_error_prefix">Cảnh báo: %s</string>
 
     <!-- Community -->
+    <string name="community_empty_posts">Chưa có bài viết nào</string>
+    <string name="community_create_post_cd">Tạo bài viết</string>
+    <string name="community_create_post_title">Đăng bài mới</string>
+    <string name="community_create_post_hint">Chia sẻ với cộng đồng...</string>
+    <string name="community_submit_post">Đăng bài</string>
+    <string name="community_submitting_post">Đang đăng...</string>
+    <string name="post_like_a11y">Thích bài viết</string>
+    <string name="post_unlike_a11y">Bỏ thích bài viết</string>
     <string name="post_empty_content">Nội dung trống</string>
     <string name="post_user_default">Người dùng</string>
     <string name="post_likes_format">%1$d ❤️</string>
@@ -121,10 +146,42 @@
     <string name="time_hours_ago_format">%1$d giờ trước</string>
     <string name="time_days_ago_format">%1$d ngày trước</string>
 
-    <!-- Edit Profile -->
+    <!-- Profile -->
     <string name="profile_saved">Đã lưu!</string>
     <string name="profile_name_empty">Tên không được để trống</string>
-    <string name="profile_invalid_number">Số không hợp lệ</string>
+    <string name="profile_name_length_error">Tên tối đa 50 ký tự</string>
+    <string name="profile_weight_invalid">Cân nặng phải là số hợp lệ</string>
+    <string name="profile_weight_range_error">Cân nặng phải từ 20 đến 350 kg</string>
+    <string name="profile_height_invalid">Chiều cao phải là số hợp lệ</string>
+    <string name="profile_height_range_error">Chiều cao phải từ 80 đến 250 cm</string>
+    <string name="profile_goal_length_error">Mục tiêu tối đa 120 ký tự</string>
+    <string name="profile_login_required">Bạn cần đăng nhập để chỉnh sửa hồ sơ.</string>
+    <string name="profile_load_error">Không thể tải hồ sơ.</string>
+    <string name="profile_load_edit_error">Không thể tải hồ sơ. Bạn có thể nhập lại thông tin và lưu.</string>
+    <string name="profile_save_error">Không thể lưu hồ sơ. Vui lòng thử lại.</string>
+    <string name="profile_stats_load_error">Không thể tải thống kê hồ sơ.</string>
+    <string name="profile_edit_title">Chỉnh sửa hồ sơ</string>
+    <string name="profile_edit_subtitle">Cập nhật thông tin cá nhân để cá nhân hóa kế hoạch tập luyện và cảnh báo an toàn.</string>
+    <string name="profile_display_name_hint">Tên hiển thị</string>
+    <string name="profile_weight_hint">Cân nặng</string>
+    <string name="profile_height_hint">Chiều cao</string>
+    <string name="profile_goal_hint">Mục tiêu</string>
+    <string name="profile_save_changes">Lưu thay đổi</string>
+    <string name="profile_saving">Đang lưu...</string>
+    <string name="profile_bmi_format">BMI: %1$.1f (%2$s)</string>
+    <string name="profile_bmi_unavailable">BMI: --</string>
+    <string name="profile_bmi_a11y">BMI %1$.1f, %2$s</string>
+    <string name="profile_bmi_unavailable_a11y">Chưa có dữ liệu BMI</string>
+    <string name="profile_avatar">Ảnh đại diện</string>
+    <string name="profile_avatar_a11y">Ảnh đại diện của %1$s</string>
+    <string name="profile_email_a11y">Email hồ sơ: %1$s</string>
+    <string name="profile_email_unavailable">Chưa có email</string>
+    <string name="profile_total_workouts_a11y">Tổng số bài tập: %1$d</string>
+    <string name="profile_total_hours_a11y">Tổng thời gian tập: %1$s giờ</string>
+    <string name="profile_streak_a11y">Chuỗi ngày tập: %1$d ngày</string>
+    <string name="profile_sign_out_title">Đăng xuất</string>
+    <string name="profile_sign_out_message">Bạn có chắc chắn muốn đăng xuất?</string>
+    <string name="action_cancel">Hủy</string>
 
     <!-- Dashboard empty states -->
     <string name="empty_plan_icon">📋</string>
@@ -301,6 +358,73 @@
     <string name="open_nutrition">Dinh dưỡng</string>
     <string name="open_wellness">Nhắc lịch và an toàn</string>
     <string name="open_exercise_library">Thư viện bài tập</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Thiết lập SmartGym AI</string>
+    <string name="onboarding_subtitle">Cho AI biết cơ thể, mục tiêu và kinh nghiệm tập luyện của bạn.</string>
+    <string name="onboarding_hero_a11y">Minh họa huấn luyện viên AI</string>
+    <string name="onboarding_identity_title">Thông tin cá nhân</string>
+    <string name="onboarding_gender_male">Nam</string>
+    <string name="onboarding_gender_female">Nữ</string>
+    <string name="onboarding_birthdate_hint">Ngày sinh (yyyy-MM-dd)</string>
+    <string name="onboarding_birthdate_error">Nhập ngày sinh để tiếp tục.</string>
+    <string name="onboarding_metrics_title">Chỉ số cơ thể</string>
+    <string name="onboarding_target_weight_hint">Cân nặng mục tiêu</string>
+    <string name="onboarding_bmi_preview">BMI: %1$.1f (%2$s). Mục tiêu: %3$s kg</string>
+    <string name="onboarding_goal_title">Mục tiêu tập luyện</string>
+    <string name="onboarding_goal_lose_weight">Giảm cân</string>
+    <string name="onboarding_goal_gain_muscle">Tăng cơ</string>
+    <string name="onboarding_goal_get_fitter">Khỏe hơn</string>
+    <string name="onboarding_level_title">Trình độ hiện tại</string>
+    <string name="onboarding_level_beginner">Người mới</string>
+    <string name="onboarding_level_intermediate">Trung cấp</string>
+    <string name="onboarding_level_advanced">Nâng cao</string>
+    <string name="onboarding_finish">Hoàn tất hồ sơ</string>
+    <string name="onboarding_required_error">Vui lòng nhập đủ thông tin để cá nhân hóa kế hoạch.</string>
+    <string name="onboarding_save_error">Không thể lưu hồ sơ onboarding. Vui lòng thử lại.</string>
+
+    <!-- Progress -->
+    <string name="progress_update_title">Cập nhật tiến trình</string>
+    <string name="progress_weight_hint">Cân nặng (kg)</string>
+    <string name="progress_body_fat_hint">Mỡ (%)</string>
+    <string name="progress_lean_mass_hint">Lean mass (kg)</string>
+    <string name="progress_note_hint">Ghi chú</string>
+    <string name="progress_save_button">Lưu tiến trình</string>
+    <string name="progress_saving">Đang lưu...</string>
+    <string name="progress_saved">Đã lưu tiến trình.</string>
+    <string name="progress_loading">Đang tải...</string>
+    <string name="progress_weight_chart_title">BIỂU ĐỒ CÂN NẶNG</string>
+    <string name="progress_weight_chart_data_label">Cân nặng</string>
+    <string name="progress_weight_chart_a11y">Biểu đồ cân nặng theo thời gian</string>
+    <string name="progress_chart_empty">Chưa có dữ liệu cân nặng để vẽ biểu đồ.</string>
+    <string name="progress_logged_out_empty_chart">Đăng nhập để lưu và xem tiến trình cân nặng.</string>
+    <string name="progress_weight_unavailable">-- kg</string>
+    <string name="progress_current_weight_format">%.1f kg</string>
+    <string name="progress_no_weight_data">Chưa có dữ liệu cân nặng</string>
+    <string name="progress_weight_no_previous">Chưa có mốc trước để so sánh</string>
+    <string name="progress_weight_no_change">Không thay đổi so với lần trước</string>
+    <string name="progress_weight_decreased_format">↓ %.1f kg so với lần trước</string>
+    <string name="progress_weight_increased_format">↑ %.1f kg so với lần trước</string>
+    <string name="progress_stat_workouts">Bài tập</string>
+    <string name="progress_stat_workouts_unit">hoàn thành</string>
+    <string name="progress_stat_tracking">Ghi nhận</string>
+    <string name="progress_stat_tracking_unit">ngày liên tiếp</string>
+    <string name="progress_stat_calories">Calories</string>
+    <string name="progress_stat_calories_unit">ước tính đốt</string>
+    <string name="progress_stat_workouts_a11y">%1$d bài tập hoàn thành</string>
+    <string name="progress_stat_tracking_a11y">%1$d ngày ghi nhận liên tiếp</string>
+    <string name="progress_stat_calories_a11y">%1$d calories ước tính đã đốt</string>
+    <string name="progress_weight_invalid">Vui lòng nhập cân nặng hợp lệ.</string>
+    <string name="progress_weight_range_error">Cân nặng phải từ 20 đến 350 kg.</string>
+    <string name="progress_body_fat_invalid">Tỷ lệ mỡ phải là số hợp lệ.</string>
+    <string name="progress_body_fat_range_error">Tỷ lệ mỡ phải từ 0 đến 80%.</string>
+    <string name="progress_lean_mass_invalid">Lean mass phải là số hợp lệ.</string>
+    <string name="progress_lean_mass_range_error">Lean mass phải từ 0 đến 250 kg.</string>
+    <string name="progress_lean_mass_over_weight_error">Lean mass không được lớn hơn cân nặng.</string>
+    <string name="progress_note_length_error">Ghi chú tối đa 500 ký tự.</string>
+    <string name="progress_login_required">Bạn cần đăng nhập để lưu tiến trình.</string>
+    <string name="progress_load_error">Không thể tải tiến trình. Thử lại sau.</string>
+    <string name="progress_save_error">Không thể lưu tiến trình. Thử lại sau.</string>
 
     <!-- Accessibility -->
     <string name="stat_weight_a11y">Cân nặng: %1$s kg</string>

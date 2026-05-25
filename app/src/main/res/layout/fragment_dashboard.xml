@@ -108,6 +108,16 @@
                     android:text="@string/break_limits"
                     android:textAppearance="@style/TextStyle.BodyBase" />
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:background="@drawable/bg_onboarding_hero"
+                    android:contentDescription="@string/onboarding_hero_a11y"
+                    android:padding="@dimen/spacing_md"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/illustration_onboarding_ai" />
+
                 <!-- Stats Grid -->
                 <LinearLayout
                     android:layout_width="match_parent"

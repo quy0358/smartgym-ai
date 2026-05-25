@@ -3,7 +3,6 @@ package ntu.quy65132908.smartgym_ai.di;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.storage.FirebaseStorage;
 
 import javax.inject.Singleton;
 
@@ -44,12 +43,6 @@ public class AppModule {
                 .build();
         firestore.setFirestoreSettings(settings);
         return firestore;
-    }
-
-    @Provides
-    @Singleton
-    public FirebaseStorage provideStorage() {
-        return FirebaseStorage.getInstance();
     }
 
     @Provides

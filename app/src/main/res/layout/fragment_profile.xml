@@ -1,132 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_lg">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/screen_bottom_padding">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:text="@string/profile"
-            android:textAppearance="@style/TextStyle.HeadlineLg" />
-
-        <!-- Avatar -->
-        <FrameLayout
-            android:layout_width="@dimen/avatar_lg"
-            android:layout_height="@dimen/avatar_lg"
-            android:layout_marginTop="@dimen/spacing_xl">
-
-            <ImageView
-                android:id="@+id/iv_profile_avatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:scaleType="centerCrop"
-                android:contentDescription="Avatar" />
-
-            <TextView
-                android:id="@+id/tv_profile_avatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_avatar_circle"
-                android:gravity="center"
-                android:text="U"
-                android:textColor="@color/primary"
-                android:fontFamily="@font/inter_semibold"
-                android:textSize="28sp" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/tv_profile_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:text="Người dùng"
-            android:textAppearance="@style/TextStyle.HeadlineMd" />
-
-        <TextView
-            android:id="@+id/tv_profile_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:text="user@email.com"
-            android:textAppearance="@style/TextStyle.BodyBase" />
-
-        <!-- Stats Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xl"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lg">
 
-            <include
-                android:id="@+id/stat_total_workouts"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/spacing_xs" />
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@string/profile"
+                android:textAppearance="@style/TextStyle.HeadlineLg" />
 
-            <include
-                android:id="@+id/stat_total_hours"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:layout_marginEnd="@dimen/spacing_xs" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="128dp"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:background="@drawable/bg_onboarding_hero"
+                android:contentDescription="@string/onboarding_hero_a11y"
+                android:padding="@dimen/spacing_md"
+                android:scaleType="centerInside"
+                android:src="@drawable/illustration_onboarding_ai" />
 
-            <include
-                android:id="@+id/stat_streak_days"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
+            <FrameLayout
+                android:layout_width="@dimen/avatar_lg"
+                android:layout_height="@dimen/avatar_lg"
+                android:layout_marginTop="@dimen/spacing_xl">
+
+                <ImageView
+                    android:id="@+id/iv_profile_avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/profile_avatar"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_profile_avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:fontFamily="@font/inter_semibold"
+                    android:gravity="center"
+                    android:text="@string/default_avatar_letter"
+                    android:textColor="@color/primary"
+                    android:textSize="28sp" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_profile_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_xs" />
+                android:layout_marginTop="@dimen/spacing_md"
+                android:gravity="center"
+                android:maxLines="2"
+                android:text="@string/post_user_default"
+                android:textAppearance="@style/TextStyle.HeadlineMd" />
+
+            <TextView
+                android:id="@+id/tv_profile_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center"
+                android:maxLines="2"
+                android:text="@string/profile_email_unavailable"
+                android:textAppearance="@style/TextStyle.BodyBase" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <include
+                    android:id="@+id/stat_total_workouts"
+                    layout="@layout/item_stat_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_xs" />
+
+                <include
+                    android:id="@+id/stat_total_hours"
+                    layout="@layout/item_stat_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:layout_marginEnd="@dimen/spacing_xs" />
+
+                <include
+                    android:id="@+id/stat_streak_days"
+                    layout="@layout/item_stat_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_xs" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:text="@string/settings"
+                android:textAppearance="@style/TextStyle.LabelCaps" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit_profile"
+                style="@style/Widget.SmartGym.Button.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:text="@string/profile_edit_title" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_open_wellness"
+                style="@style/Widget.SmartGym.Button.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:text="@string/open_wellness" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_sign_out"
+                style="@style/Widget.SmartGym.Button.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:text="@string/sign_out"
+                android:textColor="@color/error"
+                app:strokeColor="@color/error" />
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <!-- Settings Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xl"
-            android:text="CÀI ĐẶT"
-            android:textAppearance="@style/TextStyle.LabelCaps" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_edit_profile"
-            style="@style/Widget.SmartGym.Button.Outline"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:text="Chỉnh sửa hồ sơ" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_open_wellness"
-            style="@style/Widget.SmartGym.Button.Outline"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginTop="@dimen/spacing_sm"
-            android:text="@string/open_wellness" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_sign_out"
-            style="@style/Widget.SmartGym.Button.Outline"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginTop="@dimen/spacing_sm"
-            android:text="@string/sign_out"
-            android:textColor="@color/error"
-            app:strokeColor="@color/error" />
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/ai_loading"
+        android:indeterminateTint="@color/primary"
+        android:visibility="gone" />
+</FrameLayout>

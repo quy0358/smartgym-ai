@@ -5,6 +5,10 @@ import static org.mockito.Mockito.*;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
+import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 
@@ -29,7 +34,7 @@ public class AuthViewModelTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        viewModel = new AuthViewModel(authRepository);
+        viewModel = new AuthViewModel(RuntimeEnvironment.getApplication(), authRepository);
     }
 
     // ─── signIn tests ──────────────────────────────────────────────
@@ -97,14 +102,15 @@ public class AuthViewModelTest {
     public void resetPassword_emptyEmail_setsError() {
         viewModel.resetPassword("");
 
-        assertEquals("Vui lòng nhập email", viewModel.getErrorMessage().getValue());
+        assertEquals("Vui lòng nhập email để đặt lại mật khẩu",
+                viewModel.getPasswordResetErrorMessage().getValue());
     }
 
     @Test
     public void resetPassword_invalidEmail_setsError() {
         viewModel.resetPassword("notanemail");
 
-        assertEquals("Email không hợp lệ", viewModel.getErrorMessage().getValue());
+        assertEquals("Email không hợp lệ", viewModel.getPasswordResetErrorMessage().getValue());
     }
 
     @Test
@@ -112,6 +118,102 @@ public class AuthViewModelTest {
         viewModel.resetPassword("test@email.com");
 
         verify(authRepository).sendPasswordResetEmail(eq("test@email.com"), any());
+    }
+
+    @Test
+    public void resetPassword_success_postsDialogSuccessMessage() {
+        doAnswer(invocation -> {
+            AuthRepository.SimpleCallback callback = invocation.getArgument(1);
+            callback.onSuccess();
+            return null;
+        }).when(authRepository).sendPasswordResetEmail(eq("test@email.com"), any());
+
+        viewModel.resetPassword(" test@email.com ");
+
+        assertEquals("Đã gửi email đặt lại mật khẩu tới test@email.com",
+                viewModel.getPasswordResetSuccessMessage().getValue());
+        assertFalse(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
+    }
+
+    @Test
+    public void resetPassword_networkError_postsDialogError() {
+        doAnswer(invocation -> {
+            AuthRepository.SimpleCallback callback = invocation.getArgument(1);
+            callback.onError(new FirebaseNetworkException("offline"));
+            return null;
+        }).when(authRepository).sendPasswordResetEmail(eq("test@email.com"), any());
+
+        viewModel.resetPassword("test@email.com");
+
+        assertEquals("Không có kết nối mạng. Vui lòng kiểm tra lại.",
+                viewModel.getPasswordResetErrorMessage().getValue());
+        assertFalse(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
+    }
+
+    @Test
+    public void reportGoogleNoCredential_setsActionableError() {
+        viewModel.reportGoogleNoCredential();
+
+        assertEquals("Không tìm thấy tài khoản Google trên thiết bị. Hãy thêm tài khoản Google rồi thử lại.",
+                viewModel.getErrorMessage().getValue());
+    }
+
+    @Test
+    public void reportGoogleConfigurationMissing_setsSetupError() {
+        viewModel.reportGoogleConfigurationMissing();
+
+        assertEquals("Google Sign-In chưa được cấu hình đúng. Hãy kiểm tra OAuth client và default_web_client_id.",
+                viewModel.getErrorMessage().getValue());
+        assertFalse(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
+    }
+
+    @Test
+    public void signInWithGoogle_emptyToken_setsFriendlyErrorAndSkipsRepository() {
+        viewModel.signInWithGoogle("");
+
+        assertEquals("Không xác thực được tài khoản Google. Vui lòng chọn lại tài khoản.",
+                viewModel.getErrorMessage().getValue());
+        verify(authRepository, never()).signInWithGoogle(any(), any());
+    }
+
+    @Test
+    public void reportGoogleSignInCanceled_clearsLoadingWithoutError() {
+        viewModel.startGoogleCredentialRequest();
+
+        viewModel.reportGoogleSignInCanceled();
+
+        assertNull(viewModel.getErrorMessage().getValue());
+        assertFalse(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
+    }
+
+    @Test
+    public void signInWithGoogle_invalidFirebaseCredential_setsFriendlyError() {
+        doAnswer(invocation -> {
+            AuthRepository.AuthCallback callback = invocation.getArgument(1);
+            callback.onError(new FirebaseAuthInvalidCredentialsException("ERROR_INVALID_CREDENTIAL", "bad"));
+            return null;
+        }).when(authRepository).signInWithGoogle(eq("id-token"), any());
+
+        viewModel.signInWithGoogle("id-token");
+
+        assertEquals("Không xác thực được tài khoản Google. Vui lòng chọn lại tài khoản.",
+                viewModel.getErrorMessage().getValue());
+        assertFalse(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
+    }
+
+    @Test
+    public void signInWithGoogle_success_postsAuthSuccess() {
+        FirebaseUser user = mock(FirebaseUser.class);
+        doAnswer(invocation -> {
+            AuthRepository.AuthCallback callback = invocation.getArgument(1);
+            callback.onSuccess(user);
+            return null;
+        }).when(authRepository).signInWithGoogle(eq("id-token"), any());
+
+        viewModel.signInWithGoogle("id-token");
+
+        assertEquals(user, viewModel.getAuthSuccess().getValue());
+        assertFalse(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
     }
 
     @Test

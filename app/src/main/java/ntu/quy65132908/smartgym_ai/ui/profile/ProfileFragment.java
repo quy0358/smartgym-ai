@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import ntu.quy65132908.smartgym_ai.R;
@@ -37,93 +38,119 @@ public class ProfileFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         setupStatLabels();
+        setupActions();
         observeViewModel();
+    }
 
-        // M6: Confirm dialog before sign out
+    private void setupActions() {
         binding.btnSignOut.setOnClickListener(v ->
-            new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Đăng xuất")
-                .setMessage("Bạn có chắc chắn muốn đăng xuất?")
-                .setNegativeButton("Hủy", null)
-                .setPositiveButton("Đăng xuất", (dialog, which) -> viewModel.signOut())
-                .show()
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.profile_sign_out_title)
+                        .setMessage(R.string.profile_sign_out_message)
+                        .setNegativeButton(R.string.action_cancel, null)
+                        .setPositiveButton(R.string.sign_out, (dialog, which) -> viewModel.signOut())
+                        .show()
         );
 
         binding.btnEditProfile.setOnClickListener(v ->
-            Navigation.findNavController(requireView())
-                    .navigate(R.id.action_profile_to_edit_profile)
+                Navigation.findNavController(v).navigate(R.id.action_profile_to_edit_profile)
         );
 
         binding.btnOpenWellness.setOnClickListener(v ->
-            Navigation.findNavController(requireView()).navigate(R.id.nav_wellness)
+                Navigation.findNavController(v).navigate(R.id.nav_wellness)
         );
     }
 
     private void setupStatLabels() {
-        TextView wLabel = binding.statTotalWorkouts.getRoot().findViewById(R.id.tv_stat_label);
-        TextView wUnit = binding.statTotalWorkouts.getRoot().findViewById(R.id.tv_stat_unit);
-        wLabel.setText("BÀI TẬP");
-        wUnit.setText("TỔNG CỘNG");
-
-        TextView hLabel = binding.statTotalHours.getRoot().findViewById(R.id.tv_stat_label);
-        TextView hUnit = binding.statTotalHours.getRoot().findViewById(R.id.tv_stat_unit);
-        hLabel.setText("GIỜ TẬP");
-        hUnit.setText("GIỜ");
-
-        TextView sLabel = binding.statStreakDays.getRoot().findViewById(R.id.tv_stat_label);
-        TextView sUnit = binding.statStreakDays.getRoot().findViewById(R.id.tv_stat_unit);
-        sLabel.setText("CHUỖI");
-        sUnit.setText("NGÀY");
+        setStatCardLabels(
+                binding.statTotalWorkouts.getRoot(),
+                getString(R.string.stat_workouts),
+                getString(R.string.stat_total)
+        );
+        setStatCardLabels(
+                binding.statTotalHours.getRoot(),
+                getString(R.string.stat_hours),
+                getString(R.string.unit_hours)
+        );
+        setStatCardLabels(
+                binding.statStreakDays.getRoot(),
+                getString(R.string.stat_streak),
+                getString(R.string.unit_days)
+        );
     }
 
     private void observeViewModel() {
-        viewModel.getDisplayName().observe(getViewLifecycleOwner(), name -> {
-            binding.tvProfileName.setText(name);
-            AvatarHelper.loadAvatar(
-                requireContext(),
-                viewModel.getPhotoUrl().getValue(),
-                binding.ivProfileAvatar,
-                binding.tvProfileAvatar,
-                name
-            );
+        viewModel.getUiState().observe(getViewLifecycleOwner(), this::renderState);
+        viewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && binding != null) {
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
+            }
         });
+        viewModel.getSignedOut().observe(getViewLifecycleOwner(), signedOut -> {
+            if (Boolean.TRUE.equals(signedOut)) {
+                Navigation.findNavController(requireView()).navigate(R.id.action_global_to_login);
+            }
+        });
+    }
 
-        viewModel.getPhotoUrl().observe(getViewLifecycleOwner(), url -> {
-            AvatarHelper.loadAvatar(
+    private void renderState(ProfileUiState state) {
+        if (state == null || binding == null) {
+            return;
+        }
+
+        binding.progressBar.setVisibility(state.isLoading() ? View.VISIBLE : View.GONE);
+        binding.tvProfileName.setText(nonBlank(state.getDisplayName(), getString(R.string.post_user_default)));
+        binding.tvProfileEmail.setText(nonBlank(state.getEmail(), getString(R.string.profile_email_unavailable)));
+        binding.tvProfileEmail.setContentDescription(getString(
+                R.string.profile_email_a11y,
+                binding.tvProfileEmail.getText().toString()));
+
+        AvatarHelper.loadAvatar(
                 requireContext(),
-                url,
+                state.getPhotoUrl(),
                 binding.ivProfileAvatar,
                 binding.tvProfileAvatar,
                 binding.tvProfileName.getText().toString()
-            );
-        });
-
-        viewModel.getEmail().observe(getViewLifecycleOwner(), email ->
-                binding.tvProfileEmail.setText(email)
         );
+        binding.ivProfileAvatar.setContentDescription(getString(
+                R.string.profile_avatar_a11y,
+                binding.tvProfileName.getText().toString()));
+        binding.tvProfileAvatar.setContentDescription(getString(
+                R.string.profile_avatar_a11y,
+                binding.tvProfileName.getText().toString()));
 
-        // C1: Observe real stats from Firestore
-        viewModel.getTotalWorkouts().observe(getViewLifecycleOwner(), count -> {
-            TextView wValue = binding.statTotalWorkouts.getRoot().findViewById(R.id.tv_stat_value);
-            wValue.setText(String.valueOf(count));
-        });
+        setStatValue(
+                binding.statTotalWorkouts.getRoot(),
+                String.valueOf(state.getTotalWorkouts()),
+                getString(R.string.profile_total_workouts_a11y, state.getTotalWorkouts())
+        );
+        setStatValue(
+                binding.statTotalHours.getRoot(),
+                viewModel.formatHours(state.getTotalHours()),
+                getString(R.string.profile_total_hours_a11y, viewModel.formatHours(state.getTotalHours()))
+        );
+        setStatValue(
+                binding.statStreakDays.getRoot(),
+                String.valueOf(state.getStreakDays()),
+                getString(R.string.profile_streak_a11y, state.getStreakDays())
+        );
+    }
 
-        viewModel.getTotalHours().observe(getViewLifecycleOwner(), hours -> {
-            TextView hValue = binding.statTotalHours.getRoot().findViewById(R.id.tv_stat_value);
-            hValue.setText(String.valueOf(hours));
-        });
+    private void setStatCardLabels(View root, String label, String unit) {
+        TextView labelView = root.findViewById(R.id.tv_stat_label);
+        TextView unitView = root.findViewById(R.id.tv_stat_unit);
+        labelView.setText(label);
+        unitView.setText(unit);
+    }
 
-        viewModel.getStreakDays().observe(getViewLifecycleOwner(), streak -> {
-            TextView sValue = binding.statStreakDays.getRoot().findViewById(R.id.tv_stat_value);
-            sValue.setText(String.valueOf(streak));
-        });
+    private void setStatValue(View root, String value, String contentDescription) {
+        TextView valueView = root.findViewById(R.id.tv_stat_value);
+        valueView.setText(value);
+        root.setContentDescription(contentDescription);
+    }
 
-        viewModel.getSignedOut().observe(getViewLifecycleOwner(), signedOut -> {
-            if (signedOut != null && signedOut) {
-                Navigation.findNavController(requireView())
-                        .navigate(R.id.action_global_to_login);
-            }
-        });
+    private String nonBlank(String value, String fallback) {
+        return value != null && !value.trim().isEmpty() ? value : fallback;
     }
 
     @Override

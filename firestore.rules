@@ -89,7 +89,19 @@ service cloud.firestore {
       && request.resource.data.weight is number
       && request.resource.data.weight >= 20
       && request.resource.data.weight <= 350
-      && request.resource.data.date is number;
+      && (!request.resource.data.keys().hasAny(['bodyFat'])
+        || (request.resource.data.bodyFat is number
+          && request.resource.data.bodyFat >= 0
+          && request.resource.data.bodyFat <= 80))
+      && (!request.resource.data.keys().hasAny(['leanMass'])
+        || (request.resource.data.leanMass is number
+          && request.resource.data.leanMass >= 0
+          && request.resource.data.leanMass <= 250
+          && request.resource.data.leanMass <= request.resource.data.weight))
+      && (!request.resource.data.keys().hasAny(['note'])
+        || (request.resource.data.note is string && request.resource.data.note.size() <= 500))
+      && request.resource.data.date is number
+      && request.resource.data.date <= request.time.toMillis() + 5 * 60 * 1000;
     }
 
     function validCustomWorkout() {
@@ -240,7 +252,7 @@ service cloud.firestore {
         && request.resource.data.likes == 0
         && request.resource.data.likedBy is list
         && request.resource.data.likedBy.size() == 0
-        && request.resource.data.createdAt is number;
+        && request.resource.data.createdAt == request.time;
     }
 
     function validPostUpdate() {

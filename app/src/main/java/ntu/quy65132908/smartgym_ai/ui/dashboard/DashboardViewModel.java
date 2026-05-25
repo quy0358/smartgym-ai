@@ -182,7 +182,7 @@ public class DashboardViewModel extends ViewModel {
                 userBmi,
                 userBmi != null ? user.getBmiCategory() : "",
                 userBmi != null ? computeBmiColor(userBmi) : R.color.on_surface_variant,
-                user != null ? formatGoalDisplay(user.getGoal()) : PLACEHOLDER,
+                formatUserGoalDisplay(user),
                 state,
                 recommendation,
                 workouts,
@@ -205,7 +205,7 @@ public class DashboardViewModel extends ViewModel {
                 userBmi,
                 userBmi != null ? user.getBmiCategory() : "",
                 userBmi != null ? computeBmiColor(userBmi) : R.color.on_surface_variant,
-                formatGoalDisplay(user.getGoal()),
+                formatUserGoalDisplay(user),
                 current.getTodayState(),
                 current.getAiRecommendation(),
                 current.getWeeklyPlan(),
@@ -305,6 +305,26 @@ public class DashboardViewModel extends ViewModel {
             return formatSignedGoal(parsed.value);
         }
         return String.valueOf(Math.abs(parsed.value));
+    }
+
+    String formatUserGoalDisplay(User user) {
+        if (user == null) {
+            return PLACEHOLDER;
+        }
+        if (user.getTargetWeight() != null) {
+            return formatWeight(user.getTargetWeight());
+        }
+        return formatGoalDisplay(user.getGoal());
+    }
+
+    private String formatWeight(Float value) {
+        if (value == null) {
+            return PLACEHOLDER;
+        }
+        if (Math.abs(value - Math.round(value)) < 0.05f) {
+            return String.valueOf(Math.round(value));
+        }
+        return String.format(Locale.getDefault(), "%.1f", value);
     }
 
     int parseGoalWeight(String goal) {

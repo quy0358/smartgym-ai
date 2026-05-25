@@ -1,7 +1,9 @@
 package ntu.quy65132908.smartgym_ai.data.repository;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
@@ -32,13 +34,14 @@ public class CommunityRepository {
         listener = firestore.collection("posts")
                 .orderBy("createdAt", Query.Direction.DESCENDING).limit(50)
                 .addSnapshotListener((snap, err) -> {
-                    if (err != null) { cb.onError(err); return; }
+                    if (err != null) {
+                        cb.onError(err);
+                        return;
+                    }
                     if (snap != null) {
                         List<Post> posts = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : snap) {
-                            Post p = doc.toObject(Post.class);
-                            p.setId(doc.getId());
-                            posts.add(p);
+                            posts.add(mapPost(doc));
                         }
                         cb.onSuccess(posts);
                     }
@@ -52,21 +55,24 @@ public class CommunityRepository {
         data.put("content", content);
         data.put("likes", 0);
         data.put("likedBy", new ArrayList<>());
-        data.put("createdAt", System.currentTimeMillis());
+        data.put("createdAt", FieldValue.serverTimestamp());
         firestore.collection("posts").add(data)
                 .addOnSuccessListener(r -> cb.onSuccess())
                 .addOnFailureListener(cb::onError);
     }
 
-    public void toggleLike(String postId, String uid, boolean isLiked, SimpleCallback cb) {
+    public void toggleLike(String postId, String uid, SimpleCallback cb) {
         DocumentReference postRef = firestore.collection("posts").document(postId);
         firestore.runTransaction(transaction -> {
                     DocumentSnapshot snapshot = transaction.get(postRef);
-                    List<String> updatedLikedBy = readLikedBy(snapshot);
+                    if (!snapshot.exists()) {
+                        throw new IllegalStateException("Post not found");
+                    }
 
-                    if (isLiked) {
+                    List<String> updatedLikedBy = readLikedBy(snapshot.get("likedBy"));
+                    if (updatedLikedBy.contains(uid)) {
                         updatedLikedBy.remove(uid);
-                    } else if (!updatedLikedBy.contains(uid)) {
+                    } else {
                         updatedLikedBy.add(uid);
                     }
 
@@ -80,8 +86,30 @@ public class CommunityRepository {
                 .addOnFailureListener(cb::onError);
     }
 
-    private List<String> readLikedBy(DocumentSnapshot snapshot) {
-        Object rawLikedBy = snapshot.get("likedBy");
+    static Post mapPost(DocumentSnapshot doc) {
+        Post post = new Post();
+        post.setId(doc.getId());
+        post.setAuthorId(doc.getString("authorId"));
+        post.setAuthorName(doc.getString("authorName"));
+        post.setContent(doc.getString("content"));
+        Long likes = doc.getLong("likes");
+        post.setLikes(likes != null ? likes.intValue() : 0);
+        post.setLikedBy(readLikedBy(doc.get("likedBy")));
+        post.setCreatedAt(readCreatedAt(doc.get("createdAt")));
+        return post;
+    }
+
+    private static long readCreatedAt(Object rawCreatedAt) {
+        if (rawCreatedAt instanceof Timestamp) {
+            return ((Timestamp) rawCreatedAt).toDate().getTime();
+        }
+        if (rawCreatedAt instanceof Number) {
+            return ((Number) rawCreatedAt).longValue();
+        }
+        return 0L;
+    }
+
+    private static List<String> readLikedBy(Object rawLikedBy) {
         List<String> likedBy = new ArrayList<>();
         if (!(rawLikedBy instanceof List<?>)) {
             return likedBy;
@@ -96,7 +124,10 @@ public class CommunityRepository {
     }
 
     public void removeListener() {
-        if (listener != null) { listener.remove(); listener = null; }
+        if (listener != null) {
+            listener.remove();
+            listener = null;
+        }
     }
 
     public interface PostsCallback {

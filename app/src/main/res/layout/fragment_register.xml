@@ -11,23 +11,37 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_xl">
 
+        <ImageView
+            android:id="@+id/iv_register_hero"
+            android:layout_width="0dp"
+            android:layout_height="148dp"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:background="@drawable/bg_onboarding_hero"
+            android:contentDescription="@string/onboarding_hero_a11y"
+            android:padding="@dimen/spacing_md"
+            android:scaleType="centerInside"
+            android:src="@drawable/illustration_onboarding_ai"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:text="Tạo tài khoản"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:text="@string/register_title"
             android:textAppearance="@style/TextStyle.HeadlineMd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/iv_register_hero" />
 
         <TextView
             android:id="@+id/tv_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xs"
-            android:text="Bắt đầu hành trình thay đổi cơ thể ngay hôm nay"
+            android:text="@string/register_subtitle"
             android:textAppearance="@style/TextStyle.BodyBase"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xxl"
-            android:hint="Họ và tên"
+            android:hint="@string/full_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_subtitle">
@@ -135,7 +149,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xl"
             android:layout_marginBottom="@dimen/spacing_xxl"
-            android:text="Đã có tài khoản? Đăng nhập"
+            android:text="@string/already_have_account_login"
             android:textAppearance="@style/TextStyle.BodyBase"
             android:textColor="@color/primary"
             app:layout_constraintBottom_toBottomOf="parent"

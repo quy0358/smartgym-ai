@@ -25,6 +25,14 @@ firebase deploy --only firestore:rules,storage
 
 Google Sign-In cần OAuth Web Client thật từ Firebase/Google Cloud. Giá trị placeholder trong `strings.xml` phải được thay bằng `default_web_client_id` do Firebase tạo ra trước khi kiểm thử Google Sign-In.
 
+Checklist Google Sign-In:
+
+1. Bật provider Google trong Firebase Authentication.
+2. Thêm SHA-1 và SHA-256 cho debug/release app `ntu.quy65132908.smartgym_ai` trong Firebase project settings.
+3. Tải lại `app/google-services.json` sau khi Firebase tạo Android OAuth client và Web OAuth client.
+4. Đảm bảo `google-services.json` có `oauth_client` và `@string/default_web_client_id` không còn chứa `placeholder`.
+5. Nếu Google button báo lỗi cấu hình, kiểm tra lại package name, SHA fingerprints và OAuth consent screen.
+
 ## Kiểm tra
 
 ```bash

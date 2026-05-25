@@ -6,8 +6,12 @@ service firebase.storage {
       return request.auth != null && request.auth.uid == uid;
     }
 
-    function isAllowedBodyPhoto(fileName) {
+    function isLegacyBodyPhoto(fileName) {
       return fileName.matches('(before|after)_photo\\.jpg');
+    }
+
+    function isTimestampedBodyPhoto(fileName) {
+      return fileName.matches('(before|after)_[0-9]+\\.jpg');
     }
 
     function isValidImageUpload() {
@@ -17,8 +21,13 @@ service firebase.storage {
     }
 
     match /users/{uid}/{fileName} {
-      allow read: if isOwner(uid) && isAllowedBodyPhoto(fileName);
-      allow write: if isOwner(uid) && isAllowedBodyPhoto(fileName) && isValidImageUpload();
+      allow read: if isOwner(uid) && isLegacyBodyPhoto(fileName);
+      allow write: if isOwner(uid) && isLegacyBodyPhoto(fileName) && isValidImageUpload();
+    }
+
+    match /users/{uid}/body_photos/{fileName} {
+      allow read: if isOwner(uid) && isTimestampedBodyPhoto(fileName);
+      allow write: if isOwner(uid) && isTimestampedBodyPhoto(fileName) && isValidImageUpload();
     }
   }
 }

@@ -1,380 +1,321 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-<androidx.core.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_lg">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/spacing_xl">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:text="Tiến trình"
-            android:textAppearance="@style/TextStyle.HeadlineLg" />
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lg">
 
-        <!-- Add progress entry -->
-        <androidx.cardview.widget.CardView
-            style="@style/Widget.SmartGym.Card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg">
-
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_lg">
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@string/progress"
+                android:textAppearance="@style/TextStyle.HeadlineLg" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CẬP NHẬT TIẾN TRÌNH"
-                    android:textAppearance="@style/TextStyle.LabelCaps"
-                    android:textColor="@color/primary" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="132dp"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:background="@drawable/bg_onboarding_hero"
+                android:contentDescription="@string/onboarding_hero_a11y"
+                android:padding="@dimen/spacing_md"
+                android:scaleType="centerInside"
+                android:src="@drawable/illustration_onboarding_ai" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.SmartGym.TextField"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:hint="Cân nặng (kg)">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_progress_weight"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/on_surface" />
-                </com.google.android.material.textfield.TextInputLayout>
+            <androidx.cardview.widget.CardView
+                style="@style/Widget.SmartGym.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_md"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_lg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/progress_update_title"
+                        android:textAppearance="@style/TextStyle.LabelCaps"
+                        android:textColor="@color/primary" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_progress_weight"
+                        style="@style/Widget.SmartGym.TextField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:hint="@string/progress_weight_hint">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_progress_weight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789,."
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/on_surface" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_progress_body_fat"
+                            style="@style/Widget.SmartGym.TextField"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/spacing_xs"
+                            android:layout_weight="1"
+                            android:hint="@string/progress_body_fat_hint">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_progress_body_fat"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:digits="0123456789,."
+                                android:inputType="numberDecimal"
+                                android:textColor="@color/on_surface" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_progress_lean_mass"
+                            style="@style/Widget.SmartGym.TextField"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_xs"
+                            android:layout_weight="1"
+                            android:hint="@string/progress_lean_mass_hint">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_progress_lean_mass"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:digits="0123456789,."
+                                android:inputType="numberDecimal"
+                                android:textColor="@color/on_surface" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_progress_note"
+                        style="@style/Widget.SmartGym.TextField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:hint="@string/progress_note_hint">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_progress_note"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapSentences|textMultiLine"
+                            android:maxLength="500"
+                            android:maxLines="3"
+                            android:textColor="@color/on_surface" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_add_progress"
+                        style="@style/Widget.SmartGym.Button.Primary"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:text="@string/progress_save_button" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                style="@style/Widget.SmartGym.Card"
+                android:layout_width="match_parent"
+                android:layout_height="252dp"
+                android:layout_marginTop="@dimen/spacing_lg">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_sm">
+
+                        <LinearLayout
+                            android:id="@+id/chart_title_group"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/spacing_md"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tv_current_weight"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/progress_weight_chart_title"
+                                android:textAppearance="@style/TextStyle.LabelCaps" />
+
+                            <TextView
+                                android:id="@+id/tv_weight_change"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/progress_loading"
+                                android:textAppearance="@style/TextStyle.BodyBase"
+                                android:textColor="@color/tertiary" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_current_weight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:maxLines="2"
+                            android:text="@string/progress_weight_unavailable"
+                            android:textAppearance="@style/TextStyle.HeadlineLg"
+                            android:textColor="@color/primary"
+                            app:layout_constrainedWidth="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/weight_chart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@string/progress_weight_chart_a11y"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_chart_placeholder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/progress_chart_empty"
+                            android:textAppearance="@style/TextStyle.BodyBase"
+                            android:textColor="@color/outline"
+                            android:visibility="visible" />
+                    </FrameLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.SmartGym.TextField"
+                    <include
+                        android:id="@+id/stat_workouts"
+                        layout="@layout/item_stat_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/spacing_xs"
-                        android:layout_weight="1"
-                        android:hint="Mỡ (%)">
+                        android:layout_weight="1" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_progress_body_fat"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textColor="@color/on_surface" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.SmartGym.TextField"
+                    <include
+                        android:id="@+id/stat_streak"
+                        layout="@layout/item_stat_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_xs"
-                        android:layout_weight="1"
-                        android:hint="Lean mass">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_progress_lean_mass"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textColor="@color/on_surface" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_weight="1" />
                 </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.SmartGym.TextField"
+                <include
+                    android:id="@+id/stat_calories"
+                    layout="@layout/item_stat_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:hint="Ghi chú">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_progress_note"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:maxLines="2"
-                        android:textColor="@color/on_surface" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_add_progress"
-                    style="@style/Widget.SmartGym.Button.Primary"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/button_height"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:text="Lưu tiến trình" />
+                    android:layout_marginTop="@dimen/spacing_sm" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <!-- Weight Chart -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="@dimen/spacing_lg"
-            style="@style/Widget.SmartGym.Card">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_md">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_sm">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="📊 BIỂU ĐỒ CÂN NẶNG"
-                            android:textAppearance="@style/TextStyle.LabelCaps" />
-
-                        <TextView
-                            android:id="@+id/tv_weight_change"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Đang tải..."
-                            android:textAppearance="@style/TextStyle.BodyBase"
-                            android:textColor="@color/tertiary" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_current_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:text="-- kg"
-                        android:textAppearance="@style/TextStyle.HeadlineLg"
-                        android:textColor="@color/primary" />
-                </RelativeLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/weight_chart"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/tv_chart_placeholder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Chưa có dữ liệu cân nặng để vẽ biểu đồ."
-                        android:textAppearance="@style/TextStyle.BodyBase"
-                        android:textColor="@color/outline"
-                        android:visibility="visible" />
-                </FrameLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Stats Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <include
-                android:id="@+id/stat_workouts"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/spacing_xs" />
-
-            <include
-                android:id="@+id/stat_streak"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:layout_marginEnd="@dimen/spacing_xs" />
-
-            <include
-                android:id="@+id/stat_calories"
-                layout="@layout/item_stat_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_xs" />
-        </LinearLayout>
-
-        <androidx.cardview.widget.CardView
-            style="@style/Widget.SmartGym.Card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg">
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                style="@style/Widget.SmartGym.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_lg">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/smart_tools_title"
-                    android:textAppearance="@style/TextStyle.BodyBold" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_open_nutrition"
-                    style="@style/Widget.SmartGym.Button.Outline"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/button_height"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:text="@string/open_nutrition" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_open_wellness"
-                    style="@style/Widget.SmartGym.Button.Outline"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/button_height"
-                    android:layout_marginTop="@dimen/spacing_sm"
-                    android:text="@string/open_wellness" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Body photo slots -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xl"
-            android:text="ẢNH THAY ĐỔI CƠ THỂ"
-            android:textAppearance="@style/TextStyle.LabelCaps" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <FrameLayout
-                android:id="@+id/btn_before_photo"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/spacing_xs"
-                android:background="@color/surface_container"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iv_before_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
+                android:layout_marginTop="@dimen/spacing_md">
 
                 <LinearLayout
-                    android:id="@+id/layout_before_placeholder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📷"
-                        android:textSize="28sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="Trước"
-                        android:textColor="@color/white"
-                        android:textAppearance="@style/TextStyle.BodyBase" />
-                </LinearLayout>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/btn_after_photo"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:background="@color/surface_container"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iv_after_photo"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/layout_after_placeholder"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_lg">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="📷"
-                        android:textSize="28sp" />
+                        android:text="@string/smart_tools_title"
+                        android:textAppearance="@style/TextStyle.BodyBold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="Sau"
-                        android:textColor="@color/white"
-                        android:textAppearance="@style/TextStyle.BodyBase" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_open_nutrition"
+                        style="@style/Widget.SmartGym.Button.Outline"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:text="@string/open_nutrition" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_open_wellness"
+                        style="@style/Widget.SmartGym.Button.Outline"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:text="@string/open_wellness" />
                 </LinearLayout>
-            </FrameLayout>
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-<ProgressBar
-    android:id="@+id/progress_bar"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:visibility="gone" />
+    <FrameLayout
+        android:id="@+id/progress_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:clickable="true"
+        android:contentDescription="@string/progress_loading"
+        android:focusable="true"
+        android:visibility="gone">
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
 </FrameLayout>
