@@ -7,7 +7,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Source;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,11 +86,11 @@ public class ProgressRepository {
         }
 
         DocumentReference progressRef = userRef.collection("progress").document();
-        WriteBatch batch = firestore.batch();
-        batch.set(progressRef, data);
-        batch.set(userRef, profileMetrics, SetOptions.merge());
-        batch.commit()
-                .addOnSuccessListener(r -> cb.onSuccess())
+        progressRef.set(data)
+                .addOnSuccessListener(r -> {
+                    cb.onSuccess();
+                    userRef.set(profileMetrics, SetOptions.merge());
+                })
                 .addOnFailureListener(cb::onError);
     }
 

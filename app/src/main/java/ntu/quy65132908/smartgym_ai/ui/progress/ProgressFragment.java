@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import ntu.quy65132908.smartgym_ai.R;
@@ -235,18 +237,35 @@ public class ProgressFragment extends Fragment {
         binding.weightChart.setVisibility(View.VISIBLE);
         binding.tvChartPlaceholder.setVisibility(View.GONE);
 
-        List<ProgressEntry> sorted = latestEntryPerDay(entriesList);
+        List<ProgressEntry> sorted = new ArrayList<>();
+        for (ProgressEntry entry : entriesList) {
+            if (entry != null) sorted.add(entry);
+        }
         Collections.sort(sorted, (a, b) -> Long.compare(a.getDate(), b.getDate()));
 
         List<com.github.mikephil.charting.data.Entry> chartEntries = new ArrayList<>();
         final List<String> dates = new ArrayList<>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM", Locale.getDefault());
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM", Locale.getDefault());
+        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        Map<Long, Integer> dayCount = new HashMap<>();
+        for (ProgressEntry entry : sorted) {
+            long day = startOfDay(entry.getDate());
+            Integer count = dayCount.get(day);
+            dayCount.put(day, count == null ? 1 : count + 1);
+        }
 
         for (int i = 0; i < sorted.size(); i++) {
             ProgressEntry entry = sorted.get(i);
             chartEntries.add(new com.github.mikephil.charting.data.Entry(i, entry.getWeight()));
-            dates.add(sdf.format(new Date(entry.getDate())));
+            long day = startOfDay(entry.getDate());
+            Integer count = dayCount.get(day);
+            if (count != null && count > 1) {
+                dates.add(sdfTime.format(new Date(entry.getDate())));
+            } else {
+                dates.add(sdfDate.format(new Date(entry.getDate())));
+            }
         }
 
         com.github.mikephil.charting.data.LineDataSet dataSet =

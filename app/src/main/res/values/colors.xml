@@ -30,26 +30,15 @@
     <color name="surface_container">#FF232323</color>
     <color name="surface_container_high">#FF2B2B2B</color>
     <color name="surface_container_highest">#FF353238</color>
-    <color name="surface_container_low">#FF1A1A1A</color>
-    <color name="surface_container_lowest">#FF101010</color>
 
     <color name="outline">#FF908A9D</color>
     <color name="outline_variant">#FF4E4859</color>
 
-    <color name="inverse_surface">#FFECE8F5</color>
-    <color name="inverse_on_surface">#FF25212A</color>
-    <color name="inverse_primary">#FF5E35E8</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <color name="purple_deep">#FF15101F</color>
-    <color name="purple_card">#FF282133</color>
-    <color name="lavender">#FFECE5FF</color>
     <color name="nutrition_green">#FF34C759</color>
     <color name="nutrition_yellow">#FFF3D026</color>
-
-    <color name="gradient_blue_start">#FF6739FF</color>
-    <color name="gradient_lime_end">#FF997AFF</color>
 </resources>

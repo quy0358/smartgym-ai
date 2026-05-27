@@ -39,10 +39,6 @@
     <string name="sign_out">Đăng xuất</string>
     <string name="settings">Cài đặt</string>
     <string name="action_back">Quay lại</string>
-    <string name="weight">Cân nặng</string>
-    <string name="height">Chiều cao</string>
-    <string name="bmi">BMI</string>
-    <string name="goal">Mục tiêu</string>
 
     <!-- Lỗi xác thực -->
     <string name="error_empty_fields">Vui lòng nhập đầy đủ thông tin</string>
@@ -66,7 +62,6 @@
     <string name="stat_weight">CÂN NẶNG</string>
     <string name="stat_bmi">BMI</string>
     <string name="stat_goal">MỤC TIÊU</string>
-    <string name="stat_normal">Bình thường</string>
     <string name="brand_fitai" translatable="false">SmartGym AI</string>
     <string name="default_avatar_letter" translatable="false">U</string>
     <string name="value_unavailable" translatable="false">--</string>
@@ -75,7 +70,6 @@
     <string name="unit_cm">cm</string>
     <string name="greeting_format">Chào %1$s! 💪</string>
     <string name="notification">Thông báo</string>
-    <string name="notification_coming_soon">Thông báo sẽ được cập nhật sau.</string>
     <string name="ai_suggestion_label">⚡ AI ĐỀ XUẤT</string>
     <string name="btn_start">Bắt đầu</string>
     <string name="workout_subtitle_format" tools:ignore="PluralsCandidate">%1$d bài • %2$d phút • %3$s</string>
@@ -93,7 +87,6 @@
     <string name="error_load_profile_partial">Không thể tải hồ sơ. Kế hoạch tập vẫn được hiển thị nếu có.</string>
     <string name="error_load_dashboard">Không thể tải dữ liệu. Kéo xuống để thử lại.</string>
     <string name="error_load_weekly_plan">Không thể tải kế hoạch tuần.</string>
-    <string name="no_workout_today">Hôm nay không có bài tập. Hãy nghỉ ngơi! 🧘</string>
 
     <!-- Nhãn thống kê hồ sơ -->
     <string name="stat_workouts">BÀI TẬP</string>
@@ -103,14 +96,9 @@
     <string name="stat_streak">CHUỖI</string>
     <string name="unit_days">ngày</string>
 
-    <!-- Nhãn thống kê tiến trình -->
-    <string name="stat_completed">hoàn thành</string>
-    <string name="stat_calories">CALORIES</string>
-    <string name="stat_burned">đốt cháy</string>
 
     <!-- Phân tích AI -->
     <string name="ai_loading">Đang tải…</string>
-    <string name="ai_enter_info">Nhập đủ thông tin</string>
     <string name="ai_title">Phân tích AI</string>
     <string name="ai_body_report_label">Báo cáo cơ thể</string>
     <string name="ai_plan_title">AI trợ lý</string>
@@ -138,7 +126,6 @@
     <string name="community_submitting_post">Đang đăng…</string>
     <string name="post_like_a11y">Thích bài viết</string>
     <string name="post_unlike_a11y">Bỏ thích bài viết</string>
-    <string name="post_empty_content">Nội dung trống</string>
     <string name="post_user_default">Người dùng</string>
     <string name="post_likes_format">%1$d</string>
     <string name="post_actions_a11y">Tùy chọn bài viết</string>
@@ -216,9 +203,7 @@
     <string name="pose_camera_permission_message">Cho phép camera để SmartGym AI nhận diện khung xương và góp ý tư thế theo thời gian thực.</string>
     <string name="pose_grant_camera">Cho phép camera</string>
     <string name="pose_permission_denied">Không thể mở camera khi chưa có quyền. Bạn có thể bật lại quyền trong cài đặt ứng dụng.</string>
-    <string name="pose_camera_loading">Đang mở camera…</string>
     <string name="pose_camera_error">Không thể mở camera. Vui lòng thử lại.</string>
-    <string name="pose_no_person">Đưa toàn thân vào khung hình để bắt đầu nhận diện.</string>
     <string name="pose_feedback_ready">Sẵn sàng. Giữ toàn thân trong khung hình.</string>
     <string name="pose_reps_format">%1$d lần</string>
     <string name="pose_reps_label">Số lần</string>
@@ -233,7 +218,6 @@
     <string name="pose_hold_time_format" tools:ignore="PluralsCandidate">%1$d giây</string>
     <string name="pose_hold_time_label">Thời gian giữ</string>
     <string name="pose_start_specific_format">Tập %1$s với AI Pose</string>
-    <string name="pose_choose_exercise">Chọn bài AI Pose</string>
     <string name="pose_switch_camera">Đổi camera</string>
     <string name="pose_voice_feedback">Phản hồi giọng nói</string>
     <string name="pose_no_supported_exercise">Chưa có bài hỗ trợ AI Pose.</string>
@@ -385,7 +369,6 @@
     <!-- Thiết lập ban đầu -->
     <string name="onboarding_title">Thiết lập SmartGym AI</string>
     <string name="onboarding_subtitle">Cho AI biết cơ thể, mục tiêu và kinh nghiệm tập luyện của bạn.</string>
-    <string name="onboarding_hero_a11y">Minh họa huấn luyện viên AI</string>
     <string name="onboarding_identity_title">Thông tin cá nhân</string>
     <string name="onboarding_gender_male">Nam</string>
     <string name="onboarding_gender_female">Nữ</string>
@@ -491,7 +474,7 @@
     <string name="nutrition_tab_plan">Kế hoạch</string>
     <string name="nutrition_tab_history">Lịch sử</string>
     <string name="nutrition_macro_progress_format">%1$s: %2$d/%3$d g</string>
-    <string name="nutrition_over_target_format">Vượt %1$d kcal</string>
+    <string name="nutrition_over_target_format" tools:ignore="PluralsCandidate">Vượt %1$d kcal</string>
     <string name="nutrition_source_ai">AI</string>
     <string name="nutrition_source_plan">Kế hoạch</string>
     <string name="nutrition_source_manual">Thủ công</string>
@@ -503,7 +486,7 @@
     <string name="action_delete">Xóa</string>
     <string name="nutrition_plan_day_target_format" tools:ignore="PluralsCandidate">Mục tiêu %1$d kcal</string>
     <string name="nutrition_plan_day_target_unknown">Chưa có mục tiêu kcal</string>
-    <string name="nutrition_plan_meal_line_format">%1$s: %2$s - %3$d kcal, %4$dg đạm, %5$dg carb, %6$dg béo</string>
+    <string name="nutrition_plan_meal_line_format" tools:ignore="PluralsCandidate">%1$s: %2$s - %3$d kcal, %4$dg đạm, %5$dg carb, %6$dg béo</string>
     <string name="nutrition_plan_food_fallback">Món ăn</string>
     <string name="nutrition_plan_day_logged">Đã ghi các bữa trong ngày này vào hôm nay.</string>
     <string name="nutrition_plan_day_duplicate">Các bữa trong ngày này đã có trong hôm nay.</string>
