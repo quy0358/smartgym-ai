@@ -6,7 +6,7 @@
 
 ## Demo App
 
-<video src="assets/demo.mp4" controls="controls" width="100%"></video>
+https://github.com/quy0358/smartgym-ai/raw/main/assets/demo.mp4
 
 ---
 
