@@ -125,14 +125,3 @@ firebase deploy --only firestore:rules,storage
 .\gradlew.bat assembleDebug
 ```
 
----
-
-## Giấy phép
-
-Dự án được phát triển bởi **Nguyễn Thanh Quy** — Đồ án môn Lập trình thiết bị di động, Trường Đại học Nha Trang.
-
----
-
-## Đóng góp
-
-Mọi đóng góp đều được hoan nghênh! Hãy tạo [Issue](https://github.com/quy0358/smartgym-ai/issues) hoặc [Pull Request](https://github.com/quy0358/smartgym-ai/pulls) nếu bạn muốn cải thiện ứng dụng.
