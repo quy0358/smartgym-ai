@@ -4,7 +4,7 @@
 
 ---
 
-## Demo App
+## Video Demo App
 
 https://github.com/quy0358/smartgym-ai/raw/main/assets/demo.mp4
 
