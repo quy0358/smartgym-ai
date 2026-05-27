@@ -127,13 +127,6 @@ firebase deploy --only firestore:rules,storage
 
 ---
 
-## Ghi chú vận hành
-
-- **Nhắc lịch tập:** Dùng WorkManager dạng one-time work tự đặt lịch lại. Tiết kiệm pin, phù hợp nhắc tương đối. Có thể trễ khi thiết bị vào Doze — nếu cần báo đúng phút, dùng AlarmManager exact alarm.
-- **Community:** Hiện lưu `likedBy` trong document bài viết. Nếu người dùng tăng lớn, nên chuyển sang subcollection likes hoặc Cloud Function aggregate counter.
-
----
-
 ## Giấy phép
 
 Dự án được phát triển bởi **Nguyễn Thanh Quy** — Đồ án môn Lập trình thiết bị di động, Trường Đại học Nha Trang.
