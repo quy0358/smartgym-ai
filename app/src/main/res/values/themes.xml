@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.SmartGymAI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary -->
+        <!-- Màu chính -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/on_primary</item>
         <item name="colorPrimaryContainer">@color/primary_container</item>
         <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
 
-        <!-- Secondary -->
+        <!-- Màu phụ -->
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorOnSecondary">@color/on_secondary</item>
         <item name="colorSecondaryContainer">@color/secondary_container</item>
         <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
 
-        <!-- Tertiary -->
+        <!-- Màu cấp ba -->
         <item name="colorTertiary">@color/tertiary</item>
         <item name="colorOnTertiary">@color/on_tertiary</item>
 
-        <!-- Error -->
+        <!-- Lỗi -->
         <item name="colorError">@color/error</item>
         <item name="colorOnError">@color/on_error</item>
         <item name="colorErrorContainer">@color/error_container</item>
         <item name="colorOnErrorContainer">@color/on_error_container</item>
 
-        <!-- Background/Surface -->
+        <!-- Nền và bề mặt -->
         <item name="android:colorBackground">@color/background</item>
         <item name="colorOnBackground">@color/on_background</item>
         <item name="colorSurface">@color/surface</item>
@@ -32,21 +32,30 @@
         <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
         <item name="colorSurfaceContainerHigh">@color/surface_container_high</item>
 
-        <!-- Outline -->
+        <!-- Viền -->
         <item name="colorOutline">@color/outline</item>
         <item name="colorOutlineVariant">@color/outline_variant</item>
 
-        <!-- System bars -->
+        <!-- Thanh hệ thống -->
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:navigationBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowNoTitle">true</item>
 
-        <!-- Bottom Navigation -->
+        <!-- Thanh điều hướng dưới -->
         <item name="bottomNavigationStyle">@style/Widget.SmartGym.BottomNav</item>
     </style>
 
-    <!-- Bottom Navigation Style -->
+    <style name="ShapeAppearance.SmartGym.RoundedHero" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">@dimen/radius_lg</item>
+    </style>
+
+    <style name="ShapeAppearance.SmartGym.RoundedImage" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">@dimen/radius_md</item>
+    </style>
+
+    <!-- Kiểu thanh điều hướng dưới -->
     <style name="Widget.SmartGym.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="backgroundTint">@color/surface</item>
         <item name="itemIconTint">@color/bottom_nav_colors</item>
@@ -58,7 +67,7 @@
         <item name="android:color">@color/primary_container</item>
     </style>
 
-    <!-- Text Styles -->
+    <!-- Kiểu chữ -->
     <style name="TextStyle.HeadlineLg" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="fontFamily">@font/montserrat_bold</item>
         <item name="android:textSize">28sp</item>
@@ -91,7 +100,7 @@
         <item name="android:textColor">@color/on_surface_variant</item>
     </style>
 
-    <!-- Button Styles -->
+    <!-- Kiểu nút -->
     <style name="Widget.SmartGym.Button.Primary" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/primary</item>
         <item name="android:textColor">@color/on_primary</item>
@@ -107,14 +116,14 @@
         <item name="cornerRadius">12dp</item>
     </style>
 
-    <!-- Card Style -->
+    <!-- Kiểu thẻ -->
     <style name="Widget.SmartGym.Card" parent="Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">@color/surface_container</item>
         <item name="cardCornerRadius">16dp</item>
         <item name="cardElevation">0dp</item>
     </style>
 
-    <!-- TextField Style -->
+    <!-- Kiểu ô nhập -->
     <style name="Widget.SmartGym.TextField" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/text_field_stroke</item>
         <item name="boxCornerRadiusTopStart">12dp</item>

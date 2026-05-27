@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Spacing tokens -->
+    <!-- Giá trị khoảng cách -->
     <dimen name="spacing_xs">4dp</dimen>
     <dimen name="spacing_sm">8dp</dimen>
     <dimen name="spacing_md">12dp</dimen>
@@ -9,14 +9,14 @@
     <dimen name="spacing_xxl">32dp</dimen>
     <dimen name="spacing_xxxl">48dp</dimen>
 
-    <!-- Corner radius -->
+    <!-- Bán kính bo góc -->
     <dimen name="radius_sm">8dp</dimen>
     <dimen name="radius_md">12dp</dimen>
     <dimen name="radius_lg">16dp</dimen>
     <dimen name="radius_xl">20dp</dimen>
     <dimen name="radius_full">100dp</dimen>
 
-    <!-- Component sizes -->
+    <!-- Kích thước thành phần -->
     <dimen name="button_height">56dp</dimen>
     <dimen name="avatar_sm">40dp</dimen>
     <dimen name="avatar_lg">80dp</dimen>

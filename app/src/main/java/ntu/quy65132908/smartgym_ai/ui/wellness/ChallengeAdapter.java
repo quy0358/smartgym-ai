@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ntu.quy65132908.smartgym_ai.data.model.Challenge;
 import ntu.quy65132908.smartgym_ai.data.model.ChallengeProgress;
@@ -30,11 +32,12 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.View
     }
 
     public void submitList(List<ChallengeDisplayItem> challenges) {
+        List<ChallengeDisplayItem> oldItems = new ArrayList<>(items);
+        List<ChallengeDisplayItem> newItems = challenges != null ? new ArrayList<>(challenges) : new ArrayList<>();
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ChallengeDiffCallback(oldItems, newItems));
         items.clear();
-        if (challenges != null) {
-            items.addAll(challenges);
-        }
-        notifyDataSetChanged();
+        items.addAll(newItems);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -112,6 +115,80 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.View
         ViewHolder(ItemChallengeBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+        }
+    }
+
+    private static class ChallengeDiffCallback extends DiffUtil.Callback {
+        private final List<ChallengeDisplayItem> oldItems;
+        private final List<ChallengeDisplayItem> newItems;
+
+        ChallengeDiffCallback(List<ChallengeDisplayItem> oldItems, List<ChallengeDisplayItem> newItems) {
+            this.oldItems = oldItems;
+            this.newItems = newItems;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldItems.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newItems.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            Challenge oldChallenge = oldItems.get(oldItemPosition).getChallenge();
+            Challenge newChallenge = newItems.get(newItemPosition).getChallenge();
+            if (oldChallenge == null || newChallenge == null) {
+                return oldChallenge == newChallenge;
+            }
+            String oldId = oldChallenge.getId();
+            String newId = newChallenge.getId();
+            if (oldId != null && newId != null) {
+                return oldId.equals(newId);
+            }
+            return Objects.equals(oldChallenge.getTitle(), newChallenge.getTitle())
+                    && oldChallenge.getTargetDays() == newChallenge.getTargetDays()
+                    && oldChallenge.getDailyMinutes() == newChallenge.getDailyMinutes();
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            ChallengeDisplayItem oldItem = oldItems.get(oldItemPosition);
+            ChallengeDisplayItem newItem = newItems.get(newItemPosition);
+            return sameChallenge(oldItem.getChallenge(), newItem.getChallenge())
+                    && sameProgress(oldItem.getProgress(), newItem.getProgress());
+        }
+
+        private static boolean sameChallenge(Challenge oldChallenge, Challenge newChallenge) {
+            if (oldChallenge == newChallenge) {
+                return true;
+            }
+            if (oldChallenge == null || newChallenge == null) {
+                return false;
+            }
+            return Objects.equals(oldChallenge.getId(), newChallenge.getId())
+                    && Objects.equals(oldChallenge.getTitle(), newChallenge.getTitle())
+                    && Objects.equals(oldChallenge.getDescription(), newChallenge.getDescription())
+                    && oldChallenge.getTargetDays() == newChallenge.getTargetDays()
+                    && oldChallenge.getDailyMinutes() == newChallenge.getDailyMinutes();
+        }
+
+        private static boolean sameProgress(ChallengeProgress oldProgress, ChallengeProgress newProgress) {
+            if (oldProgress == newProgress) {
+                return true;
+            }
+            if (oldProgress == null || newProgress == null) {
+                return false;
+            }
+            return Objects.equals(oldProgress.getId(), newProgress.getId())
+                    && Objects.equals(oldProgress.getChallengeId(), newProgress.getChallengeId())
+                    && oldProgress.getTargetDays() == newProgress.getTargetDays()
+                    && oldProgress.getCompletedDays() == newProgress.getCompletedDays()
+                    && oldProgress.getDailyMinutes() == newProgress.getDailyMinutes()
+                    && oldProgress.isCompleted() == newProgress.isCompleted();
         }
     }
 }

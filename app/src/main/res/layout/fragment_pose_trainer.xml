@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_height="match_parent">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/preview_view"
@@ -160,6 +159,17 @@
                 android:text="@string/pose_type_plank" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
+        <TextView
+            android:id="@+id/tv_pose_target"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:textAppearance="@style/TextStyle.BodyBase"
+            android:textColor="@color/on_surface_variant"
+            android:visibility="gone"
+            tools:text="Mục tiêu: 90 giây"
+            tools:visibility="visible" />
+
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_voice_feedback"
             android:layout_width="match_parent"
@@ -249,5 +259,14 @@
             android:text="@string/pose_feedback_ready"
             android:textAppearance="@style/TextStyle.BodyBold"
             android:textColor="@color/on_surface" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm_completion"
+            style="@style/Widget.SmartGym.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:text="@string/pose_confirm_completion"
+            android:visibility="gone" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

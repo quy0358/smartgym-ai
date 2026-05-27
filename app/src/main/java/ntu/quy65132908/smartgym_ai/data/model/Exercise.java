@@ -11,6 +11,10 @@ public class Exercise {
     private boolean isCompleted;
     private String notes;
     private String poseTypeKey;
+    private String primaryMuscle;
+    private String catalogItemId;
+    private int durationSeconds;
+    private int orderIndex;
 
     public Exercise() {}
 
@@ -34,6 +38,10 @@ public class Exercise {
 
     public String getNotes() { return notes; }
     public String getPoseTypeKey() { return poseTypeKey; }
+    public String getPrimaryMuscle() { return primaryMuscle; }
+    public String getCatalogItemId() { return catalogItemId; }
+    public int getDurationSeconds() { return Math.max(0, durationSeconds); }
+    public int getOrderIndex() { return Math.max(0, orderIndex); }
 
     public void setId(String id) { this.id = id; }
     public void setName(String name) { this.name = name; }
@@ -46,4 +54,8 @@ public class Exercise {
 
     public void setNotes(String notes) { this.notes = notes; }
     public void setPoseTypeKey(String poseTypeKey) { this.poseTypeKey = poseTypeKey; }
+    public void setPrimaryMuscle(String primaryMuscle) { this.primaryMuscle = primaryMuscle; }
+    public void setCatalogItemId(String catalogItemId) { this.catalogItemId = catalogItemId; }
+    public void setDurationSeconds(int durationSeconds) { this.durationSeconds = Math.max(0, durationSeconds); }
+    public void setOrderIndex(int orderIndex) { this.orderIndex = Math.max(0, orderIndex); }
 }

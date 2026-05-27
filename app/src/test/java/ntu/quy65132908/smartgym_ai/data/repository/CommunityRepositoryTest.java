@@ -34,6 +34,16 @@ public class CommunityRepositoryTest {
         assertEquals(2_500L, post.getCreatedAt());
     }
 
+    @Test
+    public void mapPost_readsServerTimestampUpdatedAt() {
+        DocumentSnapshot snapshot = snapshotWithCreatedAt(new Timestamp(2L, 0));
+        when(snapshot.get("updatedAt")).thenReturn(new Timestamp(3L, 250_000_000));
+
+        Post post = CommunityRepository.mapPost(snapshot);
+
+        assertEquals(3_250L, post.getUpdatedAt());
+    }
+
     private static DocumentSnapshot snapshotWithCreatedAt(Object createdAt) {
         DocumentSnapshot snapshot = mock(DocumentSnapshot.class);
         when(snapshot.getId()).thenReturn("p1");
@@ -43,6 +53,7 @@ public class CommunityRepositoryTest {
         when(snapshot.getLong("likes")).thenReturn(2L);
         when(snapshot.get("likedBy")).thenReturn(Collections.singletonList("uid-2"));
         when(snapshot.get("createdAt")).thenReturn(createdAt);
+        when(snapshot.get("updatedAt")).thenReturn(null);
         return snapshot;
     }
 }

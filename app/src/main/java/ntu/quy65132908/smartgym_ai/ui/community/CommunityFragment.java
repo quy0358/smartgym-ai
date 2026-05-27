@@ -12,10 +12,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import ntu.quy65132908.smartgym_ai.R;
+import ntu.quy65132908.smartgym_ai.data.model.Post;
 import ntu.quy65132908.smartgym_ai.databinding.FragmentCommunityBinding;
 
 @AndroidEntryPoint
@@ -36,7 +39,21 @@ public class CommunityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(CommunityViewModel.class);
 
-        adapter = new PostAdapter(post -> viewModel.toggleLike(post));
+        adapter = new PostAdapter(
+                post -> viewModel.toggleLike(post),
+                new PostAdapter.OnPostActionListener() {
+                    @Override
+                    public void onEdit(Post post) {
+                        CreatePostBottomSheet.newEditInstance(post)
+                                .show(getChildFragmentManager(), "edit_post");
+                    }
+
+                    @Override
+                    public void onDelete(Post post) {
+                        confirmDelete(post);
+                    }
+                }
+        );
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             adapter.setCurrentUserId(user.getUid());
@@ -55,8 +72,17 @@ public class CommunityFragment extends Fragment {
         });
 
         binding.fabPost.setOnClickListener(v ->
-                new CreatePostBottomSheet().show(getChildFragmentManager(), "create_post")
+                CreatePostBottomSheet.newCreateInstance().show(getChildFragmentManager(), "create_post")
         );
+    }
+
+    private void confirmDelete(Post post) {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.post_delete_title)
+                .setMessage(R.string.post_delete_message)
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.post_delete_confirm, (dialog, which) -> viewModel.deletePost(post))
+                .show();
     }
 
     @Override

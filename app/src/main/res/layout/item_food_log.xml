@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.SmartGym.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,20 +9,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="@dimen/spacing_md">
 
-        <ImageView
+        <TextView
+            android:id="@+id/tv_food_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_sm"
+            android:textAppearance="@style/TextStyle.LabelCaps"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_food_image"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="@dimen/spacing_md"
-            android:background="@drawable/bg_rounded_12"
-            android:clipToOutline="true"
+            android:background="@color/primary"
+            android:padding="@dimen/spacing_md"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedImage"
             android:importantForAccessibility="no"
-            android:scaleType="centerCrop"
-            android:src="@drawable/img_meal_default" />
+            android:scaleType="center"
+            android:src="@drawable/ic_nutrition_mixed" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -43,6 +58,14 @@
                 android:textAppearance="@style/TextStyle.BodyBase" />
 
             <TextView
+                android:id="@+id/tv_food_serving"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="@style/TextStyle.BodyBase"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/tv_food_calories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,6 +79,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xs"
                 android:textAppearance="@style/TextStyle.BodyBase" />
+
+            <TextView
+                android:id="@+id/tv_food_source"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="@style/TextStyle.LabelCaps" />
+        </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete_food"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:contentDescription="@string/action_delete"
+                app:icon="@drawable/ic_delete_24"
+                app:iconTint="@color/on_surface_variant" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

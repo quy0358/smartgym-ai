@@ -23,12 +23,65 @@ service cloud.firestore {
         'bmi',
         'bmiCategory',
         'goal',
+        'targetWeight',
+        'gender',
+        'birthDate',
+        'fitnessLevel',
+        'onboardingCompleted',
+        'onboardingCompletedAt',
         'createdAt'
       ])
       && request.resource.data.uid == request.auth.uid
       && request.resource.data.displayName is string
       && request.resource.data.displayName.size() <= 50
-      && request.resource.data.email is string;
+      && request.resource.data.email is string
+      && request.resource.data.email.size() <= 120
+      && (!request.resource.data.keys().hasAny(['photoUrl'])
+        || request.resource.data.photoUrl == null
+        || (request.resource.data.photoUrl is string && request.resource.data.photoUrl.size() <= 500))
+      && (!request.resource.data.keys().hasAny(['beforePhotoUrl'])
+        || request.resource.data.beforePhotoUrl == null
+        || (request.resource.data.beforePhotoUrl is string && request.resource.data.beforePhotoUrl.size() <= 500))
+      && (!request.resource.data.keys().hasAny(['afterPhotoUrl'])
+        || request.resource.data.afterPhotoUrl == null
+        || (request.resource.data.afterPhotoUrl is string && request.resource.data.afterPhotoUrl.size() <= 500))
+      && (!request.resource.data.keys().hasAny(['weight'])
+        || (request.resource.data.weight is number
+          && request.resource.data.weight >= 20
+          && request.resource.data.weight <= 350))
+      && (!request.resource.data.keys().hasAny(['height'])
+        || (request.resource.data.height is number
+          && request.resource.data.height >= 80
+          && request.resource.data.height <= 250))
+      && (!request.resource.data.keys().hasAny(['bmi'])
+        || (request.resource.data.bmi is number
+          && request.resource.data.bmi > 0
+          && request.resource.data.bmi <= 100))
+      && (!request.resource.data.keys().hasAny(['bmiCategory'])
+        || request.resource.data.bmiCategory == null
+        || (request.resource.data.bmiCategory is string && request.resource.data.bmiCategory.size() <= 40))
+      && (!request.resource.data.keys().hasAny(['goal'])
+        || request.resource.data.goal == null
+        || (request.resource.data.goal is string && request.resource.data.goal.size() <= 120))
+      && (!request.resource.data.keys().hasAny(['targetWeight'])
+        || (request.resource.data.targetWeight is number
+          && request.resource.data.targetWeight >= 20
+          && request.resource.data.targetWeight <= 350))
+      && (!request.resource.data.keys().hasAny(['gender'])
+        || request.resource.data.gender == null
+        || (request.resource.data.gender is string && request.resource.data.gender.size() <= 40))
+      && (!request.resource.data.keys().hasAny(['birthDate'])
+        || request.resource.data.birthDate == null
+        || (request.resource.data.birthDate is string && request.resource.data.birthDate.size() <= 40))
+      && (!request.resource.data.keys().hasAny(['fitnessLevel'])
+        || request.resource.data.fitnessLevel == null
+        || (request.resource.data.fitnessLevel is string && request.resource.data.fitnessLevel.size() <= 60))
+      && (!request.resource.data.keys().hasAny(['onboardingCompleted'])
+        || request.resource.data.onboardingCompleted is bool)
+      && (!request.resource.data.keys().hasAny(['onboardingCompletedAt'])
+        || request.resource.data.onboardingCompletedAt is number)
+      && (!request.resource.data.keys().hasAny(['createdAt'])
+        || request.resource.data.createdAt is number);
     }
 
     function validWorkout() {
@@ -41,7 +94,9 @@ service cloud.firestore {
         'exercises',
         'exerciseCount',
         'isCompleted',
-        'dayOfWeek'
+        'isCustom',
+        'dayOfWeek',
+        'dayType'
       ])
       && request.resource.data.title is string
       && request.resource.data.title.size() <= 120
@@ -54,6 +109,10 @@ service cloud.firestore {
         || (request.resource.data.exerciseCount is int
           && request.resource.data.exerciseCount >= 0
           && request.resource.data.exerciseCount <= 50))
+      && (!request.resource.data.keys().hasAny(['dayType'])
+        || request.resource.data.dayType in ['TRAINING', 'RECOVERY', 'REST'])
+      && (!request.resource.data.keys().hasAny(['isCustom'])
+        || request.resource.data.isCustom is bool)
       && request.resource.data.isCompleted is bool;
     }
 
@@ -65,7 +124,12 @@ service cloud.firestore {
         'reps',
         'weight',
         'isCompleted',
-        'notes'
+        'notes',
+        'poseTypeKey',
+        'primaryMuscle',
+        'catalogItemId',
+        'durationSeconds',
+        'orderIndex'
       ])
       && request.resource.data.name is string
       && request.resource.data.name.size() <= 120
@@ -73,6 +137,17 @@ service cloud.firestore {
       && request.resource.data.sets >= 0
       && request.resource.data.reps is int
       && request.resource.data.reps >= 0
+      && (!request.resource.data.keys().hasAny(['poseTypeKey'])
+        || request.resource.data.poseTypeKey is string)
+      && (!request.resource.data.keys().hasAny(['primaryMuscle'])
+        || request.resource.data.primaryMuscle is string)
+      && (!request.resource.data.keys().hasAny(['catalogItemId'])
+        || request.resource.data.catalogItemId == null
+        || request.resource.data.catalogItemId is string)
+      && (!request.resource.data.keys().hasAny(['durationSeconds'])
+        || (request.resource.data.durationSeconds is int && request.resource.data.durationSeconds >= 0))
+      && (!request.resource.data.keys().hasAny(['orderIndex'])
+        || (request.resource.data.orderIndex is int && request.resource.data.orderIndex >= 0))
       && request.resource.data.isCompleted is bool;
     }
 
@@ -104,6 +179,29 @@ service cloud.firestore {
       && request.resource.data.date <= request.time.toMillis() + 5 * 60 * 1000;
     }
 
+    function validWorkoutSession() {
+      return request.resource.data.keys().hasOnly([
+        'workoutId',
+        'completedAt',
+        'durationMinutes',
+        'intensity',
+        'source'
+      ])
+      && request.resource.data.workoutId is string
+      && request.resource.data.workoutId.size() > 0
+      && request.resource.data.workoutId.size() <= 120
+      && request.resource.data.completedAt is number
+      && request.resource.data.completedAt > 0
+      && request.resource.data.durationMinutes is int
+      && request.resource.data.durationMinutes >= 0
+      && request.resource.data.durationMinutes <= 600
+      && (!request.resource.data.keys().hasAny(['intensity'])
+        || request.resource.data.intensity == null
+        || (request.resource.data.intensity is string
+          && request.resource.data.intensity.size() <= 40))
+      && request.resource.data.source in ['MANUAL', 'POSE'];
+    }
+
     function validCustomWorkout() {
       return request.resource.data.keys().hasOnly([
         'id',
@@ -132,22 +230,59 @@ service cloud.firestore {
         'id',
         'name',
         'mealType',
+        'servingText',
+        'category',
+        'source',
+        'planImportKey',
+        'aiConfidence',
+        'notes',
         'calories',
         'proteinGrams',
         'carbsGrams',
         'fatGrams',
-        'eatenAt'
+        'eatenAt',
+        'updatedAt'
       ])
       && request.resource.data.name is string
       && request.resource.data.name.size() > 0
       && request.resource.data.name.size() <= 120
+      && request.resource.data.mealType is string
+      && request.resource.data.mealType.size() > 0
+      && request.resource.data.mealType.size() <= 40
+      && (!request.resource.data.keys().hasAny(['servingText'])
+        || request.resource.data.servingText == null
+        || (request.resource.data.servingText is string && request.resource.data.servingText.size() <= 80))
+      && (!request.resource.data.keys().hasAny(['category'])
+        || request.resource.data.category == null
+        || (request.resource.data.category in ['protein', 'carb', 'veg', 'snack', 'mixed']))
+      && (!request.resource.data.keys().hasAny(['source'])
+        || request.resource.data.source in ['MANUAL', 'AI', 'PLAN'])
+      && (!request.resource.data.keys().hasAny(['planImportKey'])
+        || request.resource.data.planImportKey == null
+        || (request.resource.data.planImportKey is string && request.resource.data.planImportKey.size() <= 120))
+      && (!request.resource.data.keys().hasAny(['aiConfidence'])
+        || request.resource.data.aiConfidence == null
+        || (request.resource.data.aiConfidence is number
+          && request.resource.data.aiConfidence >= 0
+          && request.resource.data.aiConfidence <= 1))
+      && (!request.resource.data.keys().hasAny(['notes'])
+        || request.resource.data.notes == null
+        || (request.resource.data.notes is string && request.resource.data.notes.size() <= 300))
       && request.resource.data.calories is int
       && request.resource.data.calories >= 0
       && request.resource.data.calories <= 5000
       && request.resource.data.proteinGrams is int
+      && request.resource.data.proteinGrams >= 0
+      && request.resource.data.proteinGrams <= 1000
       && request.resource.data.carbsGrams is int
+      && request.resource.data.carbsGrams >= 0
+      && request.resource.data.carbsGrams <= 1000
       && request.resource.data.fatGrams is int
-      && request.resource.data.eatenAt is number;
+      && request.resource.data.fatGrams >= 0
+      && request.resource.data.fatGrams <= 1000
+      && request.resource.data.eatenAt is number
+      && (!request.resource.data.keys().hasAny(['updatedAt'])
+        || request.resource.data.updatedAt is number);
     }
 
     function validMealPlan() {
@@ -263,23 +398,55 @@ service cloud.firestore {
           'content',
           'likes',
           'likedBy',
-          'createdAt'
+          'createdAt',
+          'updatedAt'
         ])
         && request.resource.data.authorId == resource.data.authorId
         && request.resource.data.authorName == resource.data.authorName
-        && request.resource.data.content == resource.data.content
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.likedBy is list
         && request.resource.data.likedBy.size() <= 10000
         && request.resource.data.likes == request.resource.data.likedBy.size()
+        && request.resource.data.content is string
+        && request.resource.data.content.size() > 0
+        && request.resource.data.content.size() <= 500
+        && (
+          validPostLikeUpdate()
+          || validPostContentUpdate()
+        );
+    }
+
+    function validPostLikeUpdate() {
+      return request.resource.data.content == resource.data.content
+        && updatedAtUnchanged()
         && changedLikeOnlyForCurrentUser();
+    }
+
+    function validPostContentUpdate() {
+      return request.auth.uid == resource.data.authorId
+        && request.resource.data.likes == resource.data.likes
+        && request.resource.data.likedBy == resource.data.likedBy
+        && request.resource.data.content != resource.data.content
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function updatedAtUnchanged() {
+      return (!resource.data.keys().hasAny(['updatedAt'])
+          && !request.resource.data.keys().hasAny(['updatedAt']))
+        || (resource.data.keys().hasAny(['updatedAt'])
+          && request.resource.data.keys().hasAny(['updatedAt'])
+          && request.resource.data.updatedAt == resource.data.updatedAt);
     }
 
     function changedLikeOnlyForCurrentUser() {
       let before = resource.data.likedBy.toSet();
       let after = request.resource.data.likedBy.toSet();
       return before.difference(after).union(after.difference(before)).hasOnly([request.auth.uid])
-        && before.difference(after).union(after.difference(before)).size() == 1;
+        && before.difference(after).union(after.difference(before)).size() == 1
+        && (
+          request.auth.uid in resource.data.likedBy
+          || resource.data.likedBy.size() < 10000
+        );
     }
 
     match /users/{uid} {
@@ -302,6 +469,14 @@ service cloud.firestore {
       match /progress/{entryId} {
         allow read: if isOwner(uid);
         allow create, update: if isOwner(uid) && validProgress();
+        allow delete: if isOwner(uid);
+      }
+
+      match /workoutSessions/{sessionId} {
+        allow read: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && validWorkoutSession()
+          && request.resource.data.workoutId == sessionId;
         allow delete: if isOwner(uid);
       }
 

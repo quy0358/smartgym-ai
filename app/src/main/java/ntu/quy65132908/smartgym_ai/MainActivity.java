@@ -1,6 +1,7 @@
 package ntu.quy65132908.smartgym_ai;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.IdRes;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavHost {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Setup Navigation
+        // Thiết lập điều hướng.
         NavHostFragment navHostFragment = (NavHostFragment)
                 getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         if (navHostFragment == null) {
@@ -51,10 +52,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavHost {
         }
         navController = navHostFragment.getNavController();
 
-        // Setup Bottom Navigation
+        // Thiết lập thanh điều hướng dưới.
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
 
-        // Show/hide bottom nav based on destination
+        // Hiện hoặc ẩn thanh điều hướng dưới theo đích đến.
         Set<Integer> mainDestinations = new HashSet<>(Arrays.asList(
                 R.id.nav_dashboard, R.id.nav_workout, R.id.nav_progress,
                 R.id.nav_community, R.id.nav_profile
@@ -63,7 +64,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavHost {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.nav_ai_analysis) {
                 binding.bottomNav.setVisibility(View.VISIBLE);
-                binding.bottomNav.getMenu().findItem(R.id.nav_workout).setChecked(true);
+                MenuItem workoutItem = binding.bottomNav.getMenu().findItem(R.id.nav_workout);
+                if (workoutItem != null) {
+                    workoutItem.setChecked(true);
+                }
             } else if (destination.getId() == R.id.nav_pose_trainer) {
                 binding.bottomNav.setVisibility(View.GONE);
             } else if (mainDestinations.contains(destination.getId())) {
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavHost {
             }
         });
 
-        // Auto-route logged-in users through mandatory onboarding when needed.
+        // Tự điều hướng người dùng đã đăng nhập qua bước thiết lập ban đầu bắt buộc khi cần.
         if (firebaseAuth.getCurrentUser() != null) {
             NavDestination currentDest = navController.getCurrentDestination();
             if (currentDest != null && currentDest.getId() == R.id.nav_login) {
@@ -86,12 +90,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavHost {
         userRepository.getUser(uid, new UserRepository.UserCallback() {
             @Override
             public void onSuccess(User user) {
-                runOnUiThread(() -> navigateToInitialDestination(user));
+                runOnUiThread(() -> {
+                    if (canRouteFromLogin()) {
+                        navigateToInitialDestination(user);
+                    }
+                });
             }
 
             @Override
             public void onError(Exception e) {
-                runOnUiThread(() -> navController.navigate(R.id.action_login_to_onboarding));
+                runOnUiThread(() -> {
+                    if (canRouteFromLogin()) {
+                        navController.navigate(R.id.action_login_to_onboarding);
+                    }
+                });
             }
         });
     }
@@ -102,6 +114,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavHost {
         } else {
             navController.navigate(R.id.action_login_to_dashboard);
         }
+    }
+
+    private boolean canRouteFromLogin() {
+        if (navController == null) {
+            return false;
+        }
+        NavDestination currentDest = navController.getCurrentDestination();
+        return currentDest != null && currentDest.getId() == R.id.nav_login;
     }
 
     @Override

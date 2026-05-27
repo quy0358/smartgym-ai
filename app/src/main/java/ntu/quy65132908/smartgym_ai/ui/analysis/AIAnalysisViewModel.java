@@ -14,10 +14,13 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import ntu.quy65132908.smartgym_ai.data.model.InjuryProfile;
 import ntu.quy65132908.smartgym_ai.data.model.ProgressEntry;
 import ntu.quy65132908.smartgym_ai.data.model.User;
+import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.DeepSeekRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.InjuryProfileRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.ProgressRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 
@@ -35,6 +38,7 @@ public class AIAnalysisViewModel extends ViewModel {
 
     private final DeepSeekRepository deepSeekRepo;
     private final UserRepository userRepo;
+    private final InjuryProfileRepository injuryProfileRepository;
     private final ProgressRepository progressRepo;
     private final AuthRepository authRepo;
 
@@ -51,7 +55,7 @@ public class AIAnalysisViewModel extends ViewModel {
     private final MutableLiveData<String> exerciseNameError = new MutableLiveData<>();
     private final MutableLiveData<String> formDescriptionError = new MutableLiveData<>();
 
-    // Legacy aggregate state kept for existing observers/tests.
+    // Trạng thái tổng hợp cũ được giữ cho bộ quan sát và kiểm thử hiện có.
     private final MutableLiveData<String> aiResponse = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMsg = new MutableLiveData<>();
@@ -73,13 +77,19 @@ public class AIAnalysisViewModel extends ViewModel {
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMsg() { return errorMsg; }
 
+    public void reloadProfile() {
+        loadUser();
+    }
+
     @Inject
     public AIAnalysisViewModel(DeepSeekRepository deepSeekRepo,
                                UserRepository userRepo,
+                               InjuryProfileRepository injuryProfileRepository,
                                ProgressRepository progressRepo,
                                AuthRepository authRepo) {
         this.deepSeekRepo = deepSeekRepo;
         this.userRepo = userRepo;
+        this.injuryProfileRepository = injuryProfileRepository;
         this.progressRepo = progressRepo;
         this.authRepo = authRepo;
         loadUser();
@@ -146,6 +156,32 @@ public class AIAnalysisViewModel extends ViewModel {
         }
 
         setPlanLoading(true);
+        FirebaseUser firebaseUser = authRepo.getCurrentUser();
+        if (firebaseUser != null) {
+            injuryProfileRepository.getInjuryProfile(firebaseUser.getUid(), new InjuryProfileRepository.InjuryProfileCallback() {
+                @Override
+                public void onSuccess(InjuryProfile injuryProfile) {
+                    if (hasInjuryProfile(injuryProfile)) {
+                        runInjuryAwareWorkoutPlan(user, injuryProfile);
+                    } else {
+                        runStandardWorkoutPlan(user);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    postPlanLoading(false);
+                    String message = "Không thể tải hồ sơ an toàn.";
+                    planError.postValue(message);
+                    errorMsg.postValue(message);
+                }
+            });
+            return;
+        }
+        runStandardWorkoutPlan(user);
+    }
+
+    private void runStandardWorkoutPlan(User user) {
         deepSeekRepo.generateWorkoutPlan(user, user.getGoal(), new DeepSeekRepository.AiCallback() {
             @Override
             public void onSuccess(String response) {
@@ -166,6 +202,38 @@ public class AIAnalysisViewModel extends ViewModel {
                 errorMsg.postValue(message);
             }
         });
+    }
+
+    private void runInjuryAwareWorkoutPlan(User user, InjuryProfile injuryProfile) {
+        deepSeekRepo.generateInjuryAwareWorkoutPlan(user, injuryProfile, user.getGoal(), new DeepSeekRepository.WorkoutPlanCallback() {
+            @Override
+            public void onSuccess(List<Workout> plan) {
+                String response = DeepSeekRepository.formatWorkoutPlanForDisplay(plan);
+                postPlanLoading(false);
+                planError.postValue(null);
+                errorMsg.postValue(null);
+                planResponse.postValue(response);
+                aiResponse.postValue(response);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                postPlanLoading(false);
+                planResponse.postValue(null);
+                aiResponse.postValue(null);
+                String message = AiErrorMapper.toUserMessage(e);
+                planError.postValue(message);
+                errorMsg.postValue(message);
+            }
+        });
+    }
+
+    private boolean hasInjuryProfile(InjuryProfile profile) {
+        return profile != null
+                && (profile.isKneeSensitive()
+                || profile.isShoulderSensitive()
+                || profile.isLowerBackSensitive()
+                || (profile.getNotes() != null && !profile.getNotes().trim().isEmpty()));
     }
 
     public void analyzeForm(String exercise, String desc) {

@@ -12,13 +12,12 @@
         android:orientation="vertical"
         android:padding="@dimen/spacing_md">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_challenge_image"
             android:layout_width="match_parent"
             android:layout_height="112dp"
             android:layout_marginBottom="@dimen/spacing_md"
-            android:background="@drawable/bg_rounded_12"
-            android:clipToOutline="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedImage"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
             android:src="@drawable/img_hero_wellness" />

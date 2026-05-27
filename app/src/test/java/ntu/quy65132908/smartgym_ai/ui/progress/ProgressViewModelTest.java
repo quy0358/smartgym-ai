@@ -32,9 +32,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import ntu.quy65132908.smartgym_ai.data.model.ProgressEntry;
-import ntu.quy65132908.smartgym_ai.data.model.Workout;
+import ntu.quy65132908.smartgym_ai.data.model.User;
+import ntu.quy65132908.smartgym_ai.data.model.WorkoutSession;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.ProgressRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.WorkoutRepository;
 
 @RunWith(RobolectricTestRunner.class)
@@ -45,6 +47,7 @@ public class ProgressViewModelTest {
 
     @Mock private ProgressRepository progressRepository;
     @Mock private WorkoutRepository workoutRepository;
+    @Mock private UserRepository userRepository;
     @Mock private AuthRepository authRepository;
     @Mock private FirebaseUser firebaseUser;
 
@@ -132,6 +135,28 @@ public class ProgressViewModelTest {
     }
 
     @Test
+    public void addProgressEntry_successUpdatesWeightAndChartImmediately() {
+        AtomicReference<ProgressRepository.ProgressCallback> reloadCallback = new AtomicReference<>();
+        doAnswer(invocation -> {
+            reloadCallback.set(invocation.getArgument(1));
+            return null;
+        }).when(progressRepository).getHistory(eq("uid-1"), any());
+        ProgressViewModel viewModel = createViewModel();
+        doAnswer(invocation -> {
+            ProgressRepository.SimpleCallback cb = invocation.getArgument(2);
+            cb.onSuccess();
+            return null;
+        }).when(progressRepository).addEntry(eq("uid-1"), any(), any());
+
+        viewModel.addProgressEntry("72", "", "", "");
+
+        assertEquals(72f, viewModel.getCurrentWeight().getValue(), 0.001f);
+        assertTrue(Boolean.TRUE.equals(viewModel.getHasWeightData().getValue()));
+        assertEquals(1, viewModel.getEntries().getValue().size());
+        assertEquals(72f, viewModel.getUiState().getValue().getCurrentWeight(), 0.001f);
+    }
+
+    @Test
     public void onProgressFormChanged_afterFailedSubmit_clearsFixedFieldError() {
         ProgressViewModel viewModel = createViewModel();
 
@@ -181,61 +206,91 @@ public class ProgressViewModelTest {
     @Test
     public void loadProgress_keepsLoadingUntilAllInitialCallbacksComplete() {
         AtomicReference<ProgressRepository.ProgressCallback> progressCallback = new AtomicReference<>();
-        AtomicReference<WorkoutRepository.WorkoutListCallback> workoutCallback = new AtomicReference<>();
+        AtomicReference<WorkoutRepository.WorkoutSessionListCallback> sessionCallback = new AtomicReference<>();
+        AtomicReference<UserRepository.UserCallback> userCallback = new AtomicReference<>();
         doAnswer(invocation -> {
             progressCallback.set(invocation.getArgument(1));
             return null;
         }).when(progressRepository).getHistory(eq("uid-1"), any());
         doAnswer(invocation -> {
-            workoutCallback.set(invocation.getArgument(1));
+            sessionCallback.set(invocation.getArgument(1));
             return null;
-        }).when(workoutRepository).getWeeklyPlan(eq("uid-1"), any());
+        }).when(workoutRepository).getWorkoutSessions(eq("uid-1"), any());
+        doAnswer(invocation -> {
+            userCallback.set(invocation.getArgument(1));
+            return null;
+        }).when(userRepository).getUser(eq("uid-1"), any());
 
         ProgressViewModel viewModel = createViewModel();
 
         assertTrue(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
         progressCallback.get().onSuccess(Collections.emptyList());
         assertTrue(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
-        workoutCallback.get().onSuccess(Collections.emptyList());
+        sessionCallback.get().onSuccess(Collections.emptyList());
+        assertTrue(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
+        userCallback.get().onSuccess(userWithWeight(72f));
         assertFalse(Boolean.TRUE.equals(viewModel.getIsLoading().getValue()));
     }
 
     @Test
-    public void loadWorkoutStats_usesWeightAwareCalorieEstimate() {
+    public void loadWorkoutStats_usesSessionsAndLatestProgressWeightForCalories() {
         ProgressEntry current = entry(80f, 2_000L);
         stubProgressHistory(Collections.singletonList(current));
-        Workout workout = new Workout();
-        workout.setCompleted(true);
-        workout.setDurationMinutes(30);
-        workout.setIntensity("high");
+        stubWorkoutSessions(Collections.singletonList(session("w1", 30, "high")));
+
+        ProgressViewModel viewModel = createViewModel();
+
+        assertEquals(1, viewModel.getCompletedWorkouts().getValue().intValue());
+        assertEquals(336, viewModel.getTotalCalories().getValue().intValue());
+    }
+
+    @Test
+    public void loadWorkoutStats_usesProfileWeightWhenNoProgressWeight() {
+        stubUserProfileWeight(80f);
+        stubWorkoutSessions(Collections.singletonList(session("w1", 30, "high")));
+
+        ProgressViewModel viewModel = createViewModel();
+
+        assertEquals(1, viewModel.getCompletedWorkouts().getValue().intValue());
+        assertEquals(336, viewModel.getTotalCalories().getValue().intValue());
+    }
+
+    @Test
+    public void loadWorkoutStats_usesDefaultWeightWhenNoProgressOrProfileWeight() {
+        stubUserProfileWeight(null);
+        stubWorkoutSessions(Collections.singletonList(session("w1", 30, "high")));
+
+        ProgressViewModel viewModel = createViewModel();
+
+        assertEquals(1, viewModel.getCompletedWorkouts().getValue().intValue());
+        assertEquals(294, viewModel.getTotalCalories().getValue().intValue());
+    }
+
+    @Test
+    public void loadWorkoutStats_countsSessionsEvenWhenWeeklyPlanIsEmpty() {
+        stubWorkoutSessions(Arrays.asList(
+                session("old-workout-1", 30, "high"),
+                session("old-workout-2", 20, "low")));
         doAnswer(invocation -> {
             WorkoutRepository.WorkoutListCallback cb = invocation.getArgument(1);
-            cb.onSuccess(Collections.singletonList(workout));
+            cb.onSuccess(Collections.emptyList());
             return null;
         }).when(workoutRepository).getWeeklyPlan(eq("uid-1"), any());
 
         ProgressViewModel viewModel = createViewModel();
 
-        assertEquals(336, viewModel.getTotalCalories().getValue().intValue());
+        assertEquals(2, viewModel.getCompletedWorkouts().getValue().intValue());
     }
 
     @Test
-    public void loadWorkoutStats_recalculatesCaloriesWhenWeightArrivesLater() {
+    public void loadWorkoutStats_recalculatesSessionCaloriesWhenWeightArrivesLater() {
         AtomicReference<ProgressRepository.ProgressCallback> progressCallback = new AtomicReference<>();
         doAnswer(invocation -> {
             progressCallback.set(invocation.getArgument(1));
             return null;
         }).when(progressRepository).getHistory(eq("uid-1"), any());
-
-        Workout workout = new Workout();
-        workout.setCompleted(true);
-        workout.setDurationMinutes(30);
-        workout.setIntensity("high");
-        doAnswer(invocation -> {
-            WorkoutRepository.WorkoutListCallback cb = invocation.getArgument(1);
-            cb.onSuccess(Collections.singletonList(workout));
-            return null;
-        }).when(workoutRepository).getWeeklyPlan(eq("uid-1"), any());
+        stubUserProfileWeight(null);
+        stubWorkoutSessions(Collections.singletonList(session("w1", 30, "high")));
 
         ProgressViewModel viewModel = createViewModel();
         assertEquals(294, viewModel.getTotalCalories().getValue().intValue());
@@ -273,17 +328,31 @@ public class ProgressViewModelTest {
                 RuntimeEnvironment.getApplication(),
                 progressRepository,
                 workoutRepository,
+                userRepository,
                 authRepository
         );
     }
 
     private void stubInitialLoads() {
         stubProgressHistory(Collections.emptyList());
+        stubUserProfileWeight(null);
+        stubWorkoutSessions(Collections.emptyList());
+    }
+
+    private void stubWorkoutSessions(List<WorkoutSession> sessions) {
         doAnswer(invocation -> {
-            WorkoutRepository.WorkoutListCallback cb = invocation.getArgument(1);
-            cb.onSuccess(Collections.emptyList());
+            WorkoutRepository.WorkoutSessionListCallback cb = invocation.getArgument(1);
+            cb.onSuccess(sessions);
             return null;
-        }).when(workoutRepository).getWeeklyPlan(eq("uid-1"), any());
+        }).when(workoutRepository).getWorkoutSessions(eq("uid-1"), any());
+    }
+
+    private void stubUserProfileWeight(Float weight) {
+        doAnswer(invocation -> {
+            UserRepository.UserCallback cb = invocation.getArgument(1);
+            cb.onSuccess(userWithWeight(weight));
+            return null;
+        }).when(userRepository).getUser(eq("uid-1"), any());
     }
 
     private void stubProgressHistory(List<ProgressEntry> entries) {
@@ -299,6 +368,26 @@ public class ProgressViewModelTest {
         entry.setWeight(weight);
         entry.setDate(date);
         return entry;
+    }
+
+    private WorkoutSession session(String workoutId, int durationMinutes, String intensity) {
+        WorkoutSession session = new WorkoutSession();
+        session.setId(workoutId);
+        session.setWorkoutId(workoutId);
+        session.setCompletedAt(1_000L);
+        session.setDurationMinutes(durationMinutes);
+        session.setIntensity(intensity);
+        session.setSource(WorkoutSession.SOURCE_MANUAL);
+        return session;
+    }
+
+    private User userWithWeight(Float weight) {
+        User user = new User();
+        user.setUid("uid-1");
+        user.setDisplayName("User");
+        user.setEmail("user@example.com");
+        user.setWeight(weight);
+        return user;
     }
 
     private void assertNoPublicMethod(String methodName) {

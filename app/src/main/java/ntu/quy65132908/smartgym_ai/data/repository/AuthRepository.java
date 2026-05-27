@@ -80,7 +80,7 @@ public class AuthRepository {
                 .addOnSuccessListener(result -> {
                     FirebaseUser firebaseUser = result.getUser();
                     if (firebaseUser != null) {
-                        // Create user profile in Firestore
+                        // Tạo hồ sơ người dùng trong Firestore.
                         User user = new User(firebaseUser.getUid(), name, email);
                         firestore.collection("users")
                                 .document(firebaseUser.getUid())

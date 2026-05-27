@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,12 +23,11 @@
             android:text="@string/ai_title"
             android:textAppearance="@style/TextStyle.HeadlineMd" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="match_parent"
             android:layout_height="128dp"
             android:layout_marginTop="@dimen/spacing_md"
-            android:background="@drawable/bg_onboarding_hero"
-            android:clipToOutline="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedHero"
             android:contentDescription="@null"
                     android:importantForAccessibility="no"
             android:scaleType="centerCrop"

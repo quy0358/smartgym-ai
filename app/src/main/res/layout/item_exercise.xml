@@ -15,13 +15,12 @@
         android:layout_height="wrap_content"
         app:buttonTint="@color/checkbox_tint" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_exercise_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="@dimen/spacing_sm"
-        android:background="@drawable/bg_rounded_12"
-        android:clipToOutline="true"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedImage"
         android:importantForAccessibility="no"
         android:scaleType="centerCrop"
         android:src="@drawable/img_muscle_chest" />
@@ -37,14 +36,14 @@
             android:id="@+id/tv_exercise_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exercise"
+            android:text="@string/exercise_placeholder_name"
             android:textAppearance="@style/TextStyle.BodyBold" />
 
         <TextView
             android:id="@+id/tv_exercise_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sets × Reps"
+            android:text="@string/exercise_placeholder_detail"
             android:textAppearance="@style/TextStyle.LabelCaps" />
     </LinearLayout>
 </LinearLayout>

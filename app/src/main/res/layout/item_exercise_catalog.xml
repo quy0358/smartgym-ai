@@ -13,13 +13,12 @@
         android:orientation="horizontal"
         android:padding="@dimen/spacing_md">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_exercise_image"
             android:layout_width="84dp"
             android:layout_height="84dp"
             android:layout_marginEnd="@dimen/spacing_md"
-            android:background="@drawable/bg_rounded_12"
-            android:clipToOutline="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedImage"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
             android:src="@drawable/img_muscle_chest" />

@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import android.content.Context;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.SavedStateHandle;
 
 import com.google.firebase.auth.FirebaseUser;
 
@@ -26,8 +27,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
+import java.util.List;
 
 import ntu.quy65132908.smartgym_ai.R;
+import ntu.quy65132908.smartgym_ai.data.model.Exercise;
 import ntu.quy65132908.smartgym_ai.data.model.ExerciseCatalogItem;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
@@ -82,6 +85,7 @@ public class ExerciseLibraryViewModelTest {
             callback.onSuccess(Collections.singletonList(pushUp));
             return null;
         }).when(catalogRepository).search(any(), any(), any());
+        when(catalogRepository.getSeedItems()).thenReturn(Collections.singletonList(pushUp));
     }
 
     @Test
@@ -124,6 +128,7 @@ public class ExerciseLibraryViewModelTest {
         verify(workoutRepository, never()).saveCustomWorkoutTemplate(any(), any(), any());
         Workout saved = workoutCaptor.getValue();
         assertEquals(Workout.DAY_TYPE_TRAINING, saved.getDayType());
+        assertTrue(saved.isCustom());
         assertEquals("Bài tập tùy chỉnh", saved.getTitle());
         assertEquals(1, saved.getExerciseCount());
         assertNotNull(saved.getExercises());
@@ -142,11 +147,83 @@ public class ExerciseLibraryViewModelTest {
         assertTrue(viewModel.getMessage().getValue().contains("Chọn"));
     }
 
+    @Test
+    public void editMode_preloadsExistingExercisesByCatalogItemId() {
+        Exercise exercise = new Exercise("e1", "Chá»‘ng Ä‘áº©y", 3, 10, null, true);
+        exercise.setCatalogItemId("push_up");
+        doAnswer(invocation -> {
+            WorkoutRepository.ExerciseListCallback callback = invocation.getArgument(2);
+            callback.onSuccess(Collections.singletonList(exercise));
+            return null;
+        }).when(workoutRepository).getExercises(eq("uid-1"), eq("workout-1"), any());
+
+        ExerciseLibraryViewModel viewModel = createEditViewModel("workout-1");
+
+        assertTrue(viewModel.isEditMode());
+        assertEquals(Integer.valueOf(1), viewModel.getSelectedCount().getValue());
+        assertTrue(viewModel.getSelectedIds().getValue().contains("push_up"));
+        assertEquals(Boolean.TRUE, viewModel.getCanSave().getValue());
+    }
+
+    @Test
+    public void editMode_preloadsLegacyExercisesByFallbackFields() {
+        Exercise exercise = new Exercise("e1", "Chá»‘ng Ä‘áº©y", 3, 10, null, true);
+        exercise.setPrimaryMuscle("Ngá»±c");
+        exercise.setPoseTypeKey("push_up");
+        doAnswer(invocation -> {
+            WorkoutRepository.ExerciseListCallback callback = invocation.getArgument(2);
+            callback.onSuccess(Collections.singletonList(exercise));
+            return null;
+        }).when(workoutRepository).getExercises(eq("uid-1"), eq("workout-1"), any());
+
+        ExerciseLibraryViewModel viewModel = createEditViewModel("workout-1");
+
+        assertEquals(Integer.valueOf(1), viewModel.getSelectedCount().getValue());
+        assertTrue(viewModel.getSelectedIds().getValue().contains("push_up"));
+    }
+
+    @Test
+    public void editMode_saveReplacesExistingWorkoutAndEmitsComplete() {
+        doAnswer(invocation -> {
+            WorkoutRepository.ExerciseListCallback callback = invocation.getArgument(2);
+            callback.onSuccess(Collections.emptyList());
+            return null;
+        }).when(workoutRepository).getExercises(eq("uid-1"), eq("workout-1"), any());
+        doAnswer(invocation -> {
+            WorkoutRepository.SimpleCallback callback = invocation.getArgument(3);
+            callback.onSuccess();
+            return null;
+        }).when(workoutRepository).replaceWorkoutExercises(eq("uid-1"), eq("workout-1"), any(), any());
+        ExerciseLibraryViewModel viewModel = createEditViewModel("workout-1");
+        viewModel.toggle(pushUp);
+
+        viewModel.saveSelectedWorkout();
+
+        ArgumentCaptor<List<Exercise>> exercisesCaptor = ArgumentCaptor.forClass(List.class);
+        verify(workoutRepository).replaceWorkoutExercises(eq("uid-1"), eq("workout-1"), exercisesCaptor.capture(), any());
+        verify(workoutRepository, never()).saveWorkout(any(), any(), any());
+        assertEquals(1, exercisesCaptor.getValue().size());
+        assertEquals("push_up", exercisesCaptor.getValue().get(0).getCatalogItemId());
+        assertEquals(Boolean.TRUE, viewModel.getSaveComplete().getValue());
+    }
+
     private ExerciseLibraryViewModel createViewModel() {
         return new ExerciseLibraryViewModel(
                 appContext,
                 catalogRepository,
                 workoutRepository,
-                authRepository);
+                authRepository,
+                new SavedStateHandle());
+    }
+
+    private ExerciseLibraryViewModel createEditViewModel(String workoutId) {
+        SavedStateHandle savedStateHandle = new SavedStateHandle();
+        savedStateHandle.set("workoutId", workoutId);
+        return new ExerciseLibraryViewModel(
+                appContext,
+                catalogRepository,
+                workoutRepository,
+                authRepository,
+                savedStateHandle);
     }
 }

@@ -21,10 +21,14 @@ import org.junit.Test;
 
 import java.util.Collections;
 
+import ntu.quy65132908.smartgym_ai.data.model.Exercise;
+import ntu.quy65132908.smartgym_ai.data.model.InjuryProfile;
 import ntu.quy65132908.smartgym_ai.data.model.ProgressEntry;
 import ntu.quy65132908.smartgym_ai.data.model.User;
+import ntu.quy65132908.smartgym_ai.data.model.Workout;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.DeepSeekRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.InjuryProfileRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.ProgressRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 
@@ -37,12 +41,14 @@ public class AIAnalysisViewModelTest {
     public void analyzeForm_validRequestClearsPreviousErrorBeforeCallingRepository() {
         DeepSeekRepository deepSeekRepository = mock(DeepSeekRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
+        InjuryProfileRepository injuryProfileRepository = mock(InjuryProfileRepository.class);
         ProgressRepository progressRepository = mock(ProgressRepository.class);
         AuthRepository authRepository = mock(AuthRepository.class);
         when(authRepository.getCurrentUser()).thenReturn(null);
         AIAnalysisViewModel viewModel = new AIAnalysisViewModel(
                 deepSeekRepository,
                 userRepository,
+                injuryProfileRepository,
                 progressRepository,
                 authRepository
         );
@@ -63,6 +69,7 @@ public class AIAnalysisViewModelTest {
     public void bodyMetrics_profileAndLatestProgressLoaded_exposesDynamicValues() {
         DeepSeekRepository deepSeekRepository = mock(DeepSeekRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
+        InjuryProfileRepository injuryProfileRepository = mock(InjuryProfileRepository.class);
         ProgressRepository progressRepository = mock(ProgressRepository.class);
         AuthRepository authRepository = mock(AuthRepository.class);
         FirebaseUser firebaseUser = mock(FirebaseUser.class);
@@ -92,6 +99,7 @@ public class AIAnalysisViewModelTest {
         AIAnalysisViewModel viewModel = new AIAnalysisViewModel(
                 deepSeekRepository,
                 userRepository,
+                injuryProfileRepository,
                 progressRepository,
                 authRepository
         );
@@ -109,6 +117,7 @@ public class AIAnalysisViewModelTest {
     public void bodyMetrics_missingProgressUsesPlaceholders() {
         DeepSeekRepository deepSeekRepository = mock(DeepSeekRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
+        InjuryProfileRepository injuryProfileRepository = mock(InjuryProfileRepository.class);
         ProgressRepository progressRepository = mock(ProgressRepository.class);
         AuthRepository authRepository = mock(AuthRepository.class);
         FirebaseUser firebaseUser = mock(FirebaseUser.class);
@@ -134,6 +143,7 @@ public class AIAnalysisViewModelTest {
         AIAnalysisViewModel viewModel = new AIAnalysisViewModel(
                 deepSeekRepository,
                 userRepository,
+                injuryProfileRepository,
                 progressRepository,
                 authRepository
         );
@@ -150,6 +160,7 @@ public class AIAnalysisViewModelTest {
     public void generateWorkoutPlan_withoutLoadedProfileReportsErrorAndSkipsAiCall() {
         DeepSeekRepository deepSeekRepository = mock(DeepSeekRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
+        InjuryProfileRepository injuryProfileRepository = mock(InjuryProfileRepository.class);
         ProgressRepository progressRepository = mock(ProgressRepository.class);
         AuthRepository authRepository = mock(AuthRepository.class);
         FirebaseUser firebaseUser = mock(FirebaseUser.class);
@@ -159,6 +170,7 @@ public class AIAnalysisViewModelTest {
         AIAnalysisViewModel viewModel = new AIAnalysisViewModel(
                 deepSeekRepository,
                 userRepository,
+                injuryProfileRepository,
                 progressRepository,
                 authRepository
         );
@@ -171,15 +183,76 @@ public class AIAnalysisViewModelTest {
     }
 
     @Test
+    public void generateWorkoutPlan_withSavedInjuryProfile_usesInjuryAwareGenerator() {
+        DeepSeekRepository deepSeekRepository = mock(DeepSeekRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        InjuryProfileRepository injuryProfileRepository = mock(InjuryProfileRepository.class);
+        ProgressRepository progressRepository = mock(ProgressRepository.class);
+        AuthRepository authRepository = mock(AuthRepository.class);
+        FirebaseUser firebaseUser = mock(FirebaseUser.class);
+        when(firebaseUser.getUid()).thenReturn("uid-1");
+        when(authRepository.getCurrentUser()).thenReturn(firebaseUser);
+
+        User user = new User("uid-1", "Test", "test@example.com");
+        user.setGoal("Core strength");
+        InjuryProfile injuryProfile = new InjuryProfile();
+        injuryProfile.setKneeSensitive(true);
+        injuryProfile.setNotes("Dau goi khi squat sau");
+        Workout workout = new Workout("", "Than duoi an toan", "Giam tai dau goi", "Nhe", 30);
+        workout.setDayOfWeek(1);
+        workout.setExercises(Collections.singletonList(
+                new Exercise("", "Glute bridge", 3, 12, null, false)
+        ));
+
+        doAnswer(invocation -> {
+            UserRepository.UserCallback cb = invocation.getArgument(1);
+            cb.onSuccess(user);
+            return null;
+        }).when(userRepository).getUser(eq("uid-1"), any());
+        doAnswer(invocation -> {
+            ProgressRepository.ProgressCallback cb = invocation.getArgument(1);
+            cb.onSuccess(Collections.emptyList());
+            return null;
+        }).when(progressRepository).getHistory(eq("uid-1"), any());
+        doAnswer(invocation -> {
+            InjuryProfileRepository.InjuryProfileCallback cb = invocation.getArgument(1);
+            cb.onSuccess(injuryProfile);
+            return null;
+        }).when(injuryProfileRepository).getInjuryProfile(eq("uid-1"), any());
+        doAnswer(invocation -> {
+            DeepSeekRepository.WorkoutPlanCallback cb = invocation.getArgument(3);
+            cb.onSuccess(Collections.singletonList(workout));
+            return null;
+        }).when(deepSeekRepository).generateInjuryAwareWorkoutPlan(eq(user), eq(injuryProfile), eq("Core strength"), any());
+
+        AIAnalysisViewModel viewModel = new AIAnalysisViewModel(
+                deepSeekRepository,
+                userRepository,
+                injuryProfileRepository,
+                progressRepository,
+                authRepository
+        );
+
+        viewModel.generateWorkoutPlan();
+
+        verify(deepSeekRepository).generateInjuryAwareWorkoutPlan(eq(user), eq(injuryProfile), eq("Core strength"), any());
+        verify(deepSeekRepository, never()).generateWorkoutPlan(any(), any(), any());
+        assertNull(viewModel.getPlanError().getValue());
+        assertNotNull(viewModel.getPlanResponse().getValue());
+    }
+
+    @Test
     public void analyzeForm_shortInputsExposeFieldErrorsAndSkipAiCall() {
         DeepSeekRepository deepSeekRepository = mock(DeepSeekRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
+        InjuryProfileRepository injuryProfileRepository = mock(InjuryProfileRepository.class);
         ProgressRepository progressRepository = mock(ProgressRepository.class);
         AuthRepository authRepository = mock(AuthRepository.class);
         when(authRepository.getCurrentUser()).thenReturn(null);
         AIAnalysisViewModel viewModel = new AIAnalysisViewModel(
                 deepSeekRepository,
                 userRepository,
+                injuryProfileRepository,
                 progressRepository,
                 authRepository
         );

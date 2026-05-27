@@ -60,8 +60,14 @@ public class ExerciseCatalogItem {
     public void setSafetyNote(String safetyNote) { this.safetyNote = safetyNote; }
 
     public Exercise toExercise() {
-        Exercise exercise = new Exercise(null, name, defaultSets, defaultReps, null, false);
+        boolean timedExercise = "plank".equalsIgnoreCase(poseTypeKey);
+        Exercise exercise = new Exercise(null, name, defaultSets, timedExercise ? 0 : defaultReps, null, false);
         exercise.setPoseTypeKey(poseTypeKey);
+        exercise.setPrimaryMuscle(primaryMuscle);
+        exercise.setCatalogItemId(id);
+        if (timedExercise) {
+            exercise.setDurationSeconds(defaultReps);
+        }
         String note = safetyNote != null ? safetyNote : "";
         if (restSeconds > 0) {
             note = note.isEmpty() ? "Nghỉ " + restSeconds + " giây" : "Nghỉ " + restSeconds + " giây. " + note;

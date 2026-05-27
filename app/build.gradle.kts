@@ -25,12 +25,12 @@ val debugDeepSeekModel = localProperties.getProperty("DEEPSEEK_MODEL", "deepseek
 
 android {
     namespace = "ntu.quy65132908.smartgym_ai"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "ntu.quy65132908.smartgym_ai"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -40,7 +40,7 @@ android {
 
     buildTypes {
         debug {
-            // Development-only key from local.properties. Release builds must not ship a raw AI key.
+            // Khóa chỉ dùng khi phát triển, đọc từ local.properties. Bản release không được nhúng khóa AI thô.
             buildConfigField("String", "DEEPSEEK_API_KEY", "\"$debugDeepSeekApiKey\"")
             buildConfigField("String", "DEEPSEEK_BASE_URL", "\"$debugDeepSeekBaseUrl\"")
             buildConfigField("String", "DEEPSEEK_MODEL", "\"$debugDeepSeekModel\"")
@@ -71,7 +71,7 @@ android {
 }
 
 dependencies {
-    // AndroidX Core
+    // AndroidX lõi
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -80,16 +80,16 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.swiperefreshlayout)
 
-    // Navigation
+    // Điều hướng
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
 
-    // Lifecycle
+    // Vòng đời
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.lifecycle.livedata)
     implementation(libs.lifecycle.runtime)
 
-    // Hilt DI
+    // Tiêm phụ thuộc bằng Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
@@ -98,19 +98,19 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
 
-    // Google Sign-In (Credential Manager)
+    // Đăng nhập Google qua Credential Manager
     implementation(libs.credentials)
     implementation(libs.credentials.play.services)
     implementation(libs.google.id)
 
-    // Image Loading
+    // Tải ảnh
     implementation(libs.glide)
     ksp(libs.glide.compiler)
 
-    // Chart
+    // Biểu đồ
     implementation(libs.mpandroidchart)
 
-    // Camera + pose detection
+    // Camera và nhận diện tư thế
     implementation(libs.camera.core)
     implementation(libs.camera.camera2)
     implementation(libs.camera.lifecycle)
@@ -118,7 +118,7 @@ dependencies {
     implementation(libs.mlkit.pose.detection)
     implementation(libs.work.runtime)
 
-    // Testing
+    // Kiểm thử
     testImplementation(libs.junit)
     testImplementation(libs.json)
     testImplementation(libs.mockito.core)

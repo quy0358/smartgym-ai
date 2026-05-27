@@ -11,18 +11,18 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.Locale;
 
 /**
- * H5: Utility to load avatar images with Glide, falling back to letter initial.
+ * H5: Tiện ích tải ảnh đại diện bằng Glide, fallback về chữ cái đầu.
  */
 public class AvatarHelper {
 
     /**
-     * Load avatar photo from URL. Shows letter fallback if URL is null/empty.
+     * Tải ảnh đại diện từ URL. Hiển thị chữ cái fallback nếu URL null hoặc rỗng.
      *
-     * @param context   Context
-     * @param photoUrl  Firebase Storage URL or null
-     * @param imageView ImageView for photo (hidden when no URL)
-     * @param textView  TextView for letter fallback (shown when no URL)
-     * @param name      User name to derive initial letter
+     * @param context   Context của Android
+     * @param photoUrl  URL Firebase Storage hoặc null
+     * @param imageView ImageView dùng cho ảnh, ẩn khi không có URL
+     * @param textView  TextView dùng cho chữ cái fallback, hiện khi không có URL
+     * @param name      Tên người dùng để lấy chữ cái đầu
      */
     public static void loadAvatar(Context context, String photoUrl,
                                   ImageView imageView, TextView textView, String name) {

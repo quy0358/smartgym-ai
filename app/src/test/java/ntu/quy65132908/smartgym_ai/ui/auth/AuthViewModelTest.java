@@ -37,7 +37,7 @@ public class AuthViewModelTest {
         viewModel = new AuthViewModel(RuntimeEnvironment.getApplication(), authRepository);
     }
 
-    // ─── signIn tests ──────────────────────────────────────────────
+    // ─── Kiểm thử signIn ───────────────────────────────────────────
 
     @Test
     public void signIn_emptyEmail_setsError() {
@@ -63,7 +63,7 @@ public class AuthViewModelTest {
         verify(authRepository).signIn(eq("test@email.com"), eq("password123"), any());
     }
 
-    // ─── signUp tests ──────────────────────────────────────────────
+    // ─── Kiểm thử signUp ───────────────────────────────────────────
 
     @Test
     public void signUp_emptyName_setsError() {
@@ -89,7 +89,7 @@ public class AuthViewModelTest {
         verify(authRepository).signUp(eq("John"), eq("test@email.com"), eq("password123"), any());
     }
 
-    // ─── isLoggedIn tests ──────────────────────────────────────────
+    // ─── Kiểm thử isLoggedIn ───────────────────────────────────────
 
     @Test
     public void isLoggedIn_delegatesToRepository() {

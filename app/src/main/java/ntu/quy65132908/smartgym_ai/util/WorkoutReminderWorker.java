@@ -3,7 +3,9 @@ package ntu.quy65132908.smartgym_ai.util;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -53,9 +55,27 @@ public class WorkoutReminderWorker extends Worker {
                 .setContentText(body != null ? body : context.getString(R.string.wellness_notification_default_body))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
-        NotificationManagerCompat.from(context).notify(6513, builder.build());
+        PendingIntent launchIntent = createLaunchIntent(context);
+        if (launchIntent != null) {
+            builder.setContentIntent(launchIntent);
+        }
+        try {
+            NotificationManagerCompat.from(context).notify(6513, builder.build());
+        } catch (SecurityException ignored) {
+            // Permission can be revoked after WorkManager starts the job.
+        }
         scheduleNext(context);
         return Result.success();
+    }
+
+    private PendingIntent createLaunchIntent(Context context) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        if (intent == null) {
+            return null;
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        return PendingIntent.getActivity(context, 6513, intent, flags);
     }
 
     private void scheduleNext(Context context) {

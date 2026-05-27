@@ -28,6 +28,11 @@ public class CommunityViewModel extends ViewModel {
     private static final String MESSAGE_DEFAULT_USER = "Người dùng";
     private static final String MESSAGE_GENERIC_ERROR = "Đã xảy ra lỗi";
 
+    private static final String MESSAGE_LOGIN_TO_MANAGE = "Bạn cần đăng nhập để quản lý bài viết.";
+    private static final String MESSAGE_OWN_POST_ONLY = "Bạn chỉ có thể chỉnh sửa hoặc xóa bài viết của mình.";
+    private static final String MESSAGE_POST_UPDATED = "Đã cập nhật bài viết.";
+    private static final String MESSAGE_POST_DELETED = "Đã xóa bài viết.";
+
     private final CommunityRepository communityRepo;
     private final AuthRepository authRepo;
     private final MutableLiveData<CommunityUiState> uiState = new MutableLiveData<>(CommunityUiState.initial());
@@ -159,6 +164,76 @@ public class CommunityViewModel extends ViewModel {
         });
     }
 
+    public void updatePost(Post post, String content) {
+        FirebaseUser user = authRepo.getCurrentUser();
+        if (user == null) {
+            emitMessage(MESSAGE_LOGIN_TO_MANAGE);
+            return;
+        }
+        if (!canManagePost(post, user)) {
+            emitMessage(MESSAGE_OWN_POST_ONLY);
+            return;
+        }
+
+        String sanitized = InputValidator.sanitizeContent(content);
+        if (sanitized.isEmpty()) {
+            emitMessage(MESSAGE_EMPTY_CONTENT);
+            return;
+        }
+
+        String postId = post.getId();
+        if (!addPendingAction(postId)) {
+            return;
+        }
+
+        communityRepo.updatePostContent(postId, sanitized, new CommunityRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                removePendingAction(postId);
+                emitMessage(MESSAGE_POST_UPDATED);
+                event.postValue(CommunityUiEvent.postUpdated());
+            }
+
+            @Override
+            public void onError(Exception e) {
+                removePendingAction(postId);
+                emitMessage(messageFrom(e));
+            }
+        });
+    }
+
+    public void deletePost(Post post) {
+        FirebaseUser user = authRepo.getCurrentUser();
+        if (user == null) {
+            emitMessage(MESSAGE_LOGIN_TO_MANAGE);
+            return;
+        }
+        if (!canManagePost(post, user)) {
+            emitMessage(MESSAGE_OWN_POST_ONLY);
+            return;
+        }
+
+        String postId = post.getId();
+        if (!addPendingAction(postId)) {
+            return;
+        }
+
+        communityRepo.deletePost(postId, new CommunityRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                removePendingAction(postId);
+                emitMessage(MESSAGE_POST_DELETED);
+                event.postValue(CommunityUiEvent.postDeleted());
+            }
+
+            @Override
+            public void onError(Exception e) {
+                removePendingAction(postId);
+                emitMessage(messageFrom(e));
+            }
+        });
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
@@ -169,6 +244,21 @@ public class CommunityViewModel extends ViewModel {
         Set<String> pending = new HashSet<>(currentState().getPendingLikePostIds());
         pending.remove(postId);
         uiState.postValue(currentState().withPendingLikePostIds(pending));
+    }
+
+    private boolean addPendingAction(String postId) {
+        Set<String> pending = new HashSet<>(currentState().getPendingActionPostIds());
+        if (!pending.add(postId)) {
+            return false;
+        }
+        uiState.setValue(currentState().withPendingActionPostIds(pending));
+        return true;
+    }
+
+    private void removePendingAction(String postId) {
+        Set<String> pending = new HashSet<>(currentState().getPendingActionPostIds());
+        pending.remove(postId);
+        uiState.postValue(currentState().withPendingActionPostIds(pending));
     }
 
     private CommunityUiState currentState() {
@@ -230,7 +320,16 @@ public class CommunityViewModel extends ViewModel {
         copy.setLikes(source.getLikes());
         copy.setLikedBy(new ArrayList<>(source.getLikedBy()));
         copy.setCreatedAt(source.getCreatedAt());
+        copy.setUpdatedAt(source.getUpdatedAt());
         return copy;
+    }
+
+    private static boolean canManagePost(Post post, FirebaseUser user) {
+        return post != null
+                && user != null
+                && post.getId() != null
+                && !post.getId().trim().isEmpty()
+                && user.getUid().equals(post.getAuthorId());
     }
 
     private static boolean isGenericAuthorName(String authorName) {

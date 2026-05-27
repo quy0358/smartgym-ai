@@ -40,6 +40,9 @@ public class ExerciseLibraryFragment extends Fragment {
         binding.rvExerciseCatalog.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvExerciseCatalog.setAdapter(adapter);
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+        if (viewModel.isEditMode()) {
+            binding.btnSaveCustomWorkout.setText(R.string.exercise_update_custom_workout);
+        }
         binding.btnSaveCustomWorkout.setOnClickListener(v -> viewModel.saveSelectedWorkout());
         setupFilterChips();
         binding.etExerciseSearch.addTextChangedListener(new TextWatcher() {
@@ -87,6 +90,11 @@ public class ExerciseLibraryFragment extends Fragment {
         viewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
             if (msg != null) {
                 Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+            }
+        });
+        viewModel.getSaveComplete().observe(getViewLifecycleOwner(), complete -> {
+            if (Boolean.TRUE.equals(complete)) {
+                Navigation.findNavController(binding.getRoot()).navigateUp();
             }
         });
     }

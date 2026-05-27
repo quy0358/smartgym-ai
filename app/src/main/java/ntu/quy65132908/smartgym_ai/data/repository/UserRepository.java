@@ -2,6 +2,7 @@ package ntu.quy65132908.smartgym_ai.data.repository;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,6 +20,10 @@ public class UserRepository {
     }
 
     public void getUser(String uid, UserCallback callback) {
+        if (isBlank(uid)) {
+            callback.onError(new IllegalArgumentException("uid is required"));
+            return;
+        }
         firestore.collection("users").document(uid)
                 .get()
                 .addOnSuccessListener(doc -> {
@@ -38,10 +43,22 @@ public class UserRepository {
     }
 
     public void updateUser(String uid, User user, SimpleCallback callback) {
+        if (isBlank(uid)) {
+            callback.onError(new IllegalArgumentException("uid is required"));
+            return;
+        }
+        if (user == null) {
+            callback.onError(new IllegalArgumentException("user is required"));
+            return;
+        }
         firestore.collection("users").document(uid)
-                .set(user.toMap())
+                .set(user.toMap(), SetOptions.merge())
                 .addOnSuccessListener(v -> callback.onSuccess())
                 .addOnFailureListener(callback::onError);
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     public interface UserCallback {

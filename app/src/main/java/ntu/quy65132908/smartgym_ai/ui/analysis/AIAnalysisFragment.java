@@ -25,6 +25,7 @@ public class AIAnalysisFragment extends Fragment {
     private AIAnalysisViewModel viewModel;
     private boolean canGeneratePlan;
     private boolean planLoading;
+    private boolean hasResumed;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -177,6 +178,15 @@ public class AIAnalysisFragment extends Fragment {
             return ExerciseType.PLANK;
         }
         return PoseExerciseResolver.resolve(null, exercise);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (hasResumed && viewModel != null) {
+            viewModel.reloadProfile();
+        }
+        hasResumed = true;
     }
 
     @Override

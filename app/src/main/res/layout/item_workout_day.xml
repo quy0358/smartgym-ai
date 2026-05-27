@@ -6,27 +6,27 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_sm"
     android:background="@drawable/bg_workout_item_rounded"
+    android:baselineAligned="false"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/spacing_md"
     tools:ignore="Overdraw">
 
-    <!-- Status Icon -->
+    <!-- Biểu tượng trạng thái -->
     <FrameLayout
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:background="@drawable/bg_rounded_12">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_workout_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToOutline="true"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
             android:src="@drawable/img_workout_program" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_status"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -38,7 +38,7 @@
             app:tint="@color/on_surface" />
     </FrameLayout>
 
-    <!-- Info -->
+    <!-- Thông tin -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

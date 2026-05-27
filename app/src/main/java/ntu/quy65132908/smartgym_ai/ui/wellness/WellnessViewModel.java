@@ -45,6 +45,7 @@ public class WellnessViewModel extends ViewModel {
     private final SingleLiveEvent<String> message = new SingleLiveEvent<>();
     private final SingleLiveEvent<Reminder> reminderReadyToScheduleEvent = new SingleLiveEvent<>();
     private final SingleLiveEvent<Reminder> notificationPermissionRequestEvent = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> injuryProfileSavedEvent = new SingleLiveEvent<>();
 
     private Reminder currentReminder;
     private InjuryProfile currentInjuryProfile = new InjuryProfile();
@@ -77,6 +78,7 @@ public class WellnessViewModel extends ViewModel {
     public LiveData<String> getMessage() { return message; }
     public LiveData<Reminder> getReminderReadyToScheduleEvent() { return reminderReadyToScheduleEvent; }
     public LiveData<Reminder> getNotificationPermissionRequestEvent() { return notificationPermissionRequestEvent; }
+    public LiveData<Boolean> getInjuryProfileSavedEvent() { return injuryProfileSavedEvent; }
 
     public void refresh() {
         loadSavedState();
@@ -156,7 +158,7 @@ public class WellnessViewModel extends ViewModel {
             public void onSuccess() {
                 currentInjuryProfile = profile;
                 setSavingTarget(WellnessUiState.SAVING_NONE);
-                message.postValue(appContext.getString(R.string.wellness_injury_saved));
+                injuryProfileSavedEvent.postValue(true);
             }
 
             @Override

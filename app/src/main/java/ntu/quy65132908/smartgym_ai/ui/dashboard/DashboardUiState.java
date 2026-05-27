@@ -7,7 +7,7 @@ import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 
 /**
- * Single render model for the Dashboard screen.
+ * Model render duy nhất cho màn hình Dashboard.
  */
 public class DashboardUiState {
     private final String userName;

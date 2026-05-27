@@ -8,8 +8,8 @@ import ntu.quy65132908.smartgym_ai.data.model.Exercise;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 
 /**
- * Immutable UI state for the Workout Detail screen.
- * Single source of truth: Fragment observes one LiveData of this type.
+ * Trạng thái UI bất biến cho màn hình chi tiết bài tập.
+ * Nguồn dữ liệu duy nhất: Fragment quan sát một LiveData kiểu này.
  */
 public class WorkoutDetailUiState {
     private final List<Exercise> exercises;
@@ -130,6 +130,9 @@ public class WorkoutDetailUiState {
                 exercise.isCompleted());
         copy.setNotes(exercise.getNotes());
         copy.setPoseTypeKey(exercise.getPoseTypeKey());
+        copy.setPrimaryMuscle(exercise.getPrimaryMuscle());
+        copy.setDurationSeconds(exercise.getDurationSeconds());
+        copy.setOrderIndex(exercise.getOrderIndex());
         return copy;
     }
 }

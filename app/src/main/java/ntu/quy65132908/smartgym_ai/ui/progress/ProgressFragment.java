@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ProgressFragment extends Fragment {
 
     private FragmentProgressBinding binding;
     private ProgressViewModel viewModel;
+    private boolean hasResumed;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -165,9 +167,19 @@ public class ProgressFragment extends Fragment {
     }
 
     private void renderStats(ProgressUiState state) {
-        setStatValue(binding.statWorkouts.getRoot(), state.getCompletedWorkouts());
-        setStatValue(binding.statStreak.getRoot(), state.getTrackingStreakDays());
-        setStatValue(binding.statCalories.getRoot(), state.getTotalCalories());
+        if (state.isLoading()) {
+            setStatValue(binding.statWorkouts.getRoot(), "--");
+            setStatValue(binding.statStreak.getRoot(), "--");
+            setStatValue(binding.statCalories.getRoot(), "--");
+            binding.statWorkouts.getRoot().setContentDescription(getString(R.string.progress_loading));
+            binding.statStreak.getRoot().setContentDescription(getString(R.string.progress_loading));
+            binding.statCalories.getRoot().setContentDescription(getString(R.string.progress_loading));
+            return;
+        }
+
+        setStatValue(binding.statWorkouts.getRoot(), String.valueOf(state.getCompletedWorkouts()));
+        setStatValue(binding.statStreak.getRoot(), String.valueOf(state.getTrackingStreakDays()));
+        setStatValue(binding.statCalories.getRoot(), String.valueOf(state.getTotalCalories()));
         binding.statWorkouts.getRoot().setContentDescription(getString(
                 R.string.progress_stat_workouts_a11y,
                 state.getCompletedWorkouts()));
@@ -208,9 +220,9 @@ public class ProgressFragment extends Fragment {
         binding.btnAddProgress.setEnabled(enabled);
     }
 
-    private void setStatValue(View statRoot, int value) {
+    private void setStatValue(View statRoot, String value) {
         TextView valueView = statRoot.findViewById(R.id.tv_stat_value);
-        valueView.setText(String.valueOf(value));
+        valueView.setText(value);
     }
 
     private void setupChart(List<ProgressEntry> entriesList) {
@@ -223,7 +235,7 @@ public class ProgressFragment extends Fragment {
         binding.weightChart.setVisibility(View.VISIBLE);
         binding.tvChartPlaceholder.setVisibility(View.GONE);
 
-        List<ProgressEntry> sorted = new ArrayList<>(entriesList);
+        List<ProgressEntry> sorted = latestEntryPerDay(entriesList);
         Collections.sort(sorted, (a, b) -> Long.compare(a.getDate(), b.getDate()));
 
         List<com.github.mikephil.charting.data.Entry> chartEntries = new ArrayList<>();
@@ -315,9 +327,51 @@ public class ProgressFragment extends Fragment {
         return input.getText() != null ? input.getText().toString() : "";
     }
 
+    private List<ProgressEntry> latestEntryPerDay(List<ProgressEntry> entriesList) {
+        List<ProgressEntry> sorted = new ArrayList<>();
+        for (ProgressEntry entry : entriesList) {
+            if (entry != null) {
+                sorted.add(entry);
+            }
+        }
+        Collections.sort(sorted, (a, b) -> Long.compare(a.getDate(), b.getDate()));
+
+        List<ProgressEntry> result = new ArrayList<>();
+        long lastDay = Long.MIN_VALUE;
+        for (ProgressEntry entry : sorted) {
+            long day = startOfDay(entry.getDate());
+            if (day == lastDay && !result.isEmpty()) {
+                result.set(result.size() - 1, entry);
+            } else {
+                result.add(entry);
+                lastDay = day;
+            }
+        }
+        return result;
+    }
+
+    private long startOfDay(long timestamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
     private abstract static class SimpleTextWatcher implements TextWatcher {
         @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (hasResumed && viewModel != null) {
+            viewModel.loadProgress();
+        }
+        hasResumed = true;
     }
 
     @Override

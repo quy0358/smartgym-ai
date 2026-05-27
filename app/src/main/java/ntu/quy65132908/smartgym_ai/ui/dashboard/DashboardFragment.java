@@ -26,6 +26,7 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding binding;
     private DashboardViewModel viewModel;
     private WeeklyPlanAdapter weeklyPlanAdapter;
+    private boolean hasResumed;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,13 +108,14 @@ public class DashboardFragment extends Fragment {
                         workout.getId(),
                         workout.getTitle() != null ? workout.getTitle() : "",
                         workout.getDurationMinutes(),
-                        workout.getDayType()));
+                        workout.getDayType(),
+                        workout.isCustom()));
     }
 
     private void observeViewModel() {
         viewModel.getUiState().observe(getViewLifecycleOwner(), this::renderState);
 
-        // Error event observer — maps error codes to strings
+        // Bộ quan sát sự kiện lỗi, ánh xạ mã lỗi sang chuỗi.
         viewModel.getErrorEvent().observe(getViewLifecycleOwner(), error -> {
             int msgRes;
             switch (error) {
@@ -154,6 +156,15 @@ public class DashboardFragment extends Fragment {
         if (state.isDataStale()) {
             Snackbar.make(binding.getRoot(), R.string.data_offline, Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (hasResumed && viewModel != null) {
+            viewModel.reload();
+        }
+        hasResumed = true;
     }
 
     @Override

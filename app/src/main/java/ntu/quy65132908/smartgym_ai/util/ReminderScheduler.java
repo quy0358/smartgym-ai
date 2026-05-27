@@ -16,9 +16,16 @@ import ntu.quy65132908.smartgym_ai.R;
 public class ReminderScheduler {
     private static final String WORK_NAME_PREFIX = "smartgym_reminder_";
 
+    /**
+     * WorkManager is intentionally used for battery-friendly reminders. Delivery can be delayed by
+     * Doze or OEM background limits; product flows that require exact alarms should use a separate
+     * AlarmManager implementation with the required Android permissions and user education.
+     */
     public void schedule(Context context, Reminder reminder) {
         if (context == null || reminder == null || !reminder.isEnabled()
-                || reminder.getDaysOfWeek() == null || reminder.getDaysOfWeek().isEmpty()) {
+                || reminder.getDaysOfWeek() == null || reminder.getDaysOfWeek().isEmpty()
+                || !isValidTime(reminder.getHour(), reminder.getMinute())
+                || !hasValidDay(reminder.getDaysOfWeek())) {
             return;
         }
         Data input = new Data.Builder()
@@ -53,7 +60,8 @@ public class ReminderScheduler {
     }
 
     long nextDelayMillis(Reminder reminder, Calendar now) {
-        if (reminder == null || reminder.getDaysOfWeek() == null || reminder.getDaysOfWeek().isEmpty()) {
+        if (reminder == null || reminder.getDaysOfWeek() == null || reminder.getDaysOfWeek().isEmpty()
+                || !isValidTime(reminder.getHour(), reminder.getMinute())) {
             return 60_000L;
         }
         long bestDelay = Long.MAX_VALUE;
@@ -98,5 +106,21 @@ public class ReminderScheduler {
             values[i] = days.get(i) != null ? days.get(i) : 0;
         }
         return values;
+    }
+
+    private boolean isValidTime(int hour, int minute) {
+        return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
+    }
+
+    private boolean hasValidDay(java.util.List<Integer> days) {
+        if (days == null) {
+            return false;
+        }
+        for (Integer day : days) {
+            if (day != null && day >= 1 && day <= 7) {
+                return true;
+            }
+        }
+        return false;
     }
 }

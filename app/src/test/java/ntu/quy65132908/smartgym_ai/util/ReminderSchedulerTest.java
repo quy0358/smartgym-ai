@@ -16,7 +16,7 @@ public class ReminderSchedulerTest {
     @Test
     public void nextDelayMillis_sameDayFutureUsesRemainingTime() {
         ReminderScheduler scheduler = new ReminderScheduler();
-        Calendar now = calendar(2024, Calendar.MAY, 24, 8, 0, 0); // Friday
+        Calendar now = calendar(2024, Calendar.MAY, 24, 8, 0, 0); // Thứ Sáu
         Reminder reminder = new Reminder("r1", "Tập", 9, 0, true, Arrays.asList(5));
 
         long delay = scheduler.nextDelayMillis(reminder, now);
@@ -27,7 +27,7 @@ public class ReminderSchedulerTest {
     @Test
     public void nextDelayMillis_sameDayPastRollsForwardOneWeek() {
         ReminderScheduler scheduler = new ReminderScheduler();
-        Calendar now = calendar(2024, Calendar.MAY, 24, 10, 0, 0); // Friday
+        Calendar now = calendar(2024, Calendar.MAY, 24, 10, 0, 0); // Thứ Sáu
         Reminder reminder = new Reminder("r1", "Tập", 9, 0, true, Arrays.asList(5));
 
         long delay = scheduler.nextDelayMillis(reminder, now);
@@ -41,6 +41,17 @@ public class ReminderSchedulerTest {
         ReminderScheduler scheduler = new ReminderScheduler();
         Calendar now = calendar(2024, Calendar.MAY, 24, 10, 0, 0);
         Reminder reminder = new Reminder("r1", "Tập", 9, 0, true, Arrays.asList(0, 8));
+
+        long delay = scheduler.nextDelayMillis(reminder, now);
+
+        assertEquals(60_000L, delay);
+    }
+
+    @Test
+    public void nextDelayMillis_invalidTimeFallsBackToOneMinute() {
+        ReminderScheduler scheduler = new ReminderScheduler();
+        Calendar now = calendar(2024, Calendar.MAY, 24, 10, 0, 0);
+        Reminder reminder = new Reminder("r1", "Tập", 24, 0, true, Arrays.asList(5));
 
         long delay = scheduler.nextDelayMillis(reminder, now);
 

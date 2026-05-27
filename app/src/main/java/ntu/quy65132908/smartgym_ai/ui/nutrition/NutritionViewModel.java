@@ -11,8 +11,10 @@ import com.google.firebase.auth.FirebaseUser;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -20,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.FoodLogEntry;
+import ntu.quy65132908.smartgym_ai.data.model.FoodNutritionEstimate;
 import ntu.quy65132908.smartgym_ai.data.model.Meal;
 import ntu.quy65132908.smartgym_ai.data.model.MealPlan;
 import ntu.quy65132908.smartgym_ai.data.model.MealPlanDay;
@@ -45,12 +48,18 @@ public class NutritionViewModel extends ViewModel {
 
     private final MutableLiveData<NutritionSummary> summary = new MutableLiveData<>();
     private final MutableLiveData<List<FoodLogEntry>> foodLogs = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<FoodLogEntry>> historyFoodLogs = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<NutritionSummary> historySummary = new MutableLiveData<>();
+    private final MutableLiveData<String> selectedHistoryDateKey = new MutableLiveData<>("");
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> isSavingFood = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> isGeneratingMealPlan = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> isEstimatingFood = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> isHistoryLoading = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> canAddFood = new MutableLiveData<>(false);
     private final MutableLiveData<NutritionFormErrors> formErrors = new MutableLiveData<>(NutritionFormErrors.none());
     private final MutableLiveData<String> mealPlanPreview = new MutableLiveData<>("");
+    private final MutableLiveData<FoodNutritionEstimate> pendingEstimate = new MutableLiveData<>(null);
     private final MutableLiveData<NutritionUiState> uiState = new MutableLiveData<>();
     private final SingleLiveEvent<String> message = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> clearFoodFormEvent = new SingleLiveEvent<>();
@@ -62,9 +71,12 @@ public class NutritionViewModel extends ViewModel {
     private List<FoodLogEntry> currentFoodLogs = new ArrayList<>();
     private boolean foodLogsLoading;
     private boolean mealPlanLoading;
+    private boolean historyLoading;
     private boolean savingFood;
+    private boolean estimatingFood;
     private boolean hasAttemptedSubmit;
     private String draftName = "";
+    private String draftServingText = "";
     private String draftMealType = "";
     private String draftCalories = "";
     private String draftProtein = "";
@@ -90,15 +102,26 @@ public class NutritionViewModel extends ViewModel {
 
     public LiveData<NutritionSummary> getSummary() { return summary; }
     public LiveData<List<FoodLogEntry>> getFoodLogs() { return foodLogs; }
+    public LiveData<List<FoodLogEntry>> getHistoryFoodLogs() { return historyFoodLogs; }
+    public LiveData<NutritionSummary> getHistorySummary() { return historySummary; }
+    public LiveData<String> getSelectedHistoryDateKey() { return selectedHistoryDateKey; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<Boolean> getIsSavingFood() { return isSavingFood; }
     public LiveData<Boolean> getIsGeneratingMealPlan() { return isGeneratingMealPlan; }
+    public LiveData<Boolean> getIsEstimatingFood() { return isEstimatingFood; }
+    public LiveData<Boolean> getIsHistoryLoading() { return isHistoryLoading; }
     public LiveData<Boolean> getCanAddFood() { return canAddFood; }
     public LiveData<NutritionFormErrors> getFormErrors() { return formErrors; }
     public LiveData<String> getMealPlanPreview() { return mealPlanPreview; }
+    public LiveData<FoodNutritionEstimate> getPendingEstimate() { return pendingEstimate; }
     public LiveData<NutritionUiState> getUiState() { return uiState; }
     public LiveData<String> getMessage() { return message; }
     public LiveData<Boolean> getClearFoodFormEvent() { return clearFoodFormEvent; }
+
+    public void reload() {
+        loadProfile();
+        loadTodayFoodLogs();
+    }
 
     public void onFoodFormChanged(String name, String mealType, String calories, String protein, String carbs, String fat) {
         updateDraft(name, mealType, calories, protein, carbs, fat);
@@ -106,6 +129,11 @@ public class NutritionViewModel extends ViewModel {
     }
 
     public void addFood(String name, String mealType, String calories, String protein, String carbs, String fat) {
+        addFood(name, "", mealType, calories, protein, carbs, fat);
+    }
+
+    public void addFood(String name, String servingText, String mealType, String calories, String protein, String carbs, String fat) {
+        draftServingText = servingText != null ? servingText : "";
         updateDraft(name, mealType, calories, protein, carbs, fat);
         hasAttemptedSubmit = true;
         if (!validateDraft(true)) {
@@ -128,25 +156,308 @@ public class NutritionViewModel extends ViewModel {
                 parseNonNegativeInt(draftFat),
                 System.currentTimeMillis()
         );
+        entry.setServingText(draftServingText);
+        entry.setSource(FoodLogEntry.SOURCE_MANUAL);
 
+        saveFoodEntry(user.getUid(), entry);
+    }
+
+    public void estimateFood(String name, String servingText, String mealType) {
+        String safeName = name != null ? name.trim() : "";
+        if (safeName.length() < 2) {
+            message.setValue(appContext.getString(R.string.nutrition_food_name_error));
+            return;
+        }
+
+        setEstimatingFood(true);
+        deepSeekRepository.estimateFoodNutritionData(
+                safeName,
+                servingText,
+                !isBlank(mealType) ? mealType.trim() : appContext.getString(R.string.nutrition_default_meal_type),
+                goal,
+                new DeepSeekRepository.FoodEstimateCallback() {
+                    @Override
+                    public void onSuccess(FoodNutritionEstimate estimate) {
+                        setEstimatingFood(false);
+                        pendingEstimate.postValue(estimate);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        setEstimatingFood(false);
+                        message.postValue(NutritionAiErrorMapper.toUserMessage(e));
+                    }
+                });
+    }
+
+    public void savePendingEstimate(String name,
+                                    String servingText,
+                                    String mealType,
+                                    String calories,
+                                    String protein,
+                                    String carbs,
+                                    String fat) {
+        updateDraft(name, mealType, calories, protein, carbs, fat);
+        draftServingText = servingText != null ? servingText : "";
+        hasAttemptedSubmit = true;
+        if (!validateDraft(true)) {
+            return;
+        }
+
+        FirebaseUser user = authRepository.getCurrentUser();
+        if (user == null) {
+            message.setValue(appContext.getString(R.string.nutrition_food_login_required));
+            return;
+        }
+
+        FoodNutritionEstimate estimate = pendingEstimate.getValue();
+        FoodLogEntry entry = new FoodLogEntry(
+                null,
+                draftName.trim(),
+                !isBlank(draftMealType) ? draftMealType.trim() : appContext.getString(R.string.nutrition_fallback_meal_type),
+                parsePositiveInt(draftCalories),
+                parseNonNegativeInt(draftProtein),
+                parseNonNegativeInt(draftCarbs),
+                parseNonNegativeInt(draftFat),
+                System.currentTimeMillis()
+        );
+        entry.setServingText(draftServingText);
+        entry.setCategory(estimate != null ? estimate.getCategory() : null);
+        entry.setAiConfidence(estimate != null ? estimate.getConfidence() : null);
+        entry.setNotes(estimate != null ? estimate.getNotes() : null);
+        entry.setSource(FoodLogEntry.SOURCE_AI);
+        saveFoodEntry(user.getUid(), entry);
+        pendingEstimate.setValue(null);
+    }
+
+    public void cancelPendingEstimate() {
+        pendingEstimate.setValue(null);
+    }
+
+    public void deleteFoodLog(FoodLogEntry entry) {
+        FirebaseUser user = authRepository.getCurrentUser();
+        if (user == null) {
+            message.setValue(appContext.getString(R.string.nutrition_food_login_required));
+            return;
+        }
+        if (entry == null || isBlank(entry.getId())) {
+            return;
+        }
         setSavingFood(true);
-        nutritionRepository.saveFoodLog(user.getUid(), todayKey(), entry, new NutritionRepository.SimpleCallback() {
+        nutritionRepository.deleteFoodLog(user.getUid(), todayKey(), entry.getId(), new NutritionRepository.SimpleCallback() {
             @Override
             public void onSuccess() {
-                addSavedFoodLog(entry);
+                List<FoodLogEntry> current = new ArrayList<>(currentFoodLogs);
+                for (int i = current.size() - 1; i >= 0; i--) {
+                    FoodLogEntry item = current.get(i);
+                    if (item != null && entry.getId().equals(item.getId())) {
+                        current.remove(i);
+                    }
+                }
                 setSavingFood(false);
-                hasAttemptedSubmit = false;
-                updateDraft("", appContext.getString(R.string.nutrition_default_meal_type), "", "", "", "");
-                formErrors.postValue(NutritionFormErrors.none());
-                updateCanAddFood(false);
-                clearFoodFormEvent.postValue(true);
-                message.postValue(appContext.getString(R.string.nutrition_food_saved));
+                setFoodLogs(current);
+                message.postValue(appContext.getString(R.string.nutrition_food_deleted));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                setSavingFood(false);
+                message.postValue(appContext.getString(R.string.nutrition_food_delete_error));
+            }
+        });
+    }
+
+    public void updateFoodLog(FoodLogEntry original,
+                              String name,
+                              String servingText,
+                              String mealType,
+                              String calories,
+                              String protein,
+                              String carbs,
+                              String fat) {
+        FirebaseUser user = authRepository.getCurrentUser();
+        if (user == null) {
+            message.setValue(appContext.getString(R.string.nutrition_food_login_required));
+            return;
+        }
+        if (original == null || isBlank(original.getId())) {
+            return;
+        }
+        updateDraft(name, mealType, calories, protein, carbs, fat);
+        draftServingText = servingText != null ? servingText : "";
+        hasAttemptedSubmit = true;
+        if (!validateDraft(true)) {
+            return;
+        }
+
+        FoodLogEntry updated = new FoodLogEntry(
+                original.getId(),
+                draftName.trim(),
+                !isBlank(draftMealType) ? draftMealType.trim() : appContext.getString(R.string.nutrition_fallback_meal_type),
+                parsePositiveInt(draftCalories),
+                parseNonNegativeInt(draftProtein),
+                parseNonNegativeInt(draftCarbs),
+                parseNonNegativeInt(draftFat),
+                original.getEatenAt() > 0L ? original.getEatenAt() : System.currentTimeMillis()
+        );
+        updated.setServingText(draftServingText);
+        updated.setCategory(original.getCategory());
+        updated.setSource(original.getSource());
+        updated.setPlanImportKey(original.getPlanImportKey());
+        updated.setAiConfidence(original.getAiConfidence());
+        updated.setNotes(original.getNotes());
+
+        setSavingFood(true);
+        nutritionRepository.updateFoodLog(user.getUid(), todayKey(), original.getId(), updated, new NutritionRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                List<FoodLogEntry> current = new ArrayList<>(currentFoodLogs);
+                for (int i = 0; i < current.size(); i++) {
+                    FoodLogEntry item = current.get(i);
+                    if (item != null && original.getId().equals(item.getId())) {
+                        current.set(i, updated);
+                        break;
+                    }
+                }
+                setSavingFood(false);
+                setFoodLogs(current);
+                clearFoodFormAfterSave();
+                message.postValue(appContext.getString(R.string.nutrition_food_updated));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                setSavingFood(false);
+                message.postValue(appContext.getString(R.string.nutrition_food_update_error));
+            }
+        });
+    }
+
+    public void logMealPlanMeal(Meal meal) {
+        FirebaseUser user = authRepository.getCurrentUser();
+        if (user == null) {
+            message.setValue(appContext.getString(R.string.nutrition_food_login_required));
+            return;
+        }
+        if (meal == null || isBlank(meal.getName())) {
+            return;
+        }
+        FoodLogEntry entry = new FoodLogEntry(
+                null,
+                meal.getName(),
+                nonBlank(meal.getMealType(), appContext.getString(R.string.nutrition_fallback_meal_type)),
+                Math.max(1, meal.getCalories()),
+                Math.max(0, meal.getProteinGrams()),
+                Math.max(0, meal.getCarbsGrams()),
+                Math.max(0, meal.getFatGrams()),
+                System.currentTimeMillis()
+        );
+        entry.setSource(FoodLogEntry.SOURCE_PLAN);
+        entry.setNotes(meal.getNotes());
+        saveFoodEntry(user.getUid(), entry);
+    }
+
+    public void logMealPlanDay(MealPlanDay day) {
+        FirebaseUser user = authRepository.getCurrentUser();
+        if (user == null) {
+            message.setValue(appContext.getString(R.string.nutrition_food_login_required));
+            return;
+        }
+        if (day == null || day.getMeals() == null || day.getMeals().isEmpty()) {
+            return;
+        }
+
+        Set<String> importedKeys = new HashSet<>();
+        for (FoodLogEntry entry : currentFoodLogs) {
+            if (entry != null && !isBlank(entry.getPlanImportKey())) {
+                importedKeys.add(entry.getPlanImportKey());
+            }
+        }
+
+        List<FoodLogEntry> entriesToSave = new ArrayList<>();
+        for (Meal meal : day.getMeals()) {
+            if (meal == null || isBlank(meal.getName())) {
+                continue;
+            }
+            String importKey = mealPlanImportKey(day, meal);
+            if (importedKeys.contains(importKey)) {
+                continue;
+            }
+            importedKeys.add(importKey);
+            FoodLogEntry entry = new FoodLogEntry(
+                    null,
+                    meal.getName(),
+                    nonBlank(meal.getMealType(), appContext.getString(R.string.nutrition_fallback_meal_type)),
+                    Math.max(1, meal.getCalories()),
+                    Math.max(0, meal.getProteinGrams()),
+                    Math.max(0, meal.getCarbsGrams()),
+                    Math.max(0, meal.getFatGrams()),
+                    System.currentTimeMillis()
+            );
+            entry.setSource(FoodLogEntry.SOURCE_PLAN);
+            entry.setNotes(meal.getNotes());
+            entry.setPlanImportKey(importKey);
+            entriesToSave.add(entry);
+        }
+
+        if (entriesToSave.isEmpty()) {
+            message.setValue(appContext.getString(R.string.nutrition_plan_day_duplicate));
+            return;
+        }
+
+        savePlanFoodEntries(user.getUid(), entriesToSave);
+    }
+
+    private void savePlanFoodEntries(String uid, List<FoodLogEntry> entries) {
+        setSavingFood(true);
+        nutritionRepository.saveFoodLogs(uid, todayKey(), entries, new NutritionRepository.FoodLogsSaveCallback() {
+            @Override
+            public void onSuccess(List<FoodLogEntry> savedEntries) {
+                List<FoodLogEntry> nextLogs = new ArrayList<>();
+                if (savedEntries != null) {
+                    nextLogs.addAll(savedEntries);
+                }
+                nextLogs.addAll(currentFoodLogs);
+                setSavingFood(false);
+                setFoodLogs(nextLogs);
+                message.postValue(appContext.getString(R.string.nutrition_plan_day_logged));
             }
 
             @Override
             public void onError(Exception e) {
                 setSavingFood(false);
                 message.postValue(appContext.getString(R.string.nutrition_food_save_error));
+            }
+        });
+    }
+
+    public void loadHistory(String dateKey) {
+        FirebaseUser user = authRepository.getCurrentUser();
+        if (user == null) {
+            message.setValue(appContext.getString(R.string.nutrition_food_login_required));
+            return;
+        }
+        String safeDateKey = dateKey != null ? dateKey.trim() : "";
+        if (!safeDateKey.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            message.setValue(appContext.getString(R.string.nutrition_history_date_error));
+            return;
+        }
+
+        setHistoryLoading(true);
+        nutritionRepository.getFoodLogsForDate(user.getUid(), safeDateKey, new NutritionRepository.FoodLogsCallback() {
+            @Override
+            public void onSuccess(List<FoodLogEntry> logs) {
+                List<FoodLogEntry> safeLogs = logs != null ? new ArrayList<>(logs) : new ArrayList<>();
+                setHistoryLoading(false);
+                historyFoodLogs.postValue(safeLogs);
+                historySummary.postValue(NutritionRepository.calculateTodaySummary(goal, safeLogs));
+                selectedHistoryDateKey.postValue(safeDateKey);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                setHistoryLoading(false);
+                message.postValue(appContext.getString(R.string.nutrition_food_logs_load_error));
             }
         });
     }
@@ -189,8 +500,34 @@ public class NutritionViewModel extends ViewModel {
 
             @Override
             public void onError(Exception e) {
+                saveFallbackMealPlan(firebaseUser.getUid(), e);
+            }
+        });
+    }
+
+    private void saveFallbackMealPlan(String uid, Exception aiError) {
+        MealPlan fallbackPlan = DeepSeekRepository.buildFallbackMealPlan(loadedUser, goal);
+        if (!isUsableMealPlan(fallbackPlan)) {
+            setMealPlanLoading(false);
+            message.postValue(NutritionAiErrorMapper.toUserMessage(aiError));
+            return;
+        }
+        latestMealPlan = fallbackPlan;
+        setMealPlanPreview(formatMealPlanPreview(fallbackPlan));
+        publishUiState();
+        nutritionRepository.saveMealPlan(uid, fallbackPlan, new NutritionRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
                 setMealPlanLoading(false);
-                message.postValue(NutritionAiErrorMapper.toUserMessage(e));
+                publishUiState();
+                message.postValue(NutritionAiErrorMapper.toUserMessage(aiError)
+                        + " Đã tạo kế hoạch ăn cơ bản để bạn có thể bắt đầu.");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                setMealPlanLoading(false);
+                message.postValue(appContext.getString(R.string.nutrition_plan_save_error));
             }
         });
     }
@@ -253,6 +590,35 @@ public class NutritionViewModel extends ViewModel {
         List<FoodLogEntry> current = new ArrayList<>(currentFoodLogs);
         current.add(0, entry);
         setFoodLogs(current);
+    }
+
+    private void saveFoodEntry(String uid, FoodLogEntry entry) {
+        setSavingFood(true);
+        nutritionRepository.saveFoodLog(uid, todayKey(), entry, new NutritionRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                addSavedFoodLog(entry);
+                setSavingFood(false);
+                clearFoodFormAfterSave();
+                message.postValue(appContext.getString(R.string.nutrition_food_saved));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                setSavingFood(false);
+                message.postValue(appContext.getString(R.string.nutrition_food_save_error));
+            }
+        });
+    }
+
+    private void clearFoodFormAfterSave() {
+        hasAttemptedSubmit = false;
+        draftServingText = "";
+        updateDraft("", appContext.getString(R.string.nutrition_default_meal_type), "", "", "", "");
+        formErrors.postValue(NutritionFormErrors.none());
+        updateCanAddFood(false);
+        pendingEstimate.postValue(null);
+        clearFoodFormEvent.postValue(true);
     }
 
     private boolean validateDraft(boolean publishErrors) {
@@ -353,8 +719,22 @@ public class NutritionViewModel extends ViewModel {
         publishUiState();
     }
 
+    private void setHistoryLoading(boolean loading) {
+        historyLoading = loading;
+        isHistoryLoading.postValue(loading);
+        updateLoading();
+        publishUiState();
+    }
+
+    private void setEstimatingFood(boolean estimating) {
+        estimatingFood = estimating;
+        isEstimatingFood.postValue(estimating);
+        updateLoading();
+        publishUiState();
+    }
+
     private void updateLoading() {
-        isLoading.postValue(foodLogsLoading || mealPlanLoading || savingFood);
+        isLoading.postValue(foodLogsLoading || mealPlanLoading || historyLoading || savingFood || estimatingFood);
     }
 
     private void publishSummary() {
@@ -371,7 +751,7 @@ public class NutritionViewModel extends ViewModel {
                 currentFoodLogs,
                 latestMealPlan,
                 currentMealPlanPreview,
-                foodLogsLoading || mealPlanLoading || savingFood,
+                foodLogsLoading || mealPlanLoading || historyLoading || savingFood || estimatingFood,
                 savingFood,
                 loggedOut,
                 foodLogsLoading,
@@ -406,8 +786,7 @@ public class NutritionViewModel extends ViewModel {
                 preview.append("Chưa có món");
                 continue;
             }
-            int count = Math.min(MEAL_PLAN_PREVIEW_MEALS_PER_DAY, meals.size());
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < meals.size(); i++) {
                 Meal meal = meals.get(i);
                 if (i > 0) {
                     preview.append("; ");
@@ -415,9 +794,6 @@ public class NutritionViewModel extends ViewModel {
                 preview.append(nonBlank(meal.getMealType(), "Bữa ăn"))
                         .append(" - ")
                         .append(nonBlank(meal.getName(), "Món ăn"));
-            }
-            if (meals.size() > count) {
-                preview.append("; +").append(meals.size() - count).append(" bữa");
             }
         }
         return preview.toString();
@@ -433,6 +809,16 @@ public class NutritionViewModel extends ViewModel {
             }
         }
         return true;
+    }
+
+    private String mealPlanImportKey(MealPlanDay day, Meal meal) {
+        String dayPart = !isBlank(day.getDayLabel())
+                ? day.getDayLabel()
+                : String.valueOf(day.getDayOfWeek());
+        String key = (dayPart + "|"
+                + nonBlank(meal.getMealType(), appContext.getString(R.string.nutrition_fallback_meal_type)) + "|"
+                + meal.getName()).toLowerCase(Locale.ROOT);
+        return key.length() <= 120 ? key : key.substring(0, 120);
     }
 
     private String todayKey() {

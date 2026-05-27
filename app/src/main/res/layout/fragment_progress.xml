@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -25,12 +24,11 @@
                 android:text="@string/progress"
                 android:textAppearance="@style/TextStyle.HeadlineLg" />
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="match_parent"
                 android:layout_height="156dp"
                 android:layout_marginTop="@dimen/spacing_md"
-                android:background="@drawable/bg_onboarding_hero"
-                android:clipToOutline="true"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedHero"
                 android:contentDescription="@null"
                     android:importantForAccessibility="no"
                 android:scaleType="centerCrop"
@@ -76,6 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_md"
+                        android:baselineAligned="false"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -237,6 +236,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:weightSum="2">
 

@@ -68,5 +68,8 @@ public class ExerciseCatalogRepositoryTest {
         Exercise exercise = item.toExercise();
 
         assertEquals("plank", exercise.getPoseTypeKey());
+        assertEquals("plank", exercise.getCatalogItemId());
+        assertEquals(0, exercise.getReps());
+        assertEquals(30, exercise.getDurationSeconds());
     }
 }

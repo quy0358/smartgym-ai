@@ -26,21 +26,21 @@ import ntu.quy65132908.smartgym_ai.util.DateUtils;
 import ntu.quy65132908.smartgym_ai.util.SingleLiveEvent;
 
 /**
- * ViewModel for the Dashboard Home tab.
+ * ViewModel cho tab Trang chủ của Dashboard.
  *
- * Data flow:
+ * Luồng dữ liệu:
  * startLoad() → [UserRepository.getUser]
  *   → loadWeeklyPlan()
  *   → [WorkoutRepository.getWeeklyPlan]
- *   → publish a single DashboardUiState
- * Profile load errors fall back to default profile data so the weekly plan can still render.
+ *   → phát một DashboardUiState duy nhất
+ * Nếu tải hồ sơ lỗi, dùng dữ liệu hồ sơ mặc định để kế hoạch tuần vẫn render được.
  *
- * Design decisions:
- * - Constructor-time loading: intentional, ViewModel survives config changes
- * - Single UI state: keeps the today card, plan, profile and loading flags in sync
- * - SingleLiveEvent for errors: acceptable loss if Fragment is backgrounded
- * - Request generation: stale async callbacks from older loads are ignored
- * - Refresh cooldown: 5s minimum between refreshes to prevent Firestore quota waste
+ * Quyết định thiết kế:
+ * - Tải trong constructor là có chủ đích vì ViewModel sống qua thay đổi cấu hình.
+ * - Một trạng thái UI duy nhất giúp đồng bộ thẻ hôm nay, kế hoạch, hồ sơ và cờ loading.
+ * - SingleLiveEvent cho lỗi chấp nhận mất sự kiện nếu Fragment đang ở nền.
+ * - Mã thế hệ request giúp bỏ qua callback async cũ.
+ * - Cooldown refresh tối thiểu 5 giây để tránh lãng phí quota Firestore.
  */
 @HiltViewModel
 public class DashboardViewModel extends ViewModel {
@@ -48,7 +48,7 @@ public class DashboardViewModel extends ViewModel {
     private static final Pattern GOAL_NUMBER_PATTERN = Pattern.compile("[-+]?\\d+");
     private static final String PLACEHOLDER = "--";
     private static final String UNICODE_MINUS = "\u2212";
-    private static final long REFRESH_COOLDOWN_MS = 5000; // 5 seconds
+    private static final long REFRESH_COOLDOWN_MS = 5000; // 5 giây
 
     private final AuthRepository authRepository;
     private final UserRepository userRepository;
@@ -93,6 +93,10 @@ public class DashboardViewModel extends ViewModel {
         }
         lastRefreshTime = now;
         startLoad(true);
+    }
+
+    public void reload() {
+        startLoad(false);
     }
 
     private void startLoad(boolean refresh) {
@@ -270,7 +274,7 @@ public class DashboardViewModel extends ViewModel {
 
         Workout todayWorkout = findTodayWorkout(workouts);
         if (todayWorkout == null) {
-            // Plan exists but no entry for today → implicit rest day
+            // Có kế hoạch nhưng không có mục cho hôm nay, xem như ngày nghỉ ngầm.
             return TodayState.REST_DAY;
         }
 

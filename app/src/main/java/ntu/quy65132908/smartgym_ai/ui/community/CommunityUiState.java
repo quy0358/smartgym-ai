@@ -16,6 +16,7 @@ public final class CommunityUiState {
     private final boolean refreshing;
     private final boolean submittingPost;
     private final Set<String> pendingLikePostIds;
+    private final Set<String> pendingActionPostIds;
     private final String emptyMessage;
 
     private CommunityUiState(
@@ -24,6 +25,7 @@ public final class CommunityUiState {
             boolean refreshing,
             boolean submittingPost,
             Set<String> pendingLikePostIds,
+            Set<String> pendingActionPostIds,
             String emptyMessage
     ) {
         this.posts = Collections.unmodifiableList(new ArrayList<>(posts));
@@ -31,6 +33,7 @@ public final class CommunityUiState {
         this.refreshing = refreshing;
         this.submittingPost = submittingPost;
         this.pendingLikePostIds = Collections.unmodifiableSet(new HashSet<>(pendingLikePostIds));
+        this.pendingActionPostIds = Collections.unmodifiableSet(new HashSet<>(pendingActionPostIds));
         this.emptyMessage = emptyMessage;
     }
 
@@ -40,6 +43,7 @@ public final class CommunityUiState {
                 true,
                 false,
                 false,
+                Collections.emptySet(),
                 Collections.emptySet(),
                 DEFAULT_EMPTY_MESSAGE
         );
@@ -69,6 +73,10 @@ public final class CommunityUiState {
         return pendingLikePostIds;
     }
 
+    public Set<String> getPendingActionPostIds() {
+        return pendingActionPostIds;
+    }
+
     public String getEmptyMessage() {
         return emptyMessage;
     }
@@ -84,6 +92,7 @@ public final class CommunityUiState {
                 refreshing,
                 submittingPost,
                 pendingLikePostIds,
+                pendingActionPostIds,
                 emptyMessage
         );
     }
@@ -95,6 +104,7 @@ public final class CommunityUiState {
                 refreshing,
                 submittingPost,
                 pendingLikePostIds,
+                pendingActionPostIds,
                 emptyMessage
         );
     }
@@ -106,6 +116,7 @@ public final class CommunityUiState {
                 refreshing,
                 submittingPost,
                 pendingLikePostIds,
+                pendingActionPostIds,
                 emptyMessage
         );
     }
@@ -117,6 +128,7 @@ public final class CommunityUiState {
                 refreshing,
                 submittingPost,
                 pendingLikePostIds,
+                pendingActionPostIds,
                 emptyMessage
         );
     }
@@ -128,6 +140,19 @@ public final class CommunityUiState {
                 refreshing,
                 submittingPost,
                 pendingLikePostIds != null ? pendingLikePostIds : Collections.emptySet(),
+                pendingActionPostIds,
+                emptyMessage
+        );
+    }
+
+    public CommunityUiState withPendingActionPostIds(Set<String> pendingActionPostIds) {
+        return new CommunityUiState(
+                posts,
+                initialLoading,
+                refreshing,
+                submittingPost,
+                pendingLikePostIds,
+                pendingActionPostIds != null ? pendingActionPostIds : Collections.emptySet(),
                 emptyMessage
         );
     }

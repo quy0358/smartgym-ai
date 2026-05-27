@@ -106,11 +106,18 @@ public class WorkoutViewModel extends ViewModel {
         uiState.setValue(WorkoutDetailUiState.success(new ArrayList<>(currentExercises), subtitle, dayType));
 
         workoutRepo.markExerciseCompleteAndSyncWorkout(u.getUid(), workoutId, exerciseId, done,
-                new WorkoutRepository.SimpleCallback() {
+                new WorkoutRepository.CompletionCallback() {
                     @Override
                     public void onSuccess() {
-                        // Optimistic state is already reflected in the UI.
-                        recordChallengeProgressIfWorkoutComplete(u.getUid());
+                        onSuccess(isWorkoutComplete());
+                    }
+
+                    @Override
+                    public void onSuccess(boolean workoutCompleted) {
+                        // Trạng thái lạc quan đã được phản ánh trên UI.
+                        if (workoutCompleted) {
+                            recordChallengeProgressIfWorkoutComplete(u.getUid());
+                        }
                     }
 
                     @Override
@@ -149,6 +156,10 @@ public class WorkoutViewModel extends ViewModel {
                     exercise.isCompleted());
             copy.setNotes(exercise.getNotes());
             copy.setPoseTypeKey(exercise.getPoseTypeKey());
+            copy.setPrimaryMuscle(exercise.getPrimaryMuscle());
+            copy.setCatalogItemId(exercise.getCatalogItemId());
+            copy.setDurationSeconds(exercise.getDurationSeconds());
+            copy.setOrderIndex(exercise.getOrderIndex());
             copies.add(copy);
         }
         return copies;
@@ -161,12 +172,12 @@ public class WorkoutViewModel extends ViewModel {
         challengeRepository.recordWorkoutCompletion(uid, new ChallengeRepository.SimpleCallback() {
             @Override
             public void onSuccess() {
-                // Challenge progress is secondary to the workout toggle; no extra UI update is required.
+                // Tiến trình thử thách là phụ so với thao tác bật/tắt bài tập, không cần cập nhật UI thêm.
             }
 
             @Override
             public void onError(Exception e) {
-                // Do not roll back a completed workout if challenge progress could not be updated.
+                // Không rollback buổi tập đã hoàn thành nếu tiến trình thử thách không cập nhật được.
             }
         });
     }

@@ -21,7 +21,7 @@ public class User {
     private long onboardingCompletedAt;
     private long createdAt;
 
-    public User() {} // Firestore requires empty constructor
+    public User() {} // Firestore cần constructor rỗng.
 
     public User(String uid, String displayName, String email) {
         this.uid = uid;
@@ -31,7 +31,7 @@ public class User {
         this.bmiCategory = "Bình thường";
     }
 
-    // Getters
+    // Phương thức đọc
     public String getUid() { return uid; }
     public String getDisplayName() { return displayName != null ? displayName : ""; }
     public String getEmail() { return email != null ? email : ""; }
@@ -49,7 +49,7 @@ public class User {
     public long getOnboardingCompletedAt() { return onboardingCompletedAt; }
     public long getCreatedAt() { return createdAt; }
 
-    // Setters
+    // Phương thức ghi
     public void setUid(String uid) { this.uid = uid; }
     public void setDisplayName(String displayName) { this.displayName = displayName; }
     public void setEmail(String email) { this.email = email; }
@@ -84,7 +84,7 @@ public class User {
         if (fitnessLevel != null) map.put("fitnessLevel", fitnessLevel);
         map.put("onboardingCompleted", onboardingCompleted);
         if (onboardingCompletedAt > 0L) map.put("onboardingCompletedAt", onboardingCompletedAt);
-        map.put("createdAt", createdAt);
+        if (createdAt > 0L) map.put("createdAt", createdAt);
         return map;
     }
 }

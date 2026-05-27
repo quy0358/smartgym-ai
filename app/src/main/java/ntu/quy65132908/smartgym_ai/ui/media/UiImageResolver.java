@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.Challenge;
+import ntu.quy65132908.smartgym_ai.data.model.FoodNutritionEstimate;
 import ntu.quy65132908.smartgym_ai.data.model.Workout;
 
 public final class UiImageResolver {
@@ -103,10 +104,23 @@ public final class UiImageResolver {
     }
 
     @DrawableRes
-    public static int exerciseImageFor(@Nullable String id, @Nullable String name, @Nullable String primaryMuscle) {
-        String key = normalize(id + " " + name + " " + primaryMuscle);
+    public static int exerciseImageFor(@Nullable String poseTypeKey, @Nullable String name, @Nullable String primaryMuscle) {
+        String poseKey = normalize(poseTypeKey);
+        String nameKey = normalize(name);
+        String muscleKey = normalize(primaryMuscle);
+        String key = poseKey + " " + nameKey + " " + muscleKey;
         if (key.contains("push_up") || key.contains("pushup") || key.contains("chong day") || key.contains("nguc")) {
             return R.drawable.img_exercise_push_up;
+        }
+        if (key.contains("plank")) {
+            return R.drawable.img_exercise_plank;
+        }
+        if (key.contains("squat")) {
+            return R.drawable.img_exercise_squat;
+        }
+        if (nameKey.contains("gap bung") || nameKey.contains("crunch") || nameKey.contains("sit up")
+                || nameKey.contains("situp") || nameKey.contains("day bung")) {
+            return R.drawable.img_exercise_crunch;
         }
         if (key.contains("lung") || key.contains("back") || key.contains("row") || key.contains("pull")) {
             return R.drawable.img_muscle_back;
@@ -117,11 +131,11 @@ public final class UiImageResolver {
         if (key.contains("cardio") || key.contains("run") || key.contains("burpee")) {
             return R.drawable.img_exercise_cardio;
         }
-        if (key.contains("squat") || key.contains("lunge") || key.contains("chan") || key.contains("upper legs")) {
+        if (key.contains("lunge") || key.contains("chan") || key.contains("upper legs")) {
             return R.drawable.img_muscle_upper_legs;
         }
-        if (key.contains("plank") || key.contains("waist") || key.contains("core") || key.contains("bung")) {
-            return R.drawable.img_muscle_waist;
+        if (key.contains("waist") || key.contains("core") || key.contains("bung")) {
+            return R.drawable.img_exercise_crunch;
         }
         if (key.contains("vai") || key.contains("shoulder") || key.contains("overhead")) {
             return R.drawable.img_muscle_shoulders;
@@ -150,12 +164,37 @@ public final class UiImageResolver {
         return R.drawable.img_meal_default;
     }
 
+    @DrawableRes
+    public static int mealIconFor(@Nullable String category, @Nullable String mealType) {
+        String key = normalize(category + " " + mealType);
+        if (key.contains(FoodNutritionEstimate.CATEGORY_PROTEIN) || key.contains("meat")
+                || key.contains("chicken") || key.contains("beef") || key.contains("fish")
+                || key.contains("egg")) {
+            return R.drawable.ic_nutrition_protein;
+        }
+        if (key.contains(FoodNutritionEstimate.CATEGORY_CARB) || key.contains("rice")
+                || key.contains("bread") || key.contains("noodle") || key.contains("starch")) {
+            return R.drawable.ic_nutrition_carb;
+        }
+        if (key.contains(FoodNutritionEstimate.CATEGORY_VEG) || key.contains("vegetable")
+                || key.contains("fruit") || key.contains("salad")) {
+            return R.drawable.ic_nutrition_veg;
+        }
+        if (key.contains(FoodNutritionEstimate.CATEGORY_SNACK) || key.contains("phu")
+                || key.contains("snack") || key.contains("drink") || key.contains("dessert")) {
+            return R.drawable.ic_nutrition_snack;
+        }
+        return R.drawable.ic_nutrition_mixed;
+    }
+
     private static String normalize(String value) {
         if (value == null) {
             return "";
         }
         String decomposed = Normalizer.normalize(value, Normalizer.Form.NFD);
         return decomposed
+                .replace('đ', 'd')
+                .replace('Đ', 'D')
                 .replace('đ', 'd')
                 .replace('Đ', 'D')
                 .replaceAll("\\p{M}", "")

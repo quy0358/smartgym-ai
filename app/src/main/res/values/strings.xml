@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SmartGym AI</string>
     <string name="home">Trang chủ</string>
     <string name="workout_plan">Kế hoạch</string>
@@ -34,6 +34,7 @@
     <string name="workout_detail_rest_subtitle">Không cần hoàn thành bài tập. Ưu tiên ngủ đủ, uống nước và phục hồi.</string>
     <string name="workout_detail_empty_exercises">Chưa có bài tập nào</string>
     <string name="workout_detail_exercise_list">DANH SÁCH BÀI TẬP</string>
+    <string name="workout_detail_edit_exercises">Sửa bài tập</string>
     <string name="ai_analysis">Phân tích AI</string>
     <string name="sign_out">Đăng xuất</string>
     <string name="settings">Cài đặt</string>
@@ -42,9 +43,8 @@
     <string name="height">Chiều cao</string>
     <string name="bmi">BMI</string>
     <string name="goal">Mục tiêu</string>
-    <string name="default_web_client_id" translatable="false">644529455872-t7t9538ejotq8alf5hk1aqneoc6q1b8t.apps.googleusercontent.com</string>
 
-    <!-- Auth errors -->
+    <!-- Lỗi xác thực -->
     <string name="error_empty_fields">Vui lòng nhập đầy đủ thông tin</string>
     <string name="error_invalid_email">Email không hợp lệ</string>
     <string name="error_weak_password">Mật khẩu phải có ít nhất 6 ký tự</string>
@@ -62,7 +62,7 @@
     <string name="error_google_invalid_credential">Không xác thực được tài khoản Google. Vui lòng chọn lại tài khoản.</string>
     <string name="error_google_credential">Không thể mở đăng nhập Google: %s</string>
 
-    <!-- Dashboard stat labels -->
+    <!-- Nhãn thống kê Dashboard -->
     <string name="stat_weight">CÂN NẶNG</string>
     <string name="stat_bmi">BMI</string>
     <string name="stat_goal">MỤC TIÊU</string>
@@ -78,9 +78,9 @@
     <string name="notification_coming_soon">Thông báo sẽ được cập nhật sau.</string>
     <string name="ai_suggestion_label">⚡ AI ĐỀ XUẤT</string>
     <string name="btn_start">Bắt đầu</string>
-    <string name="workout_subtitle_format">%1$d bài • %2$d phút • %3$s</string>
+    <string name="workout_subtitle_format" tools:ignore="PluralsCandidate">%1$d bài • %2$d phút • %3$s</string>
     <string name="workout_subtitle_without_count_format">%1$d phút • %2$s</string>
-    <string name="workout_meta_with_count">%1$d phút • %2$s • %3$d bài</string>
+    <string name="workout_meta_with_count" tools:ignore="PluralsCandidate">%1$d phút • %2$s • %3$d bài</string>
     <string name="workout_meta_without_count">%1$d phút • %2$s</string>
     <string name="workout_meta_rest">Nghỉ hoàn toàn</string>
     <string name="workout_type_recovery">PHỤC HỒI</string>
@@ -95,7 +95,7 @@
     <string name="error_load_weekly_plan">Không thể tải kế hoạch tuần.</string>
     <string name="no_workout_today">Hôm nay không có bài tập. Hãy nghỉ ngơi! 🧘</string>
 
-    <!-- Profile stat labels -->
+    <!-- Nhãn thống kê hồ sơ -->
     <string name="stat_workouts">BÀI TẬP</string>
     <string name="stat_total">tổng cộng</string>
     <string name="stat_hours">GIỜ TẬP</string>
@@ -103,12 +103,12 @@
     <string name="stat_streak">CHUỖI</string>
     <string name="unit_days">ngày</string>
 
-    <!-- Progress stat labels -->
+    <!-- Nhãn thống kê tiến trình -->
     <string name="stat_completed">hoàn thành</string>
     <string name="stat_calories">CALORIES</string>
     <string name="stat_burned">đốt cháy</string>
 
-    <!-- AI Analysis -->
+    <!-- Phân tích AI -->
     <string name="ai_loading">Đang tải…</string>
     <string name="ai_enter_info">Nhập đủ thông tin</string>
     <string name="ai_title">Phân tích AI</string>
@@ -129,24 +129,34 @@
     <string name="unit_kg_upper">KG</string>
     <string name="ai_error_prefix">Cảnh báo: %s</string>
 
-    <!-- Community -->
+    <!-- Cộng đồng -->
     <string name="community_empty_posts">Chưa có bài viết nào</string>
     <string name="community_create_post_cd">Tạo bài viết</string>
     <string name="community_create_post_title">Đăng bài mới</string>
-    <string name="community_create_post_hint">Chia sẻ với cộng đồng...</string>
+    <string name="community_create_post_hint">Chia sẻ với cộng đồng…</string>
     <string name="community_submit_post">Đăng bài</string>
-    <string name="community_submitting_post">Đang đăng...</string>
+    <string name="community_submitting_post">Đang đăng…</string>
     <string name="post_like_a11y">Thích bài viết</string>
     <string name="post_unlike_a11y">Bỏ thích bài viết</string>
     <string name="post_empty_content">Nội dung trống</string>
     <string name="post_user_default">Người dùng</string>
-    <string name="post_likes_format">%1$d ❤️</string>
+    <string name="post_likes_format">%1$d</string>
+    <string name="post_actions_a11y">Tùy chọn bài viết</string>
+    <string name="post_edit">Chỉnh sửa</string>
+    <string name="post_delete">Xóa</string>
+    <string name="post_delete_title">Xóa bài viết?</string>
+    <string name="post_delete_message">Bài viết sẽ bị xóa khỏi cộng đồng.</string>
+    <string name="post_delete_confirm">Xóa bài</string>
+    <string name="community_edit_post_title">Chỉnh sửa bài viết</string>
+    <string name="community_update_post">Cập nhật</string>
+    <string name="community_updating_post">Đang cập nhật…</string>
+    <string name="post_edited_time_format">%1$s • Đã chỉnh sửa</string>
     <string name="time_just_now">Vừa xong</string>
     <string name="time_minutes_ago_format">%1$d phút trước</string>
-    <string name="time_hours_ago_format">%1$d giờ trước</string>
-    <string name="time_days_ago_format">%1$d ngày trước</string>
+    <string name="time_hours_ago_format" tools:ignore="PluralsCandidate">%1$d giờ trước</string>
+    <string name="time_days_ago_format" tools:ignore="PluralsCandidate">%1$d ngày trước</string>
 
-    <!-- Profile -->
+    <!-- Hồ sơ -->
     <string name="profile_saved">Đã lưu!</string>
     <string name="profile_name_empty">Tên không được để trống</string>
     <string name="profile_name_length_error">Tên tối đa 50 ký tự</string>
@@ -167,9 +177,9 @@
     <string name="profile_height_hint">Chiều cao</string>
     <string name="profile_goal_hint">Mục tiêu</string>
     <string name="profile_save_changes">Lưu thay đổi</string>
-    <string name="profile_saving">Đang lưu...</string>
+    <string name="profile_saving">Đang lưu…</string>
     <string name="profile_bmi_format">BMI: %1$.1f (%2$s)</string>
-    <string name="profile_bmi_unavailable">BMI: --</string>
+    <string name="profile_bmi_unavailable">BMI: —</string>
     <string name="profile_bmi_a11y">BMI %1$.1f, %2$s</string>
     <string name="profile_bmi_unavailable_a11y">Chưa có dữ liệu BMI</string>
     <string name="profile_avatar">Ảnh đại diện</string>
@@ -178,12 +188,12 @@
     <string name="profile_email_unavailable">Chưa có email</string>
     <string name="profile_total_workouts_a11y">Tổng số bài tập: %1$d</string>
     <string name="profile_total_hours_a11y">Tổng thời gian tập: %1$s giờ</string>
-    <string name="profile_streak_a11y">Chuỗi ngày tập: %1$d ngày</string>
+    <string name="profile_streak_a11y" tools:ignore="PluralsCandidate">Chuỗi ngày tập: %1$d ngày</string>
     <string name="profile_sign_out_title">Đăng xuất</string>
     <string name="profile_sign_out_message">Bạn có chắc chắn muốn đăng xuất?</string>
     <string name="action_cancel">Hủy</string>
 
-    <!-- Dashboard empty states -->
+    <!-- Trạng thái trống của Dashboard -->
     <string name="empty_plan_icon">📋</string>
     <string name="empty_plan_title">Chưa có kế hoạch tuần</string>
     <string name="empty_plan_subtitle">Hãy tạo kế hoạch tập luyện để bắt đầu hành trình</string>
@@ -194,13 +204,13 @@
     <string name="rest_day_title">Hôm nay là ngày nghỉ!</string>
     <string name="rest_day_subtitle">Hãy nghỉ ngơi để cơ thể phục hồi 💪</string>
 
-    <!-- Dashboard loading/refresh -->
+    <!-- Tải và làm mới Dashboard -->
     <string name="loading_dashboard">Đang tải dữ liệu…</string>
     <string name="refresh_success">Đã cập nhật!</string>
     <string name="refresh_throttled">Vừa cập nhật. Vui lòng thử lại sau vài giây.</string>
     <string name="data_offline">Dữ liệu offline</string>
 
-    <!-- Pose Trainer -->
+    <!-- Huấn luyện tư thế -->
     <string name="pose_trainer_title">Huấn luyện tư thế AI</string>
     <string name="pose_camera_permission_title">Cần quyền camera</string>
     <string name="pose_camera_permission_message">Cho phép camera để SmartGym AI nhận diện khung xương và góp ý tư thế theo thời gian thực.</string>
@@ -220,15 +230,20 @@
     <string name="pose_open_camera">Mở camera sửa form</string>
     <string name="pose_start_workout">Tập với AI Pose</string>
 
-    <string name="pose_hold_time_format">%1$d giây</string>
+    <string name="pose_hold_time_format" tools:ignore="PluralsCandidate">%1$d giây</string>
     <string name="pose_hold_time_label">Thời gian giữ</string>
     <string name="pose_start_specific_format">Tập %1$s với AI Pose</string>
     <string name="pose_choose_exercise">Chọn bài AI Pose</string>
     <string name="pose_switch_camera">Đổi camera</string>
     <string name="pose_voice_feedback">Phản hồi giọng nói</string>
     <string name="pose_no_supported_exercise">Chưa có bài hỗ trợ AI Pose.</string>
+    <string name="pose_all_supported_completed">Tất cả bài AI Pose đã hoàn thành.</string>
+    <string name="pose_confirm_completion">Đánh dấu hoàn thành</string>
+    <string name="pose_completion_saving">Đang cập nhật…</string>
+    <string name="pose_target_reps_format" tools:ignore="PluralsCandidate">Mục tiêu: %1$d lần</string>
+    <string name="pose_target_seconds_format" tools:ignore="PluralsCandidate">Mục tiêu: %1$d giây</string>
 
-    <!-- Modarb-inspired v1 upgrades -->
+    <!-- Nâng cấp v1 lấy cảm hứng từ Modarb -->
     <string name="exercise_library_title">Thư viện bài tập</string>
     <string name="exercise_library_subtitle">Chọn bài phù hợp để tạo workout tùy chỉnh.</string>
     <string name="exercise_search_hint">Tìm bài tập hoặc nhóm cơ</string>
@@ -240,11 +255,16 @@
     <string name="exercise_filter_intermediate">Trung bình</string>
     <string name="exercise_empty_search">Không có bài tập phù hợp với bộ lọc hiện tại.</string>
     <string name="exercise_selected_count_default">Đã chọn: 0 bài</string>
-    <string name="exercise_selected_count_format">Đã chọn: %1$d bài</string>
+    <string name="exercise_selected_count_format" tools:ignore="PluralsCandidate">Đã chọn: %1$d bài</string>
     <string name="exercise_save_custom_workout">Lưu workout tùy chỉnh</string>
+    <string name="exercise_update_custom_workout">Cập nhật workout tùy chỉnh</string>
     <string name="exercise_choose">Chọn</string>
     <string name="exercise_chosen">Đã chọn</string>
-    <string name="exercise_prescription_format">%1$d hiệp × %2$d lần</string>
+    <string name="exercise_prescription_format" tools:ignore="PluralsCandidate">%1$d hiệp × %2$d lần</string>
+    <string name="exercise_timed_prescription_format" tools:ignore="PluralsCandidate">%1$d hiệp × %2$d giây</string>
+    <string name="exercise_meta_format">%1$s • %2$s • %3$s</string>
+    <string name="exercise_placeholder_name">Bài tập</string>
+    <string name="exercise_placeholder_detail">Hiệp × Lần</string>
     <string name="exercise_library_load_error">Không thể tải thư viện bài tập.</string>
     <string name="exercise_login_required">Bạn cần đăng nhập để lưu bài tập.</string>
     <string name="exercise_select_required">Chọn ít nhất một bài tập.</string>
@@ -253,6 +273,8 @@
     <string name="exercise_custom_intensity">Tùy chỉnh</string>
     <string name="exercise_custom_saved">Đã lưu bài tập tùy chỉnh.</string>
     <string name="exercise_custom_save_error">Không thể lưu bài tập tùy chỉnh.</string>
+    <string name="exercise_custom_updated">Đã cập nhật workout.</string>
+    <string name="exercise_custom_update_error">Không thể cập nhật workout.</string>
     <string name="exercise_item_a11y">%1$s, %2$s, %3$s</string>
     <string name="nutrition_title">Dinh dưỡng</string>
     <string name="nutrition_today_summary">Tổng quan hôm nay</string>
@@ -264,18 +286,18 @@
     <string name="nutrition_carbs_hint">Carb</string>
     <string name="nutrition_fat_hint">Béo</string>
     <string name="nutrition_btn_add_food">Lưu bữa ăn</string>
-    <string name="nutrition_btn_saving_food">Đang lưu...</string>
+    <string name="nutrition_btn_saving_food">Đang lưu…</string>
     <string name="nutrition_ai_plan">Kế hoạch ăn AI</string>
     <string name="nutrition_generate_plan">Tạo kế hoạch ăn 7 ngày</string>
-    <string name="nutrition_generating_plan">Đang tạo kế hoạch...</string>
+    <string name="nutrition_generating_plan">Đang tạo kế hoạch…</string>
     <string name="nutrition_empty_plan">Chưa có kế hoạch ăn. Tạo bằng AI để bắt đầu.</string>
     <string name="nutrition_default_meal_type">Sáng</string>
     <string name="nutrition_fallback_meal_type">Bữa ăn</string>
     <string name="nutrition_unit_kcal">kcal</string>
     <string name="nutrition_unit_g">g</string>
-    <string name="nutrition_calories_format">%1$d / %2$d kcal</string>
-    <string name="nutrition_calories_a11y">%1$d trên %2$d kilocalories, đạt %3$d phần trăm mục tiêu hôm nay</string>
-    <string name="nutrition_food_calories_format">%1$d kcal</string>
+    <string name="nutrition_calories_format" tools:ignore="PluralsCandidate">%1$d / %2$d kcal</string>
+    <string name="nutrition_calories_a11y" tools:ignore="PluralsCandidate">%1$d trên %2$d kilocalories, đạt %3$d phần trăm mục tiêu hôm nay</string>
+    <string name="nutrition_food_calories_format" tools:ignore="PluralsCandidate">%1$d kcal</string>
     <string name="nutrition_macros_format">%1$dg đạm • %2$dg carb • %3$dg béo</string>
     <string name="nutrition_food_name_error">Nhập tên món ăn hợp lệ.</string>
     <string name="nutrition_calories_error">Nhập calories lớn hơn 0.</string>
@@ -319,8 +341,8 @@
     <string name="wellness_save_injury">Lưu hồ sơ an toàn</string>
     <string name="wellness_challenges">Thử thách</string>
     <string name="wellness_join_challenge">Tham gia</string>
-    <string name="wellness_challenge_meta_format">%1$d ngày • %2$d phút/ngày</string>
-    <string name="wellness_challenge_progress_format">Đã hoàn thành %1$d/%2$d ngày</string>
+    <string name="wellness_challenge_meta_format" tools:ignore="PluralsCandidate">%1$d ngày • %2$d phút/ngày</string>
+    <string name="wellness_challenge_progress_format" tools:ignore="PluralsCandidate">Đã hoàn thành %1$d/%2$d ngày</string>
     <string name="wellness_challenge_completed_status">Đã hoàn thành thử thách</string>
     <string name="wellness_challenge_joined_button">Đã tham gia</string>
     <string name="wellness_challenge_completed_button">Hoàn thành</string>
@@ -338,12 +360,13 @@
     <string name="wellness_injury_load_error">Không thể tải hồ sơ an toàn.</string>
     <string name="wellness_injury_notes_length_error">Ghi chú tối đa 500 ký tự.</string>
     <string name="wellness_injury_saved">Đã lưu hồ sơ an toàn vận động.</string>
+    <string name="wellness_regenerate_plan">Tạo lại kế hoạch</string>
     <string name="wellness_injury_save_error">Không thể lưu hồ sơ an toàn.</string>
     <string name="wellness_challenge_login_required">Bạn cần đăng nhập để tham gia thử thách.</string>
     <string name="wellness_challenge_joined_format">Đã tham gia thử thách: %1$s</string>
     <string name="wellness_challenge_join_error">Không thể tham gia thử thách.</string>
     <string name="wellness_challenge_load_error">Không thể tải thử thách.</string>
-    <string name="wellness_saving">Đang lưu...</string>
+    <string name="wellness_saving">Đang lưu…</string>
     <string name="wellness_notification_body">Hôm nay bạn có lịch tập trong SmartGym AI.</string>
     <string name="wellness_notification_default_body">Mở SmartGym AI để tiếp tục kế hoạch hôm nay.</string>
     <string name="wellness_notification_channel">Nhắc lịch tập luyện</string>
@@ -359,7 +382,7 @@
     <string name="open_wellness">Nhắc lịch và an toàn</string>
     <string name="open_exercise_library">Thư viện bài tập</string>
 
-    <!-- Onboarding -->
+    <!-- Thiết lập ban đầu -->
     <string name="onboarding_title">Thiết lập SmartGym AI</string>
     <string name="onboarding_subtitle">Cho AI biết cơ thể, mục tiêu và kinh nghiệm tập luyện của bạn.</string>
     <string name="onboarding_hero_a11y">Minh họa huấn luyện viên AI</string>
@@ -383,16 +406,18 @@
     <string name="onboarding_required_error">Vui lòng nhập đủ thông tin để cá nhân hóa kế hoạch.</string>
     <string name="onboarding_save_error">Không thể lưu hồ sơ onboarding. Vui lòng thử lại.</string>
 
-    <!-- Progress -->
+    <!-- Tiến trình -->
     <string name="progress_update_title">Cập nhật tiến trình</string>
     <string name="progress_weight_hint">Cân nặng (kg)</string>
     <string name="progress_body_fat_hint">Mỡ (%)</string>
     <string name="progress_lean_mass_hint">Lean mass (kg)</string>
     <string name="progress_note_hint">Ghi chú</string>
     <string name="progress_save_button">Lưu tiến trình</string>
-    <string name="progress_saving">Đang lưu...</string>
+    <string name="progress_saving">Đang lưu…</string>
     <string name="progress_saved">Đã lưu tiến trình.</string>
-    <string name="progress_loading">Đang tải...</string>
+    <string name="progress_loading">Đang tải…</string>
+    <string name="progress_percent_initial">0%</string>
+    <string name="progress_percent_format">%1$d%%</string>
     <string name="progress_weight_chart_title">BIỂU ĐỒ CÂN NẶNG</string>
     <string name="progress_weight_chart_data_label">Cân nặng</string>
     <string name="progress_weight_chart_a11y">Biểu đồ cân nặng theo thời gian</string>
@@ -411,9 +436,9 @@
     <string name="progress_stat_tracking_unit">ngày liên tiếp</string>
     <string name="progress_stat_calories">Calories</string>
     <string name="progress_stat_calories_unit">ước tính đốt</string>
-    <string name="progress_stat_workouts_a11y">%1$d bài tập hoàn thành</string>
-    <string name="progress_stat_tracking_a11y">%1$d ngày ghi nhận liên tiếp</string>
-    <string name="progress_stat_calories_a11y">%1$d calories ước tính đã đốt</string>
+    <string name="progress_stat_workouts_a11y" tools:ignore="PluralsCandidate">%1$d bài tập hoàn thành</string>
+    <string name="progress_stat_tracking_a11y" tools:ignore="PluralsCandidate">%1$d ngày ghi nhận liên tiếp</string>
+    <string name="progress_stat_calories_a11y" tools:ignore="PluralsCandidate">%1$d calories ước tính đã đốt</string>
     <string name="progress_weight_invalid">Vui lòng nhập cân nặng hợp lệ.</string>
     <string name="progress_weight_range_error">Cân nặng phải từ 20 đến 350 kg.</string>
     <string name="progress_body_fat_invalid">Tỷ lệ mỡ phải là số hợp lệ.</string>
@@ -426,7 +451,7 @@
     <string name="progress_load_error">Không thể tải tiến trình. Thử lại sau.</string>
     <string name="progress_save_error">Không thể lưu tiến trình. Thử lại sau.</string>
 
-    <!-- Accessibility -->
+    <!-- Khả năng truy cập -->
     <string name="stat_weight_a11y">Cân nặng: %1$s kg</string>
     <string name="stat_bmi_a11y">BMI: %1$s, %2$s</string>
     <string name="stat_goal_a11y">Mục tiêu: %1$s kg</string>
@@ -450,4 +475,39 @@
         <item>Thứ 7</item>
         <item>Chủ nhật</item>
     </string-array>
+    <string name="nutrition_food_deleted">Đã xóa bữa ăn.</string>
+    <string name="nutrition_food_delete_error">Không thể xóa bữa ăn.</string>
+    <string name="nutrition_food_updated">Đã cập nhật bữa ăn.</string>
+    <string name="nutrition_food_update_error">Không thể cập nhật bữa ăn.</string>
+    <string name="nutrition_update_food">Cập nhật bữa ăn</string>
+    <string name="nutrition_estimate_food">Ước tính bằng AI</string>
+    <string name="nutrition_estimating_food">Đang ước tính…</string>
+    <string name="nutrition_serving_hint">Khẩu phần</string>
+    <string name="nutrition_estimate_review">Kiểm tra ước tính AI</string>
+    <string name="nutrition_estimate_note">AI chỉ ước tính. Hãy chỉnh lại nếu khẩu phần thực tế khác.</string>
+    <string name="nutrition_save_estimate">Lưu ước tính</string>
+    <string name="nutrition_cancel_estimate">Hủy</string>
+    <string name="nutrition_tab_today">Hôm nay</string>
+    <string name="nutrition_tab_plan">Kế hoạch</string>
+    <string name="nutrition_tab_history">Lịch sử</string>
+    <string name="nutrition_macro_progress_format">%1$s: %2$d/%3$d g</string>
+    <string name="nutrition_over_target_format">Vượt %1$d kcal</string>
+    <string name="nutrition_source_ai">AI</string>
+    <string name="nutrition_source_plan">Kế hoạch</string>
+    <string name="nutrition_source_manual">Thủ công</string>
+    <string name="nutrition_history_title">Lịch sử dinh dưỡng</string>
+    <string name="nutrition_history_date_hint">Ngày (yyyy-MM-dd)</string>
+    <string name="nutrition_load_history">Xem ngày</string>
+    <string name="nutrition_log_plan_day">Ghi cả ngày vào hôm nay</string>
+    <string name="nutrition_log_plan_meal">Ghi vào hôm nay</string>
+    <string name="action_delete">Xóa</string>
+    <string name="nutrition_plan_day_target_format" tools:ignore="PluralsCandidate">Mục tiêu %1$d kcal</string>
+    <string name="nutrition_plan_day_target_unknown">Chưa có mục tiêu kcal</string>
+    <string name="nutrition_plan_meal_line_format">%1$s: %2$s - %3$d kcal, %4$dg đạm, %5$dg carb, %6$dg béo</string>
+    <string name="nutrition_plan_food_fallback">Món ăn</string>
+    <string name="nutrition_plan_day_logged">Đã ghi các bữa trong ngày này vào hôm nay.</string>
+    <string name="nutrition_plan_day_duplicate">Các bữa trong ngày này đã có trong hôm nay.</string>
+    <string name="nutrition_history_empty_for_date">Chưa có bữa ăn trong ngày này.</string>
+    <string name="nutrition_history_date_error">Nhập ngày theo định dạng yyyy-MM-dd.</string>
+    <string name="nutrition_history_summary_format" tools:ignore="PluralsCandidate">%1$s: %2$d / %3$d kcal - %4$dg đạm - %5$dg carb - %6$dg béo</string>
 </resources>

@@ -21,6 +21,8 @@ import ntu.quy65132908.smartgym_ai.data.model.Post;
 
 @Singleton
 public class CommunityRepository {
+    private static final int MAX_LOCAL_LIKES_PER_POST = 10000;
+
     private final FirebaseFirestore firestore;
     private ListenerRegistration listener;
 
@@ -61,6 +63,21 @@ public class CommunityRepository {
                 .addOnFailureListener(cb::onError);
     }
 
+    public void updatePostContent(String postId, String content, SimpleCallback cb) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("content", content);
+        updates.put("updatedAt", FieldValue.serverTimestamp());
+        firestore.collection("posts").document(postId).update(updates)
+                .addOnSuccessListener(v -> cb.onSuccess())
+                .addOnFailureListener(cb::onError);
+    }
+
+    public void deletePost(String postId, SimpleCallback cb) {
+        firestore.collection("posts").document(postId).delete()
+                .addOnSuccessListener(v -> cb.onSuccess())
+                .addOnFailureListener(cb::onError);
+    }
+
     public void toggleLike(String postId, String uid, SimpleCallback cb) {
         DocumentReference postRef = firestore.collection("posts").document(postId);
         firestore.runTransaction(transaction -> {
@@ -73,6 +90,9 @@ public class CommunityRepository {
                     if (updatedLikedBy.contains(uid)) {
                         updatedLikedBy.remove(uid);
                     } else {
+                        if (updatedLikedBy.size() >= MAX_LOCAL_LIKES_PER_POST) {
+                            throw new IllegalStateException("Post like limit reached");
+                        }
                         updatedLikedBy.add(uid);
                     }
 
@@ -96,6 +116,7 @@ public class CommunityRepository {
         post.setLikes(likes != null ? likes.intValue() : 0);
         post.setLikedBy(readLikedBy(doc.get("likedBy")));
         post.setCreatedAt(readCreatedAt(doc.get("createdAt")));
+        post.setUpdatedAt(readCreatedAt(doc.get("updatedAt")));
         return post;
     }
 

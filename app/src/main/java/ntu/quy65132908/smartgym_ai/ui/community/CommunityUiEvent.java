@@ -3,7 +3,9 @@ package ntu.quy65132908.smartgym_ai.ui.community;
 public final class CommunityUiEvent {
     public enum Type {
         MESSAGE,
-        POST_CREATED
+        POST_CREATED,
+        POST_UPDATED,
+        POST_DELETED
     }
 
     private final Type type;
@@ -20,6 +22,14 @@ public final class CommunityUiEvent {
 
     public static CommunityUiEvent postCreated() {
         return new CommunityUiEvent(Type.POST_CREATED, null);
+    }
+
+    public static CommunityUiEvent postUpdated() {
+        return new CommunityUiEvent(Type.POST_UPDATED, null);
+    }
+
+    public static CommunityUiEvent postDeleted() {
+        return new CommunityUiEvent(Type.POST_DELETED, null);
     }
 
     public Type getType() {

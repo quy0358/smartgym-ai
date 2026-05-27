@@ -1,13 +1,13 @@
 package ntu.quy65132908.smartgym_ai.ui.dashboard;
 
 /**
- * Represents the state of today's workout on the Dashboard.
+ * Biểu diễn trạng thái buổi tập hôm nay trên Dashboard.
  */
 public enum TodayState {
-    /** Today has a real workout to perform */
+    /** Hôm nay có buổi tập thực sự cần hoàn thành. */
     WORKOUT,
-    /** Today is a rest/recovery day (deliberate or implicit) */
+    /** Hôm nay là ngày nghỉ hoặc phục hồi, có chủ đích hoặc ngầm định. */
     REST_DAY,
-    /** User has no weekly plan at all */
+    /** Người dùng chưa có kế hoạch tuần. */
     NO_PLAN
 }

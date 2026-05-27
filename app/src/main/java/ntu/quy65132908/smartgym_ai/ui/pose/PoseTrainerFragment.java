@@ -89,6 +89,7 @@ public class PoseTrainerFragment extends Fragment {
         setupTextToSpeech();
         observeViewModel();
         binding.btnGrantCamera.setOnClickListener(v -> requestCameraPermission());
+        binding.btnConfirmCompletion.setOnClickListener(v -> viewModel.confirmExerciseCompletion());
 
         if (hasCameraPermission()) {
             showPermissionUi(false);
@@ -144,6 +145,9 @@ public class PoseTrainerFragment extends Fragment {
             binding.tvExerciseType.setText(state.getExerciseType().getDisplayName());
             binding.tvFeedback.setText(state.getFeedback());
             updateSelectedExerciseButton(state.getExerciseType());
+            updateExerciseSelectionLock(state);
+            updateTarget(state);
+            updateCompletionAction(state);
             updatePrimaryMetric(state);
             binding.tvQuality.setText(state.getQualityPercent() > 0
                     ? state.getQualityPercent() + "%"
@@ -153,6 +157,16 @@ public class PoseTrainerFragment extends Fragment {
                 showPermissionUi(true);
             }
             maybeSpeak(state.getFeedback());
+        });
+        viewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && binding != null) {
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+        viewModel.getCompletionSaved().observe(getViewLifecycleOwner(), saved -> {
+            if (Boolean.TRUE.equals(saved) && binding != null) {
+                Navigation.findNavController(binding.getRoot()).navigateUp();
+            }
         });
     }
 
@@ -188,6 +202,38 @@ public class PoseTrainerFragment extends Fragment {
         updatingExerciseSelection = false;
     }
 
+    private void updateExerciseSelectionLock(PoseTrainerUiState state) {
+        boolean enabled = !state.isExerciseSelectionLocked();
+        binding.groupPoseType.setEnabled(enabled);
+        binding.groupPoseType.setAlpha(enabled ? 1f : 0.62f);
+        for (int i = 0; i < binding.groupPoseType.getChildCount(); i++) {
+            binding.groupPoseType.getChildAt(i).setEnabled(enabled);
+        }
+    }
+
+    private void updateTarget(PoseTrainerUiState state) {
+        int target = state.getExerciseType().usesDurationMetric()
+                ? state.getTargetSeconds()
+                : state.getTargetReps();
+        if (target <= 0) {
+            binding.tvPoseTarget.setVisibility(View.GONE);
+            return;
+        }
+        binding.tvPoseTarget.setVisibility(View.VISIBLE);
+        binding.tvPoseTarget.setText(state.getExerciseType().usesDurationMetric()
+                ? getString(R.string.pose_target_seconds_format, target)
+                : getString(R.string.pose_target_reps_format, target));
+    }
+
+    private void updateCompletionAction(PoseTrainerUiState state) {
+        boolean showAction = state.isCompletionReady() || state.isCompletionSaving();
+        binding.btnConfirmCompletion.setVisibility(showAction ? View.VISIBLE : View.GONE);
+        binding.btnConfirmCompletion.setEnabled(state.isCompletionReady() && !state.isCompletionSaving());
+        binding.btnConfirmCompletion.setText(state.isCompletionSaving()
+                ? R.string.pose_completion_saving
+                : R.string.pose_confirm_completion);
+    }
+
     private void requestCameraPermission() {
         cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
     }
@@ -209,8 +255,11 @@ public class PoseTrainerFragment extends Fragment {
         providerFuture.addListener(() -> {
             try {
                 cameraProvider = providerFuture.get();
-                bindCameraUseCases();
-                viewModel.setCameraReady(true);
+                if (bindCameraUseCases()) {
+                    viewModel.setCameraReady(true);
+                } else {
+                    viewModel.setLoading(false);
+                }
             } catch (Exception e) {
                 viewModel.setLoading(false);
                 if (binding != null) {
@@ -220,8 +269,12 @@ public class PoseTrainerFragment extends Fragment {
         }, ContextCompat.getMainExecutor(requireContext()));
     }
 
-    private void bindCameraUseCases() {
-        if (cameraProvider == null || binding == null) return;
+    private boolean bindCameraUseCases() {
+        return bindCameraUseCases(false);
+    }
+
+    private boolean bindCameraUseCases(boolean retriedWithAlternateCamera) {
+        if (cameraProvider == null || binding == null) return false;
 
         Preview preview = new Preview.Builder().build();
         preview.setSurfaceProvider(binding.previewView.getSurfaceProvider());
@@ -241,15 +294,16 @@ public class PoseTrainerFragment extends Fragment {
                     cameraSelector,
                     preview,
                     analysis);
+            return true;
         } catch (Exception e) {
-            if (!usingFrontCamera) {
-                usingFrontCamera = true;
-                bindCameraUseCases();
-                return;
+            if (!retriedWithAlternateCamera) {
+                usingFrontCamera = !usingFrontCamera;
+                return bindCameraUseCases(true);
             }
             if (binding != null) {
                 Snackbar.make(binding.getRoot(), R.string.pose_camera_error, Snackbar.LENGTH_LONG).show();
             }
+            return false;
         }
     }
 

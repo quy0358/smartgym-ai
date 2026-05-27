@@ -1,7 +1,6 @@
 package ntu.quy65132908.smartgym_ai.ui.auth;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.Patterns;
 
 import androidx.lifecycle.LiveData;
@@ -203,8 +202,6 @@ public class AuthViewModel extends ViewModel {
     }
 
     private String mapGoogleAuthError(Exception e) {
-        Log.e("AuthViewModel", "Google auth error: " + e.getClass().getSimpleName() + " - " + e.getMessage(), e);
-
         if (e instanceof FirebaseNetworkException) {
             return getString(R.string.error_no_network);
         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
@@ -215,8 +212,6 @@ public class AuthViewModel extends ViewModel {
     }
 
     private String mapFirebaseError(Exception e) {
-        Log.e("AuthViewModel", "Auth error: " + e.getClass().getSimpleName() + " - " + e.getMessage(), e);
-
         if (e instanceof FirebaseAuthInvalidUserException) {
             return getString(R.string.error_account_not_found);
         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {

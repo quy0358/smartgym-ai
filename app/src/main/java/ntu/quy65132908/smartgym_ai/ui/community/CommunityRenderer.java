@@ -20,6 +20,7 @@ public final class CommunityRenderer {
         }
 
         adapter.setPendingLikePostIds(state.getPendingLikePostIds());
+        adapter.setPendingActionPostIds(state.getPendingActionPostIds());
         adapter.submitList(state.getPosts());
 
         boolean hasPosts = !state.getPosts().isEmpty();
@@ -30,7 +31,9 @@ public final class CommunityRenderer {
         binding.tvEmpty.setVisibility(state.isEmpty() ? View.VISIBLE : View.GONE);
         binding.tvEmpty.setText(state.getEmptyMessage());
 
-        boolean actionEnabled = !state.isRefreshing() && !state.isSubmittingPost();
+        boolean actionEnabled = !state.isRefreshing()
+                && !state.isSubmittingPost()
+                && state.getPendingActionPostIds().isEmpty();
         binding.fabPost.setEnabled(actionEnabled);
         binding.fabPost.setAlpha(actionEnabled ? ENABLED_ACTION_ALPHA : DISABLED_ACTION_ALPHA);
     }

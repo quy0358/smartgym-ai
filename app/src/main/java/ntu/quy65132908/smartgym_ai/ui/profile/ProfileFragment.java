@@ -25,6 +25,7 @@ public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
     private ProfileViewModel viewModel;
+    private boolean hasResumed;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -151,6 +152,15 @@ public class ProfileFragment extends Fragment {
 
     private String nonBlank(String value, String fallback) {
         return value != null && !value.trim().isEmpty() ? value : fallback;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (hasResumed && viewModel != null) {
+            viewModel.loadProfile();
+        }
+        hasResumed = true;
     }
 
     @Override

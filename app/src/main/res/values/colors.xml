@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Modarb-inspired dark purple system -->
+    <!-- Hệ màu tím tối lấy cảm hứng từ Modarb -->
     <color name="primary">#FF6739FF</color>
     <color name="on_primary">#FFFFFFFF</color>
     <color name="primary_container">#FF2F225C</color>

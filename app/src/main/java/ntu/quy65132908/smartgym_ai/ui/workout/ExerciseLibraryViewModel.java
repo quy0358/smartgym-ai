@@ -4,13 +4,17 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -41,21 +45,28 @@ public class ExerciseLibraryViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> canSave = new MutableLiveData<>(false);
     private final SingleLiveEvent<String> message = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> saveComplete = new SingleLiveEvent<>();
 
     private String query = "";
     private ExerciseCatalogFilters filters = ExerciseCatalogFilters.all();
     private final List<ExerciseCatalogItem> selectedItems = new ArrayList<>();
+    private final String workoutId;
 
     @Inject
     public ExerciseLibraryViewModel(@ApplicationContext Context appContext,
                                     ExerciseCatalogRepository catalogRepository,
                                     WorkoutRepository workoutRepository,
-                                    AuthRepository authRepository) {
+                                    AuthRepository authRepository,
+                                    SavedStateHandle savedStateHandle) {
         this.appContext = appContext;
         this.catalogRepository = catalogRepository;
         this.workoutRepository = workoutRepository;
         this.authRepository = authRepository;
+        this.workoutId = safeString(savedStateHandle.get("workoutId"));
         search("");
+        if (isEditMode()) {
+            loadExistingSelection();
+        }
     }
 
     public LiveData<List<ExerciseCatalogItem>> getItems() { return items; }
@@ -64,6 +75,8 @@ public class ExerciseLibraryViewModel extends ViewModel {
     public LiveData<Boolean> getIsSaving() { return isSaving; }
     public LiveData<Boolean> getCanSave() { return canSave; }
     public LiveData<String> getMessage() { return message; }
+    public LiveData<Boolean> getSaveComplete() { return saveComplete; }
+    public boolean isEditMode() { return !workoutId.isEmpty(); }
 
     public void search(String query) {
         this.query = query != null ? query : "";
@@ -132,6 +145,73 @@ public class ExerciseLibraryViewModel extends ViewModel {
         }
         isSaving.setValue(true);
         canSave.setValue(false);
+        if (isEditMode()) {
+            updateExistingWorkout(user.getUid());
+        } else {
+            createCustomWorkout(user.getUid());
+        }
+    }
+
+    private void loadExistingSelection() {
+        FirebaseUser user = authRepository.getCurrentUser();
+        if (user == null) {
+            return;
+        }
+        workoutRepository.getExercises(user.getUid(), workoutId, new WorkoutRepository.ExerciseListCallback() {
+            @Override
+            public void onSuccess(List<Exercise> exercises) {
+                selectedItems.clear();
+                selectedItems.addAll(matchCatalogItems(exercises != null ? exercises : Collections.emptyList()));
+                publishSelection();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                message.postValue(appContext.getString(R.string.exercise_library_load_error));
+            }
+        });
+    }
+
+    private List<ExerciseCatalogItem> matchCatalogItems(List<Exercise> exercises) {
+        List<ExerciseCatalogItem> catalogItems = catalogRepository.getSeedItems();
+        List<ExerciseCatalogItem> matches = new ArrayList<>();
+        Set<String> matchedIds = new HashSet<>();
+        for (Exercise exercise : exercises) {
+            ExerciseCatalogItem match = findCatalogItem(exercise, catalogItems);
+            if (match != null && matchedIds.add(match.getId())) {
+                matches.add(match);
+            }
+        }
+        return matches;
+    }
+
+    private ExerciseCatalogItem findCatalogItem(Exercise exercise, List<ExerciseCatalogItem> catalogItems) {
+        String catalogItemId = safeString(exercise != null ? exercise.getCatalogItemId() : null);
+        if (!catalogItemId.isEmpty()) {
+            for (ExerciseCatalogItem item : catalogItems) {
+                if (catalogItemId.equals(item.getId())) {
+                    return item;
+                }
+            }
+        }
+        String fallbackKey = fallbackExerciseKey(exercise);
+        for (ExerciseCatalogItem item : catalogItems) {
+            if (fallbackKey.equals(fallbackCatalogKey(item))) {
+                return item;
+            }
+        }
+        String poseTypeKey = normalizeKey(exercise != null ? exercise.getPoseTypeKey() : null);
+        if (!poseTypeKey.isEmpty()) {
+            for (ExerciseCatalogItem item : catalogItems) {
+                if (poseTypeKey.equals(normalizeKey(item != null ? item.getPoseTypeKey() : null))) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void createCustomWorkout(String uid) {
         Workout workout = new Workout();
         workout.setTitle(appContext.getString(R.string.exercise_custom_title));
         workout.setSubtitle(query != null && !query.trim().isEmpty()
@@ -139,6 +219,7 @@ public class ExerciseLibraryViewModel extends ViewModel {
                 : appContext.getString(R.string.exercise_custom_goal));
         workout.setIntensity(appContext.getString(R.string.exercise_custom_intensity));
         workout.setDayType(Workout.DAY_TYPE_TRAINING);
+        workout.setCustom(true);
         workout.setDayOfWeek(DateUtils.getTodayDayOfWeek());
         workout.setDurationMinutes(Math.max(15, selectedItems.size() * 8));
         workout.setCompleted(false);
@@ -148,7 +229,7 @@ public class ExerciseLibraryViewModel extends ViewModel {
         }
         workout.setExercises(exercises);
         workout.setExerciseCount(exercises.size());
-        workoutRepository.saveWorkout(user.getUid(), workout, new WorkoutRepository.SimpleCallback() {
+        workoutRepository.saveWorkout(uid, workout, new WorkoutRepository.SimpleCallback() {
             @Override
             public void onSuccess() {
                 isSaving.postValue(false);
@@ -166,6 +247,29 @@ public class ExerciseLibraryViewModel extends ViewModel {
         });
     }
 
+    private void updateExistingWorkout(String uid) {
+        List<Exercise> exercises = new ArrayList<>();
+        for (ExerciseCatalogItem selected : selectedItems) {
+            exercises.add(selected.toExercise());
+        }
+        workoutRepository.replaceWorkoutExercises(uid, workoutId, exercises, new WorkoutRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                isSaving.postValue(false);
+                canSave.postValue(!selectedItems.isEmpty());
+                message.postValue(appContext.getString(R.string.exercise_custom_updated));
+                saveComplete.postValue(true);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                isSaving.postValue(false);
+                canSave.postValue(!selectedItems.isEmpty());
+                message.postValue(appContext.getString(R.string.exercise_custom_update_error));
+            }
+        });
+    }
+
     private void publishSelection() {
         Set<String> ids = new HashSet<>();
         for (ExerciseCatalogItem item : selectedItems) {
@@ -174,5 +278,43 @@ public class ExerciseLibraryViewModel extends ViewModel {
         selectedIds.setValue(ids);
         selectedCount.setValue(selectedItems.size());
         canSave.setValue(!selectedItems.isEmpty() && !Boolean.TRUE.equals(isSaving.getValue()));
+    }
+
+    private static String fallbackExerciseKey(Exercise exercise) {
+        if (exercise == null) {
+            return "";
+        }
+        return normalizeKey(exercise.getName())
+                + "|"
+                + normalizeKey(exercise.getPrimaryMuscle())
+                + "|"
+                + normalizeKey(exercise.getPoseTypeKey());
+    }
+
+    private static String fallbackCatalogKey(ExerciseCatalogItem item) {
+        if (item == null) {
+            return "";
+        }
+        return normalizeKey(item.getName())
+                + "|"
+                + normalizeKey(item.getPrimaryMuscle())
+                + "|"
+                + normalizeKey(item.getPoseTypeKey());
+    }
+
+    private static String normalizeKey(String value) {
+        String decomposed = Normalizer.normalize(safeString(value), Normalizer.Form.NFD)
+                .replace('đ', 'd')
+                .replace('Đ', 'D')
+                .replaceAll("\\p{M}", "");
+        return decomposed.trim()
+                .toLowerCase(Locale.ROOT)
+                .replace("-", " ")
+                .replace("_", " ")
+                .replaceAll("\\s+", " ");
+    }
+
+    private static String safeString(String value) {
+        return value != null ? value : "";
     }
 }

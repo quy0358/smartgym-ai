@@ -10,6 +10,8 @@ public class FormFeedbackEngine {
     private ExerciseType exerciseType = ExerciseType.PUSH_UP;
     private final PoseRepCounter pushUpCounter = new PoseRepCounter(2);
     private final PoseRepCounter squatCounter = new PoseRepCounter(2);
+    private final PoseSignalSmoother pushUpDownSmoother = new PoseSignalSmoother(0.8f, 0.65f, 0.35f);
+    private final PoseSignalSmoother squatDownSmoother = new PoseSignalSmoother(0.8f, 0.65f, 0.35f);
     private long accumulatedPlankHoldMs;
     private long activePlankStartedAtMs;
 
@@ -21,6 +23,8 @@ public class FormFeedbackEngine {
     public void reset() {
         pushUpCounter.reset();
         squatCounter.reset();
+        pushUpDownSmoother.reset();
+        squatDownSmoother.reset();
         accumulatedPlankHoldMs = 0L;
         activePlankStartedAtMs = 0L;
     }
@@ -75,12 +79,13 @@ public class FormFeedbackEngine {
             return new PoseFeedback("Giữ thân người thẳng, siết bụng và tránh võng lưng.", pushUpCounter.getReps(), quality(frame) - 15, true);
         }
 
-        if (elbow < 95f) {
+        boolean smoothedDown = pushUpDownSmoother.update(elbow < 95f);
+        if (smoothedDown) {
             pushUpCounter.update(true);
             return new PoseFeedback("Tốt. Đẩy người lên, giữ khuỷu tay kiểm soát.", pushUpCounter.getReps(), quality(frame), true);
         }
 
-        if (elbow > 155f) {
+        if (elbow > 155f && !smoothedDown) {
             int before = pushUpCounter.getReps();
             int after = pushUpCounter.update(false);
             if (after > before) {
@@ -125,12 +130,13 @@ public class FormFeedbackEngine {
             return new PoseFeedback("Giữ ngực mở hơn, không gập người quá sâu về trước.", squatCounter.getReps(), quality(frame) - 10, true);
         }
 
-        if (knee < 95f) {
+        boolean smoothedDown = squatDownSmoother.update(knee < 95f);
+        if (smoothedDown) {
             squatCounter.update(true);
             return new PoseFeedback("Độ sâu squat tốt. Đẩy gối theo hướng mũi chân.", squatCounter.getReps(), quality(frame), true);
         }
 
-        if (knee > 160f) {
+        if (knee > 160f && !smoothedDown) {
             int before = squatCounter.getReps();
             int after = squatCounter.update(false);
             if (after > before) {

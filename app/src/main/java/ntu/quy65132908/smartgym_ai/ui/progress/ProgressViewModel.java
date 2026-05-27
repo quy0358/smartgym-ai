@@ -19,9 +19,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import ntu.quy65132908.smartgym_ai.R;
 import ntu.quy65132908.smartgym_ai.data.model.ProgressEntry;
-import ntu.quy65132908.smartgym_ai.data.model.Workout;
+import ntu.quy65132908.smartgym_ai.data.model.User;
+import ntu.quy65132908.smartgym_ai.data.model.WorkoutSession;
 import ntu.quy65132908.smartgym_ai.data.repository.AuthRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.ProgressRepository;
+import ntu.quy65132908.smartgym_ai.data.repository.UserRepository;
 import ntu.quy65132908.smartgym_ai.data.repository.WorkoutRepository;
 import ntu.quy65132908.smartgym_ai.util.InputValidator;
 import ntu.quy65132908.smartgym_ai.util.SingleLiveEvent;
@@ -33,6 +35,7 @@ public class ProgressViewModel extends ViewModel {
     private final Context appContext;
     private final ProgressRepository progressRepo;
     private final WorkoutRepository workoutRepo;
+    private final UserRepository userRepo;
     private final AuthRepository authRepo;
 
     private final MutableLiveData<List<ProgressEntry>> entries = new MutableLiveData<>(new ArrayList<>());
@@ -58,10 +61,12 @@ public class ProgressViewModel extends ViewModel {
     private int completedWorkoutsValue;
     private int trackingStreakDaysValue;
     private int totalCaloriesValue;
-    private List<Workout> currentWorkouts = new ArrayList<>();
+    private float profileWeightValue;
+    private List<WorkoutSession> currentSessions = new ArrayList<>();
     private boolean loggedOut;
     private boolean loadingHistory;
     private boolean loadingWorkoutStats;
+    private boolean loadingProfile;
     private boolean savingProgress;
     private boolean hasAttemptedSubmit;
     private String draftWeight = "";
@@ -73,10 +78,12 @@ public class ProgressViewModel extends ViewModel {
     public ProgressViewModel(@ApplicationContext Context appContext,
                              ProgressRepository progressRepo,
                              WorkoutRepository workoutRepo,
+                             UserRepository userRepo,
                              AuthRepository authRepo) {
         this.appContext = appContext;
         this.progressRepo = progressRepo;
         this.workoutRepo = workoutRepo;
+        this.userRepo = userRepo;
         this.authRepo = authRepo;
         publishState();
         loadProgress();
@@ -114,6 +121,7 @@ public class ProgressViewModel extends ViewModel {
         loggedOut = false;
         String uid = user.getUid();
         loadHistory(uid);
+        loadUserProfile(uid);
         loadWorkoutStats(uid);
     }
 
@@ -146,6 +154,7 @@ public class ProgressViewModel extends ViewModel {
             @Override
             public void onSuccess() {
                 setSavingProgress(false);
+                applySavedEntry(entry);
                 hasAttemptedSubmit = false;
                 updateDraft("", "", "", "");
                 formErrors.postValue(ProgressFormErrors.none());
@@ -160,6 +169,14 @@ public class ProgressViewModel extends ViewModel {
                 message.postValue(appContext.getString(R.string.progress_save_error));
             }
         });
+    }
+
+    private void applySavedEntry(ProgressEntry entry) {
+        List<ProgressEntry> updated = new ArrayList<>(currentEntries);
+        updated.add(entry);
+        profileWeightValue = entry.getWeight();
+        applyProgressEntries(updated);
+        publishState();
     }
 
     private void loadHistory(String uid) {
@@ -185,10 +202,10 @@ public class ProgressViewModel extends ViewModel {
     private void loadWorkoutStats(String uid) {
         loadingWorkoutStats = true;
         publishState();
-        workoutRepo.getWeeklyPlan(uid, new WorkoutRepository.WorkoutListCallback() {
+        workoutRepo.getWorkoutSessions(uid, new WorkoutRepository.WorkoutSessionListCallback() {
             @Override
-            public void onSuccess(List<Workout> workouts) {
-                currentWorkouts = workouts != null ? new ArrayList<>(workouts) : new ArrayList<>();
+            public void onSuccess(List<WorkoutSession> sessions) {
+                currentSessions = sessions != null ? new ArrayList<>(sessions) : new ArrayList<>();
                 recalculateWorkoutStats();
                 loadingWorkoutStats = false;
                 publishState();
@@ -196,10 +213,32 @@ public class ProgressViewModel extends ViewModel {
 
             @Override
             public void onError(Exception e) {
-                currentWorkouts = new ArrayList<>();
+                currentSessions = new ArrayList<>();
                 completedWorkoutsValue = 0;
                 totalCaloriesValue = 0;
                 loadingWorkoutStats = false;
+                publishState();
+            }
+        });
+    }
+
+    private void loadUserProfile(String uid) {
+        loadingProfile = true;
+        publishState();
+        userRepo.getUser(uid, new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User user) {
+                profileWeightValue = user != null && user.getWeight() != null ? user.getWeight() : 0f;
+                recalculateWorkoutStats();
+                loadingProfile = false;
+                publishState();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                profileWeightValue = 0f;
+                recalculateWorkoutStats();
+                loadingProfile = false;
                 publishState();
             }
         });
@@ -212,6 +251,7 @@ public class ProgressViewModel extends ViewModel {
             currentWeightValue = 0f;
             weightChangeValue = 0f;
             trackingStreakDaysValue = 0;
+            recalculateWorkoutStats();
             return;
         }
 
@@ -229,9 +269,11 @@ public class ProgressViewModel extends ViewModel {
         completedWorkoutsValue = 0;
         trackingStreakDaysValue = 0;
         totalCaloriesValue = 0;
-        currentWorkouts = new ArrayList<>();
+        profileWeightValue = 0f;
+        currentSessions = new ArrayList<>();
         loadingHistory = false;
         loadingWorkoutStats = false;
+        loadingProfile = false;
         savingProgress = false;
     }
 
@@ -338,26 +380,27 @@ public class ProgressViewModel extends ViewModel {
         }
     }
 
-    private int estimateCalories(Workout workout) {
-        int duration = Math.max(0, workout.getDurationMinutes());
-        float weightForEstimate = currentWeightValue > 0f ? currentWeightValue : 70f;
-        float met = metForWorkout(workout);
+    private int estimateCalories(WorkoutSession session) {
+        int duration = session != null ? Math.max(0, session.getDurationMinutes()) : 0;
+        float weightForEstimate = currentWeightValue > 0f
+                ? currentWeightValue
+                : (profileWeightValue > 0f ? profileWeightValue : 70f);
+        float met = metForIntensity(session != null ? session.getIntensity() : null);
         return Math.round(met * 3.5f * weightForEstimate / 200f * duration);
     }
 
     private void recalculateWorkoutStats() {
         completedWorkoutsValue = 0;
         totalCaloriesValue = 0;
-        for (Workout workout : currentWorkouts) {
-            if (workout != null && workout.isCompleted()) {
+        for (WorkoutSession session : currentSessions) {
+            if (session != null) {
                 completedWorkoutsValue++;
-                totalCaloriesValue += estimateCalories(workout);
+                totalCaloriesValue += estimateCalories(session);
             }
         }
     }
 
-    private float metForWorkout(Workout workout) {
-        String intensity = workout.getIntensity();
+    private float metForIntensity(String intensity) {
         if (intensity == null) {
             return 6.5f;
         }
@@ -392,6 +435,7 @@ public class ProgressViewModel extends ViewModel {
     private void publishState() {
         boolean loading = loadingHistory
                 || loadingWorkoutStats
+                || loadingProfile
                 || savingProgress;
         List<ProgressEntry> entriesSnapshot = new ArrayList<>(currentEntries);
         entries.postValue(entriesSnapshot);

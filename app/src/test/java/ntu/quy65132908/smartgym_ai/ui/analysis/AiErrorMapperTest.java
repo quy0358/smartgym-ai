@@ -32,6 +32,16 @@ public class AiErrorMapperTest {
     }
 
     @Test
+    public void toUserMessage_responseFormatUnsupported_returnsProviderMessage() {
+        Exception error = new Exception("HTTP 400: unsupported parameter response_format json_object");
+
+        String message = AiErrorMapper.toUserMessage(error);
+
+        assertTrue(message.contains("Nhà cung cấp AI"));
+        assertTrue(message.contains("JSON"));
+    }
+
+    @Test
     public void toUserMessage_unknownError_returnsGenericMessage() {
         Exception error = new Exception("Something internal");
 

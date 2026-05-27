@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,8 +10,8 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_xl">
 
-        <!-- Logo -->
-        <ImageView
+        <!-- Biểu trưng -->
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_brand_logo"
             android:layout_width="72dp"
             android:layout_height="72dp"
@@ -47,13 +46,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_logo" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_login_hero"
             android:layout_width="0dp"
             android:layout_height="148dp"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:background="@drawable/bg_onboarding_hero"
-            android:clipToOutline="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedHero"
             android:contentDescription="@null"
                     android:importantForAccessibility="no"
             android:scaleType="centerCrop"
@@ -62,7 +60,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_tagline" />
 
-        <!-- Welcome Text -->
+        <!-- Lời chào -->
         <TextView
             android:id="@+id/tv_welcome"
             android:layout_width="0dp"
@@ -85,7 +83,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_welcome" />
 
-        <!-- Email Field -->
+        <!-- Trường thư điện tử -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_email"
             style="@style/Widget.SmartGym.TextField"
@@ -106,7 +104,7 @@
                 android:fontFamily="@font/inter_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password Field -->
+        <!-- Trường mật khẩu -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_password"
             style="@style/Widget.SmartGym.TextField"
@@ -128,7 +126,7 @@
                 android:fontFamily="@font/inter_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Forgot Password -->
+        <!-- Quên mật khẩu -->
         <TextView
             android:id="@+id/tv_forgot_password"
             android:layout_width="wrap_content"
@@ -140,7 +138,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_password" />
 
-        <!-- Error message -->
+        <!-- Thông báo lỗi -->
         <TextView
             android:id="@+id/tv_error"
             android:layout_width="0dp"
@@ -153,7 +151,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_forgot_password" />
 
-        <!-- Loading indicator -->
+        <!-- Chỉ báo đang tải -->
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -164,7 +162,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_error" />
 
-        <!-- Login Button -->
+        <!-- Nút đăng nhập -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_login"
             style="@style/Widget.SmartGym.Button.Primary"
@@ -176,7 +174,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progress_bar" />
 
-        <!-- Or divider -->
+        <!-- Dòng phân tách lựa chọn -->
         <TextView
             android:id="@+id/tv_or"
             android:layout_width="wrap_content"
@@ -188,7 +186,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_login" />
 
-        <!-- Google Sign-In (placeholder) -->
+        <!-- Phần giữ chỗ đăng nhập Google -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_google"
             style="@style/Widget.SmartGym.Button.Outline"
@@ -204,7 +202,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_or" />
 
-        <!-- Register link -->
+        <!-- Liên kết đăng ký -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

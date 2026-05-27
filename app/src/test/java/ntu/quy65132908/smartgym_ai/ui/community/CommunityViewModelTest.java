@@ -183,6 +183,67 @@ public class CommunityViewModelTest {
         verify(communityRepository, never()).toggleLike(any(), any(), any());
     }
 
+    @Test
+    public void updatePost_ownPostTrimsContentAndClearsPendingAfterSuccess() {
+        CommunityViewModel viewModel = createViewModel();
+        AtomicReference<CommunityRepository.SimpleCallback> updateCallback = new AtomicReference<>();
+        doAnswer(invocation -> {
+            updateCallback.set(invocation.getArgument(2));
+            return null;
+        }).when(communityRepository).updatePostContent(any(), any(), any());
+
+        viewModel.updatePost(post("p1", "Quy"), "  ná»— lá»±c hÆ¡n hÃ´m nay  ");
+
+        assertTrue(viewModel.getUiState().getValue().getPendingActionPostIds().contains("p1"));
+        verify(communityRepository).updatePostContent(eq("p1"), eq("ná»— lá»±c hÆ¡n hÃ´m nay"), any());
+
+        updateCallback.get().onSuccess();
+
+        assertFalse(viewModel.getUiState().getValue().getPendingActionPostIds().contains("p1"));
+    }
+
+    @Test
+    public void updatePost_nonOwnerShowsMessageAndSkipsRepository() {
+        CommunityViewModel viewModel = createViewModel();
+        Post otherPost = post("p2", "Other");
+        otherPost.setAuthorId("uid-2");
+
+        viewModel.updatePost(otherPost, "ná»™i dung má»›i");
+
+        assertNotNull(viewModel.getMessage().getValue());
+        verify(communityRepository, never()).updatePostContent(any(), any(), any());
+    }
+
+    @Test
+    public void deletePost_ownPostClearsPendingAfterSuccess() {
+        CommunityViewModel viewModel = createViewModel();
+        AtomicReference<CommunityRepository.SimpleCallback> deleteCallback = new AtomicReference<>();
+        doAnswer(invocation -> {
+            deleteCallback.set(invocation.getArgument(1));
+            return null;
+        }).when(communityRepository).deletePost(any(), any());
+
+        viewModel.deletePost(post("p1", "Quy"));
+
+        assertTrue(viewModel.getUiState().getValue().getPendingActionPostIds().contains("p1"));
+        verify(communityRepository).deletePost(eq("p1"), any());
+
+        deleteCallback.get().onSuccess();
+
+        assertFalse(viewModel.getUiState().getValue().getPendingActionPostIds().contains("p1"));
+    }
+
+    @Test
+    public void deletePost_loggedOutShowsMessageAndSkipsRepository() {
+        when(authRepository.getCurrentUser()).thenReturn(null);
+        CommunityViewModel viewModel = createViewModel();
+
+        viewModel.deletePost(post("p1", "Quy"));
+
+        assertNotNull(viewModel.getMessage().getValue());
+        verify(communityRepository, never()).deletePost(any(), any());
+    }
+
     private CommunityViewModel createViewModel() {
         return new CommunityViewModel(communityRepository, authRepository);
     }
@@ -198,6 +259,7 @@ public class CommunityViewModelTest {
     private static Post post(String id, String author) {
         Post post = new Post();
         post.setId(id);
+        post.setAuthorId("uid-1");
         post.setAuthorName(author);
         post.setContent("content");
         post.setCreatedAt(1_000L);

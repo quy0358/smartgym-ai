@@ -19,7 +19,7 @@ public final class DashboardFragmentDirections {
             @NonNull String workoutId,
             @NonNull String workoutTitle,
             int workoutDuration) {
-        return new ActionDashboardToWorkoutDetail(workoutId, workoutTitle, workoutDuration, "TRAINING");
+        return new ActionDashboardToWorkoutDetail(workoutId, workoutTitle, workoutDuration, "TRAINING", false);
     }
 
     @NonNull
@@ -28,7 +28,17 @@ public final class DashboardFragmentDirections {
             @NonNull String workoutTitle,
             int workoutDuration,
             @NonNull String dayType) {
-        return new ActionDashboardToWorkoutDetail(workoutId, workoutTitle, workoutDuration, dayType);
+        return new ActionDashboardToWorkoutDetail(workoutId, workoutTitle, workoutDuration, dayType, false);
+    }
+
+    @NonNull
+    public static ActionDashboardToWorkoutDetail actionDashboardToWorkoutDetail(
+            @NonNull String workoutId,
+            @NonNull String workoutTitle,
+            int workoutDuration,
+            @NonNull String dayType,
+            boolean isCustom) {
+        return new ActionDashboardToWorkoutDetail(workoutId, workoutTitle, workoutDuration, dayType, isCustom);
     }
 
     public static final class ActionDashboardToWorkoutDetail implements NavDirections {
@@ -36,16 +46,19 @@ public final class DashboardFragmentDirections {
         private final String workoutTitle;
         private final int workoutDuration;
         private final String dayType;
+        private final boolean isCustom;
 
         private ActionDashboardToWorkoutDetail(
                 @NonNull String workoutId,
                 @NonNull String workoutTitle,
                 int workoutDuration,
-                @NonNull String dayType) {
+                @NonNull String dayType,
+                boolean isCustom) {
             this.workoutId = workoutId;
             this.workoutTitle = workoutTitle;
             this.workoutDuration = workoutDuration;
             this.dayType = dayType;
+            this.isCustom = isCustom;
         }
 
         @Override
@@ -61,6 +74,7 @@ public final class DashboardFragmentDirections {
             bundle.putString("workoutTitle", workoutTitle);
             bundle.putInt("workoutDuration", workoutDuration);
             bundle.putString("dayType", dayType);
+            bundle.putBoolean("isCustom", isCustom);
             return bundle;
         }
 
@@ -70,6 +84,7 @@ public final class DashboardFragmentDirections {
             if (!(obj instanceof ActionDashboardToWorkoutDetail)) return false;
             ActionDashboardToWorkoutDetail other = (ActionDashboardToWorkoutDetail) obj;
             return workoutDuration == other.workoutDuration
+                    && isCustom == other.isCustom
                     && Objects.equals(workoutId, other.workoutId)
                     && Objects.equals(workoutTitle, other.workoutTitle)
                     && Objects.equals(dayType, other.dayType);
@@ -77,7 +92,7 @@ public final class DashboardFragmentDirections {
 
         @Override
         public int hashCode() {
-            return Objects.hash(workoutId, workoutTitle, workoutDuration, dayType);
+            return Objects.hash(workoutId, workoutTitle, workoutDuration, dayType, isCustom);
         }
 
         @NonNull
@@ -88,6 +103,7 @@ public final class DashboardFragmentDirections {
                     + ", workoutTitle='" + workoutTitle + '\''
                     + ", workoutDuration=" + workoutDuration
                     + ", dayType='" + dayType + '\''
+                    + ", isCustom=" + isCustom
                     + '}';
         }
     }

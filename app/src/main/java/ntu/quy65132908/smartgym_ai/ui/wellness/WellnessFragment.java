@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -40,6 +43,7 @@ public class WellnessFragment extends Fragment {
     private ActivityResultLauncher<String> notificationPermissionLauncher;
     private Reminder pendingReminderForPermission;
     private boolean bindingState;
+    private boolean injuryFormDirty;
     private String lastReminderSignature = "";
     private String lastInjurySignature = "";
 
@@ -84,6 +88,7 @@ public class WellnessFragment extends Fragment {
                 setReminderDayControlsEnabled(isChecked);
             }
         });
+        watchInjuryFormChanges();
 
         binding.btnSaveReminder.setOnClickListener(v ->
                 viewModel.saveReminder(
@@ -105,8 +110,13 @@ public class WellnessFragment extends Fragment {
         viewModel.getFormErrors().observe(getViewLifecycleOwner(), this::renderErrors);
         viewModel.getReminderReadyToScheduleEvent().observe(getViewLifecycleOwner(), this::handleReminderScheduleRequest);
         viewModel.getNotificationPermissionRequestEvent().observe(getViewLifecycleOwner(), reminder -> {
-            if (notificationPermissionLauncher != null) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                launchNotificationPermissionRequest();
+            }
+        });
+        viewModel.getInjuryProfileSavedEvent().observe(getViewLifecycleOwner(), saved -> {
+            if (Boolean.TRUE.equals(saved)) {
+                handleInjuryProfileSaved();
             }
         });
         viewModel.getMessage().observe(getViewLifecycleOwner(), msg -> {
@@ -136,7 +146,7 @@ public class WellnessFragment extends Fragment {
             lastReminderSignature = reminderSignature;
         }
         String injurySignature = signature(state.getInjuryProfile());
-        if (!state.isSavingInjury() && !injurySignature.equals(lastInjurySignature)) {
+        if (!state.isSavingInjury() && !injuryFormDirty && !injurySignature.equals(lastInjurySignature)) {
             bindInjuryProfile(state.getInjuryProfile());
             lastInjurySignature = injurySignature;
         }
@@ -165,6 +175,7 @@ public class WellnessFragment extends Fragment {
         binding.cbShoulder.setChecked(profile.isShoulderSensitive());
         binding.cbBack.setChecked(profile.isLowerBackSensitive());
         binding.etInjuryNotes.setText(profile.getNotes() != null ? profile.getNotes() : "");
+        injuryFormDirty = false;
         bindingState = false;
     }
 
@@ -197,6 +208,54 @@ public class WellnessFragment extends Fragment {
             return;
         }
         viewModel.scheduleReminder(reminder);
+    }
+
+    private void handleInjuryProfileSaved() {
+        if (binding == null) {
+            return;
+        }
+        injuryFormDirty = false;
+        WellnessUiState state = viewModel != null ? viewModel.getUiState().getValue() : null;
+        if (state != null) {
+            lastInjurySignature = signature(state.getInjuryProfile());
+        }
+        Snackbar.make(binding.getRoot(), R.string.wellness_injury_saved, Snackbar.LENGTH_LONG)
+                .setAction(R.string.wellness_regenerate_plan, v ->
+                        Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_workout))
+                .show();
+    }
+
+    private void watchInjuryFormChanges() {
+        binding.cbKnee.setOnCheckedChangeListener((buttonView, isChecked) -> markInjuryFormDirty());
+        binding.cbShoulder.setOnCheckedChangeListener((buttonView, isChecked) -> markInjuryFormDirty());
+        binding.cbBack.setOnCheckedChangeListener((buttonView, isChecked) -> markInjuryFormDirty());
+        binding.etInjuryNotes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                markInjuryFormDirty();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    private void markInjuryFormDirty() {
+        if (!bindingState) {
+            injuryFormDirty = true;
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private void launchNotificationPermissionRequest() {
+        if (notificationPermissionLauncher != null) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        }
     }
 
     private void showTimePicker() {

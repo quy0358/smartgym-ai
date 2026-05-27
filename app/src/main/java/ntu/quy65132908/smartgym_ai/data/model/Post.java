@@ -11,6 +11,7 @@ public class Post {
     private int likes;
     private List<String> likedBy;
     private long createdAt;
+    private long updatedAt;
 
     public Post() {}
 
@@ -28,6 +29,7 @@ public class Post {
     public String getContent() { return content != null ? content : ""; }
     public int getLikes() { return likes; }
     public long getCreatedAt() { return createdAt; }
+    public long getUpdatedAt() { return updatedAt; }
     public List<String> getLikedBy() { return likedBy != null ? likedBy : new ArrayList<>(); }
 
     public void setId(String id) { this.id = id; }
@@ -37,4 +39,5 @@ public class Post {
     public void setLikes(int likes) { this.likes = likes; }
     public void setLikedBy(List<String> likedBy) { this.likedBy = likedBy; }
     public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(long updatedAt) { this.updatedAt = updatedAt; }
 }

@@ -1,6 +1,9 @@
 package ntu.quy65132908.smartgym_ai.data.model;
 
+import com.google.firebase.firestore.PropertyName;
+
 import java.util.List;
+import java.util.Locale;
 
 public class Workout {
     public static final String DAY_TYPE_TRAINING = "TRAINING";
@@ -14,8 +17,9 @@ public class Workout {
     private int durationMinutes;
     private List<Exercise> exercises;
     private boolean isCompleted;
-    private int dayOfWeek; // 1=Monday...7=Sunday
-    private int exerciseCount; // Denormalized count for dashboard display
+    private boolean isCustom;
+    private int dayOfWeek; // 1=Thứ 2...7=Chủ nhật
+    private int exerciseCount; // Số bài tập đã phi chuẩn hóa để hiển thị trên Dashboard
     private String dayType = DAY_TYPE_TRAINING;
 
     public Workout() {}
@@ -34,7 +38,13 @@ public class Workout {
     public String getIntensity() { return intensity; }
     public int getDurationMinutes() { return durationMinutes; }
     public List<Exercise> getExercises() { return exercises; }
+
+    @PropertyName("isCompleted")
     public boolean isCompleted() { return isCompleted; }
+
+    @PropertyName("isCustom")
+    public boolean isCustom() { return isCustom; }
+
     public String getDayType() { return normalizeDayType(dayType); }
 
     public void setId(String id) { this.id = id; }
@@ -43,7 +53,13 @@ public class Workout {
     public void setIntensity(String intensity) { this.intensity = intensity; }
     public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
     public void setExercises(List<Exercise> exercises) { this.exercises = exercises; }
+
+    @PropertyName("isCompleted")
     public void setCompleted(boolean completed) { isCompleted = completed; }
+
+    @PropertyName("isCustom")
+    public void setCustom(boolean custom) { isCustom = custom; }
+
     public void setDayType(String dayType) { this.dayType = normalizeDayType(dayType); }
 
     public int getDayOfWeek() { return dayOfWeek; }
@@ -68,7 +84,7 @@ public class Workout {
         if (rawDayType == null) {
             return DAY_TYPE_TRAINING;
         }
-        String normalized = rawDayType.trim().toUpperCase();
+        String normalized = rawDayType.trim().toUpperCase(Locale.ROOT);
         switch (normalized) {
             case DAY_TYPE_REST:
                 return DAY_TYPE_REST;

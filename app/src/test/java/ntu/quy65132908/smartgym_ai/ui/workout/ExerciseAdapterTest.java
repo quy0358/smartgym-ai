@@ -23,6 +23,14 @@ public class ExerciseAdapterTest {
     }
 
     @Test
+    public void timedExercise_displaysSecondsInsteadOfReps() {
+        Exercise exercise = new Exercise("e1", "Plank", 3, 0, null, false);
+        exercise.setDurationSeconds(30);
+
+        assertEquals("3 hiệp × 30 giây", ExerciseAdapter.formatExerciseDetail(exercise));
+    }
+
+    @Test
     public void exerciseWithWeight_appendsKg() {
         Exercise exercise = new Exercise("e1", "Squat", 3, 12, 10f, false);
 

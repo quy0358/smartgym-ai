@@ -4,14 +4,14 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Shared date/time utilities for the Dashboard and adapters.
+ * Tiện ích ngày giờ dùng chung cho Dashboard và adapter.
  */
 public final class DateUtils {
 
-    private DateUtils() {} // Utility class
+    private DateUtils() {} // Lớp tiện ích
 
     /**
-     * Returns today's day of week as 1=Monday ... 7=Sunday.
+     * Trả về thứ trong tuần của hôm nay theo dạng 1=Thứ 2 ... 7=Chủ nhật.
      */
     public static int getTodayDayOfWeek() {
         int calDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -19,8 +19,8 @@ public final class DateUtils {
     }
 
     /**
-     * Determines if a workout represents a rest/recovery day.
-     * Returns true if title contains rest/recovery keywords OR duration is 0.
+     * Xác định buổi tập có phải ngày nghỉ hoặc phục hồi không.
+     * Trả về true nếu tiêu đề có từ khóa nghỉ/phục hồi hoặc thời lượng bằng 0.
      */
     public static boolean isRestDayWorkout(String title, int durationMinutes) {
         if (durationMinutes == 0) {

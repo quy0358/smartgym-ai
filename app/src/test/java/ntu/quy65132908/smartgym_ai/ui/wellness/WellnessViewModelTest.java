@@ -123,6 +123,30 @@ public class WellnessViewModelTest {
         verify(injuryProfileRepository, never()).saveInjuryProfile(any(), any(), any());
     }
 
+    @Test
+    public void saveInjuryProfile_validNotesOnly_trimsPersistsAndEmitsSavedEvent() {
+        doAnswer(invocation -> {
+            InjuryProfileRepository.SimpleCallback cb = invocation.getArgument(2);
+            cb.onSuccess();
+            return null;
+        }).when(injuryProfileRepository).saveInjuryProfile(eq("uid-1"), any(), any());
+        WellnessViewModel viewModel = createViewModel();
+
+        viewModel.saveInjuryProfile(false, false, false, "  dau lung khi gap nguoi  ");
+
+        ArgumentCaptor<InjuryProfile> profileCaptor = ArgumentCaptor.forClass(InjuryProfile.class);
+        verify(injuryProfileRepository).saveInjuryProfile(eq("uid-1"), profileCaptor.capture(), any());
+        InjuryProfile profile = profileCaptor.getValue();
+        assertTrue(!profile.isKneeSensitive());
+        assertTrue(!profile.isShoulderSensitive());
+        assertTrue(!profile.isLowerBackSensitive());
+        assertEquals("dau lung khi gap nguoi", profile.getNotes());
+        assertEquals(Boolean.TRUE, viewModel.getInjuryProfileSavedEvent().getValue());
+        WellnessUiState state = viewModel.getUiState().getValue();
+        assertNotNull(state);
+        assertTrue(!state.isSavingInjury());
+    }
+
     private WellnessViewModel createViewModel() {
         return new WellnessViewModel(
                 context,

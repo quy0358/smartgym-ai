@@ -85,10 +85,10 @@ public class WeeklyPlanAdapter extends ListAdapter<Workout, WeeklyPlanAdapter.Vi
         holder.binding.tvBadge.setVisibility(workout.getDayOfWeek() == todayDow ? View.VISIBLE : View.GONE);
 
         String statusText;
-        // Show completed state
+        // Hiển thị trạng thái đã hoàn thành.
         if (workout.isCompleted()) {
             holder.binding.ivStatus.setImageResource(R.drawable.ic_check_circle);
-            holder.binding.ivStatus.setImageTintList(null); // Use drawable's own fill color
+            holder.binding.ivStatus.setImageTintList(null); // Dùng màu nền có sẵn của tài nguyên vẽ.
             holder.itemView.setAlpha(0.7f);
             statusText = holder.itemView.getContext().getString(R.string.workout_status_completed);
         } else {

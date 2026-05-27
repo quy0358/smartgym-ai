@@ -85,7 +85,8 @@ public class WorkoutListFragment extends Fragment {
                         workout.getId(),
                         workout.getTitle() != null ? workout.getTitle() : "",
                         workout.getDurationMinutes(),
-                        workout.getDayType()));
+                        workout.getDayType(),
+                        workout.isCustom()));
     }
 
     private void updateLoadingUi() {
@@ -93,6 +94,14 @@ public class WorkoutListFragment extends Fragment {
         binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         binding.btnCreatePlan.setEnabled(!creatingPlan);
         binding.btnCreatePlan.setText(creatingPlan ? getString(R.string.creating_plan) : getString(R.string.btn_create_plan));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (viewModel != null) {
+            viewModel.loadWorkouts();
+        }
     }
 
     @Override

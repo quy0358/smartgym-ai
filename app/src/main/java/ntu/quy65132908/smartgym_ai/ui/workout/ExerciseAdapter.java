@@ -43,9 +43,13 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ViewH
             return a.isCompleted() == b.isCompleted()
                     && a.getSets() == b.getSets()
                     && a.getReps() == b.getReps()
+                    && a.getDurationSeconds() == b.getDurationSeconds()
+                    && a.getOrderIndex() == b.getOrderIndex()
                     && Objects.equals(a.getName(), b.getName())
                     && Objects.equals(a.getWeight(), b.getWeight())
-                    && Objects.equals(a.getNotes(), b.getNotes());
+                    && Objects.equals(a.getNotes(), b.getNotes())
+                    && Objects.equals(a.getPoseTypeKey(), b.getPoseTypeKey())
+                    && Objects.equals(a.getPrimaryMuscle(), b.getPrimaryMuscle());
         }
     };
 
@@ -62,7 +66,7 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ViewH
         holder.ivExercise.setImageResource(UiImageResolver.exerciseImageFor(
                 ex.getPoseTypeKey(),
                 ex.getName(),
-                ex.getNotes()));
+                ex.getPrimaryMuscle()));
         holder.tvName.setText(ex.getName());
         String detail = formatExerciseDetail(ex);
         holder.tvDetail.setText(detail);
@@ -83,7 +87,9 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ViewH
 
     static String formatExerciseDetail(Exercise ex) {
         String detail;
-        if (ex.getReps() == 0) {
+        if (ex.getDurationSeconds() > 0) {
+            detail = ex.getSets() + " hiệp × " + ex.getDurationSeconds() + " giây";
+        } else if (ex.getReps() == 0) {
             detail = ex.getSets() + " hiệp • Tự do";
         } else {
             detail = ex.getSets() + " hiệp × " + ex.getReps() + " lần";
@@ -96,7 +102,8 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ViewH
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tvName, tvDetail;
+        final TextView tvName;
+        final TextView tvDetail;
         final ImageView ivExercise;
         final MaterialCheckBox cbDone;
 

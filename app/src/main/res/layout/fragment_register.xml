@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,13 +10,12 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_xl">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_register_hero"
             android:layout_width="0dp"
             android:layout_height="148dp"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:background="@drawable/bg_onboarding_hero"
-            android:clipToOutline="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.SmartGym.RoundedHero"
             android:contentDescription="@null"
                     android:importantForAccessibility="no"
             android:scaleType="centerCrop"
@@ -48,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-        <!-- Name Field -->
+        <!-- Trường họ tên -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_name"
             style="@style/Widget.SmartGym.TextField"
@@ -68,7 +66,7 @@
                 android:textColor="@color/on_surface" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Email -->
+        <!-- Thư điện tử -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_email"
             style="@style/Widget.SmartGym.TextField"
@@ -88,7 +86,7 @@
                 android:textColor="@color/on_surface" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password -->
+        <!-- Mật khẩu -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_password"
             style="@style/Widget.SmartGym.TextField"
@@ -109,7 +107,7 @@
                 android:textColor="@color/on_surface" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Error -->
+        <!-- Lỗi -->
         <TextView
             android:id="@+id/tv_error"
             android:layout_width="0dp"
@@ -131,7 +129,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_error" />
 
-        <!-- Register Button -->
+        <!-- Nút đăng ký -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_register"
             style="@style/Widget.SmartGym.Button.Primary"
@@ -143,7 +141,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progress_bar" />
 
-        <!-- Back to login -->
+        <!-- Quay lại đăng nhập -->
         <TextView
             android:id="@+id/tv_back_login"
             android:layout_width="wrap_content"
