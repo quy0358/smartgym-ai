@@ -14,6 +14,28 @@ https://github.com/quy0358/smartgym-ai/raw/main/assets/demo.mp4
 
 ---
 
+## Hình ảnh ứng dụng
+
+<div align="center">
+
+| Đăng Nhập | Đăng Ký | Đặt Lại Mật Khẩu |
+|:---:|:---:|:---:|
+| <img src="Images/DangNhap.jpg" width="250"> | <img src="Images/DangKy.jpg" width="250"> | <img src="Images/DatLaiMatKhau.jpg" width="250"> |
+| **Thiết Lập Hồ Sơ** | **Trang Chủ** | **Kế Hoạch** |
+| <img src="Images/ThietLapHoSo.jpg" width="250"> | <img src="Images/TrangChu.jpg" width="250"> | <img src="Images/KeHoach.jpg" width="250"> |
+| **Thư Viện Bài Tập** | **Sửa Form Chống Đẩy** | **Sửa Form Plank** |
+| <img src="Images/ThuVienBaiTap.jpg" width="250"> | <img src="Images/SuaFormChongDay.jpg" width="250"> | <img src="Images/SuaFormPlank.jpg" width="250"> |
+| **Sửa Form Squat** | **Tiến Trình** | **Cộng Đồng** |
+| <img src="Images/SuaFormSquat.jpg" width="250"> | <img src="Images/TienTrinh.jpg" width="250"> | <img src="Images/CongDong.jpg" width="250"> |
+| **Hồ Sơ** | **Nhắc Lịch & An Toàn** | **Dinh Dưỡng - Kế Hoạch** |
+| <img src="Images/HoSo.jpg" width="250"> | <img src="Images/NhacLichVaAnToan.jpg" width="250"> | <img src="Images/DinhDuongKeHoach.jpg" width="250"> |
+| **Dinh Dưỡng - Hôm Nay** | **Dinh Dưỡng - Lịch Sử** | |
+| <img src="Images/DinhDuongHomNay.jpg" width="250"> | <img src="Images/DinhDuongLichSu.jpg" width="250"> | |
+
+</div>
+
+---
+
 ## Tải APK
 
 <div align="center">
