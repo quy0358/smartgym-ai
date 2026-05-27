@@ -14,8 +14,6 @@
 
 </div>
 
-> **Mẹo:** Bạn cũng có thể vào trang [Releases](https://github.com/quy0358/smartgym-ai/releases) để xem tất cả phiên bản và changelog chi tiết.
-
 **Cách cài đặt:**
 
 | Bước | Hướng dẫn |
