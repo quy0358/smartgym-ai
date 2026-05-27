@@ -1,4 +1,4 @@
-# SmartGym AI 🏋️‍♂️🤖
+# SmartGym AI
 
 [![Build APK](https://github.com/quy0358/smartgym-ai/actions/workflows/build-apk.yml/badge.svg)](https://github.com/quy0358/smartgym-ai/actions/workflows/build-apk.yml)
 [![Release](https://img.shields.io/github/v/release/quy0358/smartgym-ai?color=brightgreen&label=Latest%20Release)](https://github.com/quy0358/smartgym-ai/releases/latest)
@@ -9,47 +9,47 @@
 
 ---
 
-## 📥 Tải APK
+## Tải APK
 
 <div align="center">
 
-### 👉 [⬇️ TẢI PHIÊN BẢN MỚI NHẤT (APK)](https://github.com/quy0358/smartgym-ai/releases/latest) 👈
+### [TẢI PHIÊN BẢN MỚI NHẤT (APK)](https://github.com/quy0358/smartgym-ai/releases/latest)
 
 [![Download APK](https://img.shields.io/badge/Download-APK-brightgreen?style=for-the-badge&logo=android&logoColor=white)](https://github.com/quy0358/smartgym-ai/releases/latest)
 
 </div>
 
-> 💡 **Mẹo:** Bạn cũng có thể vào trang [Releases](https://github.com/quy0358/smartgym-ai/releases) để xem tất cả phiên bản và changelog chi tiết.
+> **Mẹo:** Bạn cũng có thể vào trang [Releases](https://github.com/quy0358/smartgym-ai/releases) để xem tất cả phiên bản và changelog chi tiết.
 
 **Cách cài đặt:**
 
 | Bước | Hướng dẫn |
 |------|-----------|
-| 1️⃣ | Tải file `.apk` từ link trên về điện thoại Android |
-| 2️⃣ | Vào **Cài đặt → Bảo mật → Cho phép cài đặt từ nguồn không xác định** |
-| 3️⃣ | Mở file APK vừa tải và nhấn **Cài đặt** |
-| 4️⃣ | Yêu cầu **Android 7.0** (API 24) trở lên |
+| 1 | Tải file `.apk` từ link trên về điện thoại Android |
+| 2 | Vào **Cài đặt → Bảo mật → Cho phép cài đặt từ nguồn không xác định** |
+| 3 | Mở file APK vừa tải và nhấn **Cài đặt** |
+| 4 | Yêu cầu **Android 7.0** (API 24) trở lên |
 
-> ⚠️ **Lưu ý:** APK được build tự động qua GitHub Actions CI/CD mỗi khi có phiên bản mới. Nếu gặp cảnh báo "Ứng dụng không xác định", hãy chọn **Cài đặt vẫn tiếp tục** — đây là hành vi bình thường khi cài APK ngoài Google Play.
+> **Lưu ý:** APK được build tự động qua GitHub Actions CI/CD mỗi khi có phiên bản mới. Nếu gặp cảnh báo "Ứng dụng không xác định", hãy chọn **Cài đặt vẫn tiếp tục** — đây là hành vi bình thường khi cài APK ngoài Google Play.
 
 ---
 
-## ✨ Tính năng nổi bật
+## Tính năng nổi bật
 
 | Tính năng | Mô tả |
 |-----------|--------|
-| 🤖 AI Coach | Phân tích sức khỏe, đề xuất bài tập & dinh dưỡng cá nhân hóa bằng DeepSeek AI |
-| 📸 Nhận diện tư thế | Phát hiện và đánh giá tư thế tập luyện real-time qua Camera (ML Kit Pose Detection) |
-| 📊 Theo dõi tiến trình | Biểu đồ trực quan theo dõi cân nặng, số buổi tập, calo tiêu hao |
-| 🥗 Quản lý dinh dưỡng | Lên kế hoạch bữa ăn, theo dõi calo và macro hàng ngày |
-| 🏠 Bài tập đa dạng | Thư viện bài tập gym phong phú với hướng dẫn chi tiết |
-| 👥 Cộng đồng | Chia sẻ thành tích, tương tác với người tập khác |
-| ⏰ Nhắc lịch tập | Thông báo thông minh nhắc lịch tập theo thời gian biểu |
-| 🔐 Đăng nhập Google | Xác thực nhanh chóng qua Google Sign-In |
+| AI Coach | Phân tích sức khỏe, đề xuất bài tập & dinh dưỡng cá nhân hóa bằng DeepSeek AI |
+| Nhận diện tư thế | Phát hiện và đánh giá tư thế tập luyện real-time qua Camera (ML Kit Pose Detection) |
+| Theo dõi tiến trình | Biểu đồ trực quan theo dõi cân nặng, số buổi tập, calo tiêu hao |
+| Quản lý dinh dưỡng | Lên kế hoạch bữa ăn, theo dõi calo và macro hàng ngày |
+| Bài tập đa dạng | Thư viện bài tập gym phong phú với hướng dẫn chi tiết |
+| Cộng đồng | Chia sẻ thành tích, tương tác với người tập khác |
+| Nhắc lịch tập | Thông báo thông minh nhắc lịch tập theo thời gian biểu |
+| Đăng nhập Google | Xác thực nhanh chóng qua Google Sign-In |
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## Công nghệ sử dụng
 
 - **Ngôn ngữ:** Java (Android)
 - **Kiến trúc:** MVVM + Hilt Dependency Injection
@@ -64,7 +64,7 @@
 
 ---
 
-## 🚀 Thiết lập & Chạy local
+## Thiết lập & Chạy local
 
 ### Yêu cầu
 - Android Studio Hedgehog trở lên
@@ -87,7 +87,7 @@ sdk.dir=C\:\\Users\\<you>\\AppData\\Local\\Android\\Sdk
 DEEPSEEK_API_KEY=<debug-only-key>
 ```
 
-> ⚠️ `DEEPSEEK_API_KEY` chỉ nhúng vào debug build. Release build để trống key — cần gọi AI qua backend tin cậy hoặc Firebase Callable Function, không ship raw API key trong APK. Nếu thiếu key, app hiển thị thông báo cấu hình và dùng kế hoạch fallback thay vì crash.
+> **Lưu ý:** `DEEPSEEK_API_KEY` chỉ nhúng vào debug build. Release build để trống key — cần gọi AI qua backend tin cậy hoặc Firebase Callable Function, không ship raw API key trong APK. Nếu thiếu key, app hiển thị thông báo cấu hình và dùng kế hoạch fallback thay vì crash.
 
 ### Bước 3: Mở trong Android Studio
 
@@ -98,7 +98,7 @@ DEEPSEEK_API_KEY=<debug-only-key>
 
 ---
 
-## 🔥 Firebase
+## Firebase
 
 - App sử dụng **Firebase Auth**, **Firestore** và **Storage**.
 - Rules được version control tại `firestore.rules` và `storage.rules`.
@@ -122,7 +122,7 @@ firebase deploy --only firestore:rules,storage
 
 ---
 
-## ✅ Kiểm tra
+## Kiểm tra
 
 ```bash
 .\gradlew.bat lintDebug
@@ -132,19 +132,19 @@ firebase deploy --only firestore:rules,storage
 
 ---
 
-## 📋 Ghi chú vận hành
+## Ghi chú vận hành
 
 - **Nhắc lịch tập:** Dùng WorkManager dạng one-time work tự đặt lịch lại. Tiết kiệm pin, phù hợp nhắc tương đối. Có thể trễ khi thiết bị vào Doze — nếu cần báo đúng phút, dùng AlarmManager exact alarm.
 - **Community:** Hiện lưu `likedBy` trong document bài viết. Nếu người dùng tăng lớn, nên chuyển sang subcollection likes hoặc Cloud Function aggregate counter.
 
 ---
 
-## 📄 Giấy phép
+## Giấy phép
 
 Dự án được phát triển bởi **Nguyễn Thanh Quy** — Đồ án môn Lập trình thiết bị di động, Trường Đại học Nha Trang.
 
 ---
 
-## 🤝 Đóng góp
+## Đóng góp
 
 Mọi đóng góp đều được hoan nghênh! Hãy tạo [Issue](https://github.com/quy0358/smartgym-ai/issues) hoặc [Pull Request](https://github.com/quy0358/smartgym-ai/pulls) nếu bạn muốn cải thiện ứng dụng.
