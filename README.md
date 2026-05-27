@@ -1,6 +1,9 @@
 # SmartGym AI 🏋️‍♂️🤖
 
 [![Build APK](https://github.com/quy0358/smartgym-ai/actions/workflows/build-apk.yml/badge.svg)](https://github.com/quy0358/smartgym-ai/actions/workflows/build-apk.yml)
+[![Release](https://img.shields.io/github/v/release/quy0358/smartgym-ai?color=brightgreen&label=Latest%20Release)](https://github.com/quy0358/smartgym-ai/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/quy0358/smartgym-ai/total?color=blue&label=Downloads)](https://github.com/quy0358/smartgym-ai/releases)
+[![Android](https://img.shields.io/badge/Android-7.0%2B-green?logo=android)](https://github.com/quy0358/smartgym-ai/releases/latest)
 
 Ứng dụng Android tích hợp AI phân tích sức khỏe, theo dõi thể trạng và đề xuất bài tập gym thông minh cá nhân hóa cho người dùng. Sử dụng DeepSeek AI và Google ML Kit Pose Detection để mang đến trải nghiệm huấn luyện viên ảo ngay trên điện thoại.
 
@@ -8,15 +11,26 @@
 
 ## 📥 Tải APK
 
-> **[⬇️ Tải phiên bản mới nhất tại đây](https://github.com/quy0358/smartgym-ai/releases/latest)**
+<div align="center">
 
-Hoặc vào trang [Releases](https://github.com/quy0358/smartgym-ai/releases) để xem tất cả phiên bản.
+### 👉 [⬇️ TẢI PHIÊN BẢN MỚI NHẤT (APK)](https://github.com/quy0358/smartgym-ai/releases/latest) 👈
+
+[![Download APK](https://img.shields.io/badge/Download-APK-brightgreen?style=for-the-badge&logo=android&logoColor=white)](https://github.com/quy0358/smartgym-ai/releases/latest)
+
+</div>
+
+> 💡 **Mẹo:** Bạn cũng có thể vào trang [Releases](https://github.com/quy0358/smartgym-ai/releases) để xem tất cả phiên bản và changelog chi tiết.
 
 **Cách cài đặt:**
-1. Tải file `.apk` từ link trên về điện thoại Android.
-2. Vào **Cài đặt → Bảo mật → Cho phép cài đặt từ nguồn không xác định**.
-3. Mở file APK vừa tải và cài đặt.
-4. Yêu cầu Android 7.0 (API 24) trở lên.
+
+| Bước | Hướng dẫn |
+|------|-----------|
+| 1️⃣ | Tải file `.apk` từ link trên về điện thoại Android |
+| 2️⃣ | Vào **Cài đặt → Bảo mật → Cho phép cài đặt từ nguồn không xác định** |
+| 3️⃣ | Mở file APK vừa tải và nhấn **Cài đặt** |
+| 4️⃣ | Yêu cầu **Android 7.0** (API 24) trở lên |
+
+> ⚠️ **Lưu ý:** APK được build tự động qua GitHub Actions CI/CD mỗi khi có phiên bản mới. Nếu gặp cảnh báo "Ứng dụng không xác định", hãy chọn **Cài đặt vẫn tiếp tục** — đây là hành vi bình thường khi cài APK ngoài Google Play.
 
 ---
 
@@ -46,7 +60,7 @@ Hoặc vào trang [Releases](https://github.com/quy0358/smartgym-ai/releases) đ
 - **Biểu đồ:** MPAndroidChart
 - **Background:** WorkManager (nhắc lịch tập)
 - **Build:** Gradle KTS, JDK 17
-- **CI/CD:** GitHub Actions (tự động build APK)
+- **CI/CD:** GitHub Actions (tự động build APK + tạo Release)
 
 ---
 
