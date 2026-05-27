@@ -1,10 +1,5 @@
 # SmartGym AI
 
-[![Build APK](https://github.com/quy0358/smartgym-ai/actions/workflows/build-apk.yml/badge.svg)](https://github.com/quy0358/smartgym-ai/actions/workflows/build-apk.yml)
-[![Release](https://img.shields.io/github/v/release/quy0358/smartgym-ai?color=brightgreen&label=Latest%20Release)](https://github.com/quy0358/smartgym-ai/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/quy0358/smartgym-ai/total?color=blue&label=Downloads)](https://github.com/quy0358/smartgym-ai/releases)
-[![Android](https://img.shields.io/badge/Android-7.0%2B-green?logo=android)](https://github.com/quy0358/smartgym-ai/releases/latest)
-
 Ứng dụng Android tích hợp AI phân tích sức khỏe, theo dõi thể trạng và đề xuất bài tập gym thông minh cá nhân hóa cho người dùng. Sử dụng DeepSeek AI và Google ML Kit Pose Detection để mang đến trải nghiệm huấn luyện viên ảo ngay trên điện thoại.
 
 ---
