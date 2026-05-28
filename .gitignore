@@ -16,3 +16,4 @@ local.properties
 firebase-debug.log
 .roo/
 docs/superpowers/
+app/google-services.json
