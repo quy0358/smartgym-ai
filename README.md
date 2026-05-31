@@ -8,10 +8,6 @@
 
 https://github.com/quy0358/smartgym-ai/raw/main/assets/demo.mp4
 
-*  **Giao diện hiện đại:** Trải nghiệm người dùng mượt mà, trực quan và tối ưu cho di động.
-*  **AI thông minh:** Phân tích tư thế tập luyện chính xác theo thời gian thực qua camera.
-*  **Cá nhân hóa:** Tự động đề xuất lộ trình tập luyện và theo dõi tiến độ chi tiết.
-
 ---
 
 ## Hình ảnh ứng dụng
